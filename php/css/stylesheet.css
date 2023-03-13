@@ -1,0 +1,90 @@
+
+
+.MainContainer {
+    width: 80%;
+    background-color: whitesmoke;
+    padding: 1vw;
+    text-align: center;
+}
+
+.Container{
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+}
+
+
+.Navigation {
+    flex: 1;
+    width: 20%;
+    padding: 0;
+    background-color: indianred;
+    color: white;
+}
+
+.NavigationButton:hover {
+    color:indianred;
+    background-color: white;
+    border-radius: 30px;
+    width:87%;
+}
+
+ul {
+    padding-left: 2vw;
+}
+
+.NavigationButton {
+    color: white;
+    text-align: left;
+    padding: 1vw 1vw 1vw 0;
+}
+
+.Tweeter, .NavigationTweeter, .NavigationButton {
+    display: inline-block;
+    font-size: 1.7vw;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    list-style: none;
+}
+
+.NavigationButton:before {
+    content: "\2714";
+    font-size: 1.2vw;
+    color: white;
+    margin-right: 1vw;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.NavigationTweeter {
+    margin-top: 2vw;
+    text-align: center;
+    color: indianred;
+    padding: 1vw;
+    border-radius: 3vw;
+    background-color: white;
+}
+
+.Tweeter {
+    text-align: center;
+    font-size: 1.2vw;
+    padding: 1vw;
+    border:none;
+    color: white;
+    background-color: indianred;
+    border-radius: 3vw;
+}
+
+.ButtonPosition {
+    text-align: right;
+    margin-top:1vw;
+    margin-right: 15vw;
+}
+
+.Content {
+    font-size: 1.2vw;
+    border-radius: 1vw;
+    resize: none;
+    width: 60%;
+    border: none;
+}
