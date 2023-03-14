@@ -21,13 +21,7 @@
             <br>
         </ul>
     </div>
-    <div class = "MainContainer">
-        <div>
-            <textarea class = "Content" rows="1" maxlength="240" placeholder="Quoi de neuf ?"></textarea>
-            <a><button class = "Tweeter">Tweeter</button></a>
-            <p>HASHTAG</p>
-        </div>
-    </div>
+
 </div>
 
 </body>
