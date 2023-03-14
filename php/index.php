@@ -6,18 +6,20 @@
     <meta charset = "utf-8">
     <link rel = "stylesheet" href = "./css/stylesheet.css">
     <title>Twitturtle</title>
+    <link rel="shortcut icon" href="./favicon.ico">
 </head>
 
 <body>
 <div class = "Container">
     <div class = "Navigation">
-        <img src = "./images/pet-house.png" alt = "Logo" style = "width:2.2vw; height: 2.2vw; padding: 1.2vw; padding-bottom: 0;">
+        <a href = "index.php"><img src = "./images/logo_site.png" alt = "Logo" style = "width:5vw; height: 5vw; padding: 1.2vw; padding-bottom: 0;"></a>
         <ul>
             <li class = "NavigationButton"><a href = "index.php">Accueil</a></li>
             <li class = "NavigationButton">Explorer</li>
             <li class = "NavigationButton">Notifications</li>
             <li class = "NavigationButton">Messages</li>
             <li class = "NavigationButton"><a href = "profil.php">Profil</a></li>
+            <li class = "NavigationButton"><a href = "connect.php">Se connecter</a></li>
         </ul>
         <div class = "center">
             <li class = "NavigationTweeter">Tweeter</li>
@@ -48,6 +50,7 @@
         <p>3EME</p>
     </div>
 </div>
+
 
 </body>
 

@@ -6,6 +6,7 @@
     <meta charset = "utf-8">
     <link rel = "stylesheet" href = "./css/stylesheet.css">
     <title>Profil</title>
+    <link rel="shortcut icon" href="./favicon.ico">
 </head>
 
 <body>
