@@ -1,41 +1,43 @@
 <form action="./newAccount.php" method="post" enctype="multipart/form-data">
-	
-    <div class="formbutton">Créer votre compte</div>
-    <br>
-    <div>
-        <label for="username">Nom d'utilisateur : </label>
-        <input autofocus type="text" id="username" name="username">
+    <div class = "form-style">
+        <div>
+            <input class = "answer" autofocus type="text" id="username" name="username" placeholder="Nom d'utilisateur" required>
+        </div>
+        <div>
+            <input class = "answer" type="text" id="email" name="email" placeholder="Adresse e-mail" required>
+        </div>
+        <div>
+            <input class = "answer" type="text" id="prenom" name="prenom" placeholder="Prénom" required>
+        </div>
+        <div>
+            <input class = "answer" type="text" id="nom" name="nom" placeholder="Nom" required>
+        </div>
+        <div>
+            <label for="date_de_naissance">Date de naissance :</label> <br>
+            <input class = "answer" type="date" id="date_de_naissance" name="date_de_naissance" required>
+        </div>
+        <div>
+            <input class = "answer" type="password" id="password" name="password" placeholder="Mot de passe" required>
+        </div>
+        <div>
+            <input class = "answer" type="password" id="confirm" name="confirm" placeholder="Confirmer le mot de passe" required>
+        </div>
+        <div>
+            <label for="organisation">Etes-vous une organisation ? :</label>
+            <label>
+                <input type="radio" name="organisation" value="yes" required>
+                Oui
+            </label>
+            <label>
+                <input type="radio" name="organisation" value="no">
+                Non
+            </label>
+
+        </div>
+        <br>
+        <div class="formbutton">
+            <button class = "form-button" type="submit">Créer le compte</button>
+        </div>
     </div>
-    <div>
-        <label for="email">E-mail :</label>
-        <input type="text" id="email" name="email">
-    </div>
-    <div>
-        <label for="prenom">Prénom :</label>
-        <input type="text" id="prenom" name="prenom">
-    </div>
-    <div>
-        <label for="nom">Nom :</label>
-        <input type="text" id="nom" name="nom">
-    </div>
-    <div>
-        <label for="date_de_naissance">Date de naissance :</label>
-        <input type="date" id="date_de_naissance" name="date_de_naissance">
-    </div>
-    <div>
-        <label for="password">Définir le mot de passe :</label>
-        <input type="password" id="password" name="password">
-    </div>
-    <div>
-        <label for="confirm">Confirmer le mot de passe :</label>
-        <input type="password" id="confirm" name="confirm">
-    </div>
-    <div>
-        <label for="organisation">Etes-vous une organisation ? :</label>
-        <input type="radio" id="organisation" name="organisation">
-    </div>
-    <br>
-    <div class="formbutton">
-        <button type="submit">Créer le compte</button>
-    </div>
+
 </form>

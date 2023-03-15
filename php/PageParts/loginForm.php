@@ -1,21 +1,15 @@
 
-<form action="./index.php" method="post">
-	<div class = "center">
-		<div class="formbutton"><h2>Connexion à Twitturtle</h2></div>
-		<hr>
+<form action="./connect.php" method="post">
+	<div class = "form-style">
 		<div>
-			<label for="username">Nom d'utilisateur : </label>
-			<input autofocus type="text" id="username" name="username">
+			<input class = "answer" autofocus type="text" id="username" name="username" placeholder="Nom d'utilisateur" required>
 		</div>
 		<div>
-			<label for="password">Mot de passe :</label>
-			<input type="password" id="password" name="password">
+			<input class = "answer" type="password" id="password" name="password" placeholder="Mot de passe" required>
 		</div>
 		<br>
 		<div class="formbutton">
-			<button type="submit">Se connecter</button>
+			<button class = "form-button" type="submit">Se connecter</button>
 		</div>
-		<hr>
-		<p>Vous n'avez pas de compte ? <a href="./newAccount.php" class="endlink">Inscrivez-vous</a><br><br></p>
 	</div>
 </form>
