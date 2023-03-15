@@ -6,9 +6,9 @@ date_default_timezone_set('CET');
 function ConnectDatabase(){
     // Create connection
     $servername = "localhost";
-    $username = "root";
+    $username = "root2";
     $password = "root";
-    $dbname = "site";
+    $dbname = "we4a_project";
     global $conn;
     
     $conn = new mysqli($servername, $username, $password, $dbname);
@@ -35,18 +35,18 @@ function SecurizeString_ForSQL($string) {
 function CheckLogin(){
     global $conn, $username, $userID;
 
-    $error = NULL; 
+    $error = NULL;
     $loginSuccessful = false;
 
     //Données reçues via formulaire?
-	if(isset($_POST["name"]) && isset($_POST["password"])){
-		$username = SecurizeString_ForSQL($_POST["name"]);
+	if(isset($_POST["username"]) && isset($_POST["password"])){
+		$username = SecurizeString_ForSQL($_POST["username"]);
 		$password = md5($_POST["password"]);
 		$loginAttempted = true;
 	}
 	//Données via le cookie?
-	elseif ( isset( $_COOKIE["name"] ) && isset( $_COOKIE["password"] ) ) {
-		$username = $_COOKIE["name"];
+	elseif ( isset( $_COOKIE["username"] ) && isset( $_COOKIE["password"] ) ) {
+		$username = $_COOKIE["username"];
 		$password = $_COOKIE["password"];
 		$loginAttempted = true;
 	}
@@ -56,12 +56,10 @@ function CheckLogin(){
 
     //Si un login a été tenté, on interroge la BDD
     if ($loginAttempted){
-        $query = "SELECT * FROM login WHERE username = '".$username."' AND password ='".$password."'";
+        $query = "SELECT * FROM `utilisateur` WHERE username = '".$username."' AND mot_de_passe ='".$password."'";
         $result = $conn->query($query);
 
-        if ( $result ){
-            $row = $result->fetch_assoc();
-            $userID = $row["ID"];
+        if ($result->num_rows > 0){
             CreateLoginCookie($username, $password);
             $loginSuccessful = true;
         }
@@ -76,14 +74,14 @@ function CheckLogin(){
 //Méthode pour créer/mettre à jour le cookie de Login
 //--------------------------------------------------------------------------------
 function CreateLoginCookie($username, $encryptedPasswd){
-    setcookie("name", $username, time() + 24*3600 );
+    setcookie("username", $username, time() + 24*3600 );
     setcookie("password", $encryptedPasswd, time() + 24*3600);
 }
 
 //Méthode pour détruire les cookies de Login
 //--------------------------------------------------------------------------------
 function DestroyLoginCookie(){
-    setcookie("name", NULL, -1 );
+    setcookie("username", NULL, -1 );
     setcookie("password", NULL, -1);
 }
 
@@ -95,26 +93,33 @@ function CheckNewAccountForm(){
     $creationAttempted = false;
     $creationSuccessful = false;
     $error = NULL;
+    $completed = isset($_POST["username"]) && isset($_POST["password"]) && isset($_POST["confirm"])
+            && isset($_POST["prenom"]) && isset($_POST["nom"]) && isset($_POST["email"])
+            && isset($_POST["date_de_naissance"]) &&  isset($_POST["organisation"]);
 
     //Données reçues via formulaire?
-    if(isset($_POST["name"]) && isset($_POST["password"]) && isset($_POST["confirm"])){
-
+    if($completed){
         $creationAttempted = true;
 
         //Form is only valid if password == confirm, and username is at least 4 char long
-        if ( strlen($_POST["name"]) < 4 ){
+        if ( strlen($_POST["username"]) < 4 ){
             $error = "Un nom utilisateur doit avoir une longueur d'au moins 4 lettres";
         }
         elseif ( $_POST["password"] != $_POST["confirm"] ){
             $error = "Le mot de passe et sa confirmation sont différents";
         }
         else {
-            $username = SecurizeString_ForSQL($_POST["name"]);
+            $username = SecurizeString_ForSQL($_POST["username"]);
+            $email = SecurizeString_ForSQL($_POST["email"]);
+            $nom = SecurizeString_ForSQL($_POST["nom"]);
+            $prenom = SecurizeString_ForSQL($_POST["prenom"]);
+            $date_de_naissance = $_POST["date_de_naissance"];
+            $organisation = $_POST["organisation"];
+
 		    $password = md5($_POST["password"]);
 
-            $query = "INSERT INTO `login` VALUES ('$username', '$password' )";
-            echo $query."<br>";
-            $result = $conn->query($query);
+            $query = "INSERT INTO `utilisateur` VALUES ('$email', '$username', '$nom', '$prenom', '$date_de_naissance', '$password', 'null', '$organisation' )";
+            $conn->query($query);
 
             if( mysqli_affected_rows($conn) == 0 )
             {
@@ -123,9 +128,7 @@ function CheckNewAccountForm(){
             else{
                 $creationSuccessful = true;
             }
-		    
         }
-
 	}
 
     return array($creationAttempted, $creationSuccessful, $error);

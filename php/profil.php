@@ -1,3 +1,9 @@
+<?php
+include("./PageParts/databaseFunctions.php");
+ConnectDatabase();
+$loginStatus = CheckLogin();
+?>
+
 <!DOCTYPE html>
 
 <html lang = "fr">
@@ -11,17 +17,12 @@
 
 <body>
 <div class = "Container">
-    <div class = "Navigation">
-        <ul>
-            <li class = "NavigationButton">Accueil</li>
-            <li class = "NavigationButton">Explorer</li>
-            <li class = "NavigationButton">Notifications</li>
-            <li class = "NavigationButton">Messages</li>
-            <li class = "NavigationButton">Profil</li>
-            <li class = "Tweeter">Tweeter</li>
-            <br>
-        </ul>
+    <?php include ("./PageParts/navigation.php")?>
+    <div class = "MainContainer">
+        <p>PROFIL</p>
     </div>
+
+    <?php include ("./PageParts/trends.php")?>
 
 </div>
 

@@ -1,3 +1,9 @@
+<?php
+include("./PageParts/databaseFunctions.php");
+ConnectDatabase();
+$loginStatus = CheckLogin();
+?>
+
 <!DOCTYPE html>
 
 <html lang = "fr">
@@ -7,9 +13,9 @@
     <link rel = "stylesheet" href = "./css/stylesheet.css">
     <title>Twitturtle</title>
     <link rel="shortcut icon" href="./favicon.ico">
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyATs7fPlZoEbjUiYV4dpOwg2rz4dOmtPuQ&callback=initMap"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=KEY&callback=initMap"></script>
 
-    <script>
+   <!-- <script>
         function initMap() {
             if (document.getElementById('map') != null) {
                 var map = new google.maps.Map(document.getElementById('map'), {
@@ -44,29 +50,16 @@
         function closeModal() {
             document.getElementById('modal').style.display = 'none';
         }
-    </script>
-
+    </script> -->
 </head>
 
 <body>
 <div class = "Container">
-    <div class = "Navigation">
-        <a href = "index.php"><img src = "./images/logo_site.png" alt = "Logo" style = "width:5vw; height: 5vw; padding: 1.2vw; padding-bottom: 0;"></a>
-        <ul>
-            <li class = "NavigationButton"><a href = "index.php">Accueil</a></li>
-            <li class = "NavigationButton">Explorer</li>
-            <li class = "NavigationButton">Notifications</li>
-            <li class = "NavigationButton">Messages</li>
-            <li class = "NavigationButton"><a href = "profil.php">Profil</a></li>
-            <li class = "NavigationButton"><a href = "connect.php">Se connecter</a></li>
-        </ul>
-        <div class = "center">
-            <li class = "NavigationTweeter">Message</li>
-        </div>
-    </div>
+    <?php include ("PageParts/navigation.php");?>
 
     <div class = "MainContainer">
         <h1>Accueil</h1>
+        <?php if ($loginStatus[0]) {?>
         <div class = "NewMessage">
             <a href = "profil.php"><img class = "AvatarMessage" src = "./images/titan.png"></a>
             <textarea class = "Content" placeholder="Quoi de neuf ?" rows="1" maxlength="240"></textarea>
@@ -98,17 +91,17 @@
             </div>
 
         </div>
-        <div class = "TimeLine">
-            <p>TIMELINE</p>
-        </div>
+        <?php
+        }
+        else {
+            echo '<h2>Connectez-vous pour accéder au contenu</h2>';
+        }
+        ?>
     </div>
 
-    <div class = "Trends">
-        <h2>Tendances</h2>
-        <p>1ER</p>
-        <p>2EME</p>
-        <p>3EME</p>
-    </div>
+    <?php
+    include("./PageParts/trends.php");
+    ?>
 </div>
 
 

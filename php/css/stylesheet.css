@@ -144,8 +144,8 @@ ul {
 }
 
 .Content {
-    margin: 1vw 1vw 1vw 5vw;
-    display: block;
+    display: inline-block;
+    margin-left: -0.8vw;
     width: 80%;
     font-size: 1.4vw;
     color: #3a3230;
