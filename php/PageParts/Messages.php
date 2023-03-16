@@ -6,14 +6,19 @@ function mainMessages($loginStatus) {
         $query = "SELECT * FROM `message` ORDER BY date DESC";
         $result = $conn->query($query);
 
-        if($result) {
-            while($result->fetch_assoc()) {
-                $query = "SELECT utilisateur.nom, utilisateur.prenom, message.owner, message.contenu, message.date FROM message JOIN utilisateur ON message.owner=utilisateur.username ORDER BY message.date DESC";
-                $result = $conn->query($query);
+        queryMessages($result);
+    }
+}
 
-                if($result) {
-                    displayContent($result);
-                }
+function queryMessages($result) {
+    global $conn;
+    if($result) {
+        while($result->fetch_assoc()) {
+            $query = "SELECT utilisateur.nom, utilisateur.prenom, message.auteur_username, message.contenu, message.date FROM message JOIN utilisateur ON message.auteur_username=utilisateur.username ORDER BY message.date DESC";
+            $result = $conn->query($query);
+
+            if($result) {
+                displayContent($result);
             }
         }
     }
@@ -21,7 +26,7 @@ function mainMessages($loginStatus) {
 
 function displayContent($result) {
     while($row = $result->fetch_assoc()) {
-        $owner = $row['owner'];
+        $auteur_username = $row['auteur_username'];
         $contenu = $row['contenu'];
         $date = $row['date'];
 
@@ -55,7 +60,7 @@ function displayContent($result) {
                 <div class = "tweet-header">
                     <h1 class="name"><?php echo $row["prenom"] . ' ' . $row["nom"]; ?></h1>
                     <?php
-                    echo '<h1 class = "tweet-information">'. ' @' . $owner . ' · ' . $diff . '</h1>'; ?>
+                    echo '<h1 class = "tweet-information">'. ' @' . $auteur_username . ' · ' . $diff . '</h1>'; ?>
                 </div>
                 <div class = "tweet-content">
                     <?php echo'<p>' . $contenu . '</p>'; ?>
@@ -71,19 +76,10 @@ function profilMessages() {
 
     $username = $_GET["username"];
 
-    $query = "SELECT * FROM message WHERE owner = '$username' ORDER BY date DESC";
+    $query = "SELECT * FROM message WHERE auteur_username = '$username' ORDER BY date DESC";
     $result = $conn->query($query);
 
-    if($result) {
-        while($result->fetch_assoc()) {
-            $query = "SELECT utilisateur.nom, utilisateur.prenom, message.owner, message.contenu, message.date FROM message JOIN utilisateur ON message.owner=utilisateur.username WHERE owner = '$username' ORDER BY message.date DESC";
-            $result = $conn->query($query);
-
-            if($result) {
-                displayContent($result);
-            }
-        }
-    }
+    queryMessages($result);
 }
 
     ?>

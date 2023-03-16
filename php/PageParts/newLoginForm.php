@@ -4,9 +4,6 @@
             <input class = "answer" autofocus type="text" id="username" name="username" placeholder="Nom d'utilisateur" required>
         </div>
         <div>
-            <input class = "answer" type="text" id="email" name="email" placeholder="Adresse e-mail" required>
-        </div>
-        <div>
             <input class = "answer" type="text" id="prenom" name="prenom" placeholder="Prénom" required>
         </div>
         <div>

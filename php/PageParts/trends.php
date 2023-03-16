@@ -1,6 +1,14 @@
-<div class = "Trends">
+<div class="Trends">
     <h2>Tendances</h2>
-    <p>1ER</p>
-    <p>2EME</p>
-    <p>3EME</p>
+    <?php
+    global $conn;
+
+    $query = "SELECT tag, COUNT(*) AS count FROM hashtag GROUP BY tag ORDER BY count DESC LIMIT 10";
+
+    $result = $conn->query($query);
+
+    while ($row = $result->fetch_assoc()) {
+        echo "<p>" ."#" . $row['tag'] . " (" . $row['count'] . ")" . "</p>";
+    }
+    ?>
 </div>

@@ -94,7 +94,7 @@ function CheckNewAccountForm(){
     $creationSuccessful = false;
     $error = NULL;
     $completed = isset($_POST["username"]) && isset($_POST["password"]) && isset($_POST["confirm"])
-            && isset($_POST["prenom"]) && isset($_POST["nom"]) && isset($_POST["email"])
+            && isset($_POST["prenom"]) && isset($_POST["nom"])
             && isset($_POST["date_de_naissance"]) &&  isset($_POST["organisation"]);
 
     //Données reçues via formulaire?
@@ -110,7 +110,6 @@ function CheckNewAccountForm(){
         }
         else {
             $username = SecurizeString_ForSQL($_POST["username"]);
-            $email = SecurizeString_ForSQL($_POST["email"]);
             $nom = SecurizeString_ForSQL($_POST["nom"]);
             $prenom = SecurizeString_ForSQL($_POST["prenom"]);
             $date_de_naissance = $_POST["date_de_naissance"];
@@ -118,7 +117,7 @@ function CheckNewAccountForm(){
 
 		    $password = md5($_POST["password"]);
 
-            $query = "INSERT INTO `utilisateur` VALUES ('$email', '$username', '$nom', '$prenom', '$date_de_naissance', '$password', 'null', '$organisation' )";
+            $query = "INSERT INTO `utilisateur` VALUES ('$username', '$nom', '$prenom', '$date_de_naissance', '$password', 'null', '$organisation' )";
             $conn->query($query);
 
             if( mysqli_affected_rows($conn) == 0 )

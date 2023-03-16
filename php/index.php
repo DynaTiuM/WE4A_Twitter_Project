@@ -37,7 +37,7 @@ include("./PageParts/sendingMessage.php");
                     <option value ="option2">PET 1</option>
                     <option value ="option3">PET 2</option>
                 </select>
-                <p>HASHTAG</p>
+
                 <button onclick="openModal()">Choisir ma localisation</button>
             </form>
 
