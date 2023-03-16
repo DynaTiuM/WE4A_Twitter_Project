@@ -109,7 +109,6 @@ body {
 
 .tweet-content {
     padding-left: 1vw;
-    margin-top: 10px;
     font-family: Arial, sans-serif;
     font-size: 1.3vw;
 }
@@ -136,8 +135,8 @@ form-h2 {
 .MainContainer {
     width: 53%;
     background-color: white;
-    border-right: 0.1vw solid rgba(185, 136, 87, 0.2);
-    border-left: 0.1vw solid rgba(185, 136, 87, 0.2);
+    border-right: 0.1vw solid rgba(31, 124, 98, 0.29);
+    border-left: 0.1vw solid rgba(31, 124, 98, 0.29);
 }
 
 .Trends {
@@ -146,8 +145,8 @@ form-h2 {
 }
 
 .NewMessage {
-    border-top: 0.1vw solid rgba(185, 136, 87, 0.2);
-    border-bottom: 0.1vw solid rgba(185, 136, 87, 0.2);
+    border-top: 0.1vw solid rgba(31, 124, 98, 0.29);
+    border-bottom: 0.1vw solid rgba(31, 124, 98, 0.29);
     margin-top: 3.3vw;
     background-color: white;
 }
@@ -307,7 +306,7 @@ label {
     margin: 0 auto;
     width: 80%;
     height: 2px;
-    border-bottom: 0.1vw solid rgba(185, 136, 87, 0.2);
+    border-bottom: 0.1vw solid rgba(31, 124, 98, 0.29);
 }
 
 .Trends {

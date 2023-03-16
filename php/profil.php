@@ -51,11 +51,14 @@ $loginStatus = CheckLogin();
         </div>
 
         <div class = "tweets">
-            <p>Tweets</p>
+            <h2>Tweets</h2>
+            <?php include("./PageParts/Messages.php");
+            profilMessages();
+            ?>
         </div>
 
         <div class = "likes">
-            <p>J'aime</p>
+            <h2>J'aime</h2>
         </div>
     </div>
 
