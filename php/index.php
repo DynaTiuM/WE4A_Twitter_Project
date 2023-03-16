@@ -2,6 +2,8 @@
 include("./PageParts/databaseFunctions.php");
 ConnectDatabase();
 $loginStatus = CheckLogin();
+
+include("./PageParts/sendingMessage.php");
 ?>
 
 <!DOCTYPE html>
@@ -15,44 +17,6 @@ $loginStatus = CheckLogin();
     <link rel="shortcut icon" href="./favicon.ico">
     <script src="https://maps.googleapis.com/maps/api/js?key=KEY&callback=initMap"></script>
 
-   <!-- <script>
-        function initMap() {
-            if (document.getElementById('map') != null) {
-                var map = new google.maps.Map(document.getElementById('map'), {
-                    center: {lat: 48.8534, lng: 2.3488}, // Coordonnées de Paris
-                    zoom: 13
-                });
-
-                var marker = new google.maps.Marker({
-                    position: map.getCenter(),
-                    map: map,
-                    draggable: true
-                });
-
-                google.maps.event.addListener(marker, 'dragend', function() {
-                    document.getElementById('latitude').value = marker.getPosition().lat();
-                    document.getElementById('longitude').value = marker.getPosition().lng();
-                });
-
-                google.maps.event.addListener(map, 'click', function(event) {
-                    marker.setPosition(event.latLng);
-                    document.getElementById('latitude').value = event.latLng.lat();
-                    document.getElementById('longitude').value = event.latLng.lng();
-                });
-            }
-        }
-
-        function openModal() {
-            document.getElementById('modal').style.display = 'block';
-            initMap();
-        }
-
-        function closeModal() {
-            document.getElementById('modal').style.display = 'none';
-        }
-    </script> -->
-</head>
-
 <body>
 <div class = "Container">
     <?php include ("PageParts/navigation.php");?>
@@ -61,19 +25,22 @@ $loginStatus = CheckLogin();
         <h1>Accueil</h1>
         <?php if ($loginStatus[0]) {?>
         <div class = "NewMessage">
-            <a href = "profil.php"><img class = "AvatarMessage" src = "./images/titan.png"></a>
-            <textarea class = "Content" placeholder="Quoi de neuf ?" rows="1" maxlength="240"></textarea>
-            <span class = "Border" style="width: 80%;"></span>
-            <div class = "ButtonPosition">
-                <a><button class = "Tweeter">Envoyer</button></a>
-            </div>
-            <select>
-                <option value ="option1"></option>
-                <option value ="option2">PET 1</option>
-                <option value ="option3">PET 2</option>
-            </select>
-            <p>HASHTAG</p>
-            <button onclick="openModal()">Choisir ma localisation</button>
+            <form action = "" method = "post">
+                <a href = "profil.php"><img class = "AvatarMessage" src = "./images/titan.png"></a>
+                <textarea name = "content" class = "message-content" placeholder="Quoi de neuf ?" rows="1" maxlength="240"></textarea>
+                <span class = "Border" style="width: 80%;"></span>
+                <div class = "ButtonPosition">
+                    <button class = "Tweeter" type = "submit">Envoyer</button>
+                </div>
+                <select>
+                    <option value ="option1"></option>
+                    <option value ="option2">PET 1</option>
+                    <option value ="option3">PET 2</option>
+                </select>
+                <p>HASHTAG</p>
+                <button onclick="openModal()">Choisir ma localisation</button>
+            </form>
+
 
             <div id="modal">
                 <div id="modal-content">
@@ -91,6 +58,77 @@ $loginStatus = CheckLogin();
             </div>
 
         </div>
+            <div class = "hub-messages">
+                <?php
+
+                if($loginStatus[0]) {
+                    $username = $_COOKIE["username"];
+
+                    global $conn;
+
+                    $query = "SELECT * FROM `message` ORDER BY date DESC";
+                    $result = $conn->query($query);
+
+                    if($result) {
+                        while($row = $result->fetch_assoc()) {
+                            $owner = $row['owner'];
+                            $contenu = $row['contenu'];
+                            $date = $row['date'];
+
+                            $query = "SELECT utilisateur.nom, utilisateur.prenom, message.owner, message.contenu, message.date FROM message JOIN utilisateur ON message.owner=utilisateur.username ORDER BY message.date DESC";
+                            $result = $conn->query($query);
+
+                            if($result) {
+                                while($row = $result->fetch_assoc()) {
+                                    $owner = $row['owner'];
+                                    $contenu = $row['contenu'];
+                                    $date = $row['date'];
+
+                                    // Convertir la date en timestamp
+                                    $timestamp = strtotime($date);
+
+                                    // Calculer la différence de temps
+                                    $diff = date_diff(new DateTime("@$timestamp"), new DateTime());
+
+                                    $days = $diff->d;
+                                    $hours = $diff->h;
+                                    $minutes = $diff->i;
+                                    $seconds = $diff->s;
+
+                                    if ($days > 0) {
+                                        $diff = $days."j";
+                                    } elseif ($hours > 0) {
+                                        $diff = $hours."h";
+                                    } elseif ($minutes > 0) {
+                                        $diff = $minutes."m";
+                                    } else {
+                                        $diff = $seconds."s";
+                                    }
+
+                                    // Afficher le message
+                                    echo '<div class="message">
+                                    <a href = "profil.php">
+                                        <img class = "AvatarMessage" src = "./images/titan.png">
+                                    </a>
+                                    
+                                    <div class = "tweet-content">
+                                        <div class = "tweet-header">';
+                                            echo '<h1 class = "name">'. $row['prenom'] . ' ' . $row['nom'] .'</h1>';
+                                            echo '<h1 class = "tweet-information">'. ' @' . $owner . ' · ' . $diff . '</h1>';
+                                    echo '</div>';
+                                    echo '<p class = "tweet-content">' . $contenu . '</p>';
+                                    echo'</div></div>
+                                    ';
+
+
+
+                                }
+                            }
+                        }
+                    }
+                }
+                ?>
+            </div>
         <?php
         }
         else {

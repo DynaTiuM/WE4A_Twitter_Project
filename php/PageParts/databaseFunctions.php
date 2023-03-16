@@ -81,7 +81,7 @@ function CreateLoginCookie($username, $encryptedPasswd){
 //Méthode pour détruire les cookies de Login
 //--------------------------------------------------------------------------------
 function DestroyLoginCookie(){
-    setcookie("username", NULL, -1 );
+    setcookie("username", NULL, -1);
     setcookie("password", NULL, -1);
 }
 

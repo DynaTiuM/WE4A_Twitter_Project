@@ -1,4 +1,4 @@
-<form action="./newAccount.php" method="post" enctype="multipart/form-data">
+<form action="./connect.php" method="post" enctype="multipart/form-data">
     <div class = "form-style">
         <div>
             <input class = "answer" autofocus type="text" id="username" name="username" placeholder="Nom d'utilisateur" required>
@@ -25,11 +25,11 @@
         <div>
             <label for="organisation">Etes-vous une organisation ? :</label>
             <label>
-                <input type="radio" name="organisation" value="yes" required>
+                <input type="radio" name="organisation" value="1" required>
                 Oui
             </label>
             <label>
-                <input type="radio" name="organisation" value="no">
+                <input type="radio" name="organisation" value="0">
                 Non
             </label>
 

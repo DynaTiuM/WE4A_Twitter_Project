@@ -2,6 +2,10 @@
 include("./PageParts/databaseFunctions.php");
 ConnectDatabase();
 $loginStatus = CheckLogin();
+
+if(!$loginStatus[0]) {
+    $newAccountStatus = CheckNewAccountForm();
+}
 ?>
 
 

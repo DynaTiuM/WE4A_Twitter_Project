@@ -19,7 +19,7 @@ $loginStatus = CheckLogin();
 <div class = "Container">
     <?php include ("./PageParts/navigation.php")?>
     <div class = "MainContainer">
-        <h2>Profil</h2>
+        <h1>Profil</h1>
         <div class = "profil">
             <?php
             global $conn;
@@ -33,14 +33,21 @@ $loginStatus = CheckLogin();
                     $row = $result->fetch_assoc();
                     $prenom = $row["prenom"];
                     $nom = $row["nom"];
-                    echo "<h3>" . $prenom . "</h3>";
-                    echo "<h3>" . $nom . "</h3>";
-                    echo "<h4>" . $username . "</h4>";
+                    echo "<h3>" . $prenom . " " . $nom . "</h3>";
+                    echo "<h4>" ."@" . $username . "</h4>";
                 }
             }
-
             ?>
+
             <button>Editer le profil</button>
+            <form action="" method="post">
+                <input type="submit" name="delete_cookies" value="Déconnexion">
+            </form>
+            <?php
+            if(isset($_POST['delete_cookies'])) {
+                DestroyLoginCookie();
+            }
+            ?>
         </div>
 
         <div class = "tweets">

@@ -85,6 +85,36 @@ body {
     background-color: #e7e7e7;
 }
 
+.message {
+    display: flex;
+}
+
+.AvatarMessage {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.tweet-header {
+    display: flex;
+    width: 100%;
+}
+
+.tweet-information {
+    margin-top: 0.4vw;
+    font-family: Arial, sans-serif;
+    font-size: 1vw;
+    color: gray;
+}
+
+.tweet-content {
+    padding-left: 1vw;
+    margin-top: 10px;
+    font-family: Arial, sans-serif;
+    font-size: 1.3vw;
+}
+
+
 h1 {
     box-sizing: border-box;
     padding: 1vw;
@@ -253,7 +283,7 @@ label {
 }
 
 
-.Content {
+.message-content {
     display: inline-block;
     margin-left: -0.8vw;
     width: 80%;
@@ -261,7 +291,7 @@ label {
     color: #3a3230;
     resize: none;
     border: none;
-    box-sizing: border-box; /* Ajout de cette propriété */
+    box-sizing: border-box;
 }
 
 .AvatarMessage {
