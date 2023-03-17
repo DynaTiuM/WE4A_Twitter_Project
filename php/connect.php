@@ -19,16 +19,7 @@ if(!$loginStatus[0]) {
     <title>Connexion</title>
     <link rel="shortcut icon" href="./favicon.ico">
 
-    <script>
-        // fonction pour ouvrir la fenêtre
-        function openWindow(window) {
-            document.getElementById(window).style.display = "block";
-        }
-        // fonction pour fermer la fenêtre
-        function closeWindow(window) {
-            document.getElementById(window).style.display = "none";
-        }
-    </script>
+    <?php include("./PageParts/windows.php");?>
 
 </head>
 
@@ -69,7 +60,7 @@ if(!$loginStatus[0]) {
     <div id="connexion" class="window-background">
         <div class="window-content">
             <span class="close" onclick="closeWindow('connexion')">&times;</span>
-            <form-h2>Connexion</form-h2>
+            <h2 class = "window-title">Connexion</h2>
             <?php include("./PageParts/loginForm.php"); ?>
         </div>
     </div>
@@ -77,14 +68,14 @@ if(!$loginStatus[0]) {
     <div id="inscription" class="window-background">
         <div class="window-content">
             <span class="close" onclick="closeWindow('inscription')">&times;</span>
-            <form-h2>Inscription</form-h2>
+            <h2 class = "window-title">Inscription</h2>
             <?php include("./PageParts/newLoginForm.php"); ?>
         </div>
     </div>
 
     <div id="erreur-connexion" class="window-background">
         <div class="window-content">
-            <div><form-h2>Erreur de connexion</form-h2></div>
+            <div><h2 class = "window-title">Erreur de connexion</h2></div>
             <br>
             <div>
                 <label>Nom d'utilisateur ou mot de passe incorrect</label>

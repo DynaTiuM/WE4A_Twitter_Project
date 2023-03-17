@@ -3,20 +3,24 @@
 date_default_timezone_set('CET');
 // Function to open connection to database
 //--------------------------------------------------------------------------------
-function ConnectDatabase(){
+function ConnectDatabase() {
     // Create connection
     $servername = "localhost";
     $username = "root2";
     $password = "root";
     $dbname = "we4a_project";
-    global $conn;
-    
-    $conn = new mysqli($servername, $username, $password, $dbname);
 
-    // Check connection
-    if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    // Check if connection exists already
+    if (!isset($GLOBALS['conn'])) {
+        $GLOBALS['conn'] = new mysqli($servername, $username, $password, $dbname);
+
+        // Check connection
+        if ($GLOBALS['conn']->connect_error) {
+            die("Connection failed: " . $GLOBALS['conn']->connect_error);
+        }
     }
+
+    return $GLOBALS['conn'];
 }
 
 //Function to clean up an user input for safety reasons
@@ -78,6 +82,132 @@ function CreateLoginCookie($username, $encryptedPasswd){
     setcookie("password", $encryptedPasswd, time() + 24*3600);
 }
 
+function motificationProfile() {
+    modificationAvatarProfile();
+
+    global $conn;
+
+    $username = $_GET["username"];
+    $prenom = $_POST['prenom'];
+    $nom = $_POST['nom'];
+    $date = $_POST['date'];
+    $password = $_POST['password'];
+    $bio = $_POST['bio'];
+
+    $query = "UPDATE utilisateur SET prenom = '$prenom', nom = '$nom', date_de_naissance = '$date', mot_de_passe = '$password', bio = '$bio' WHERE username = '" . $username. "'";
+    $conn->query($query);
+
+}
+
+function modificationAvatarProfile() {
+        global $conn;
+        $username = $_GET["username"];
+        if (isset($_FILES["avatar"]) && is_uploaded_file($_FILES["avatar"]["tmp_name"])) {
+            $image = addslashes(file_get_contents($_FILES['avatar']['tmp_name']));
+
+            $query = "UPDATE utilisateur SET avatar = '$image' WHERE username = '" . $username. "'";
+            $conn->query($query);
+        }
+}
+
+function formatImage($image) {
+    if (isset($image) && is_uploaded_file($image["tmp_name"])) {
+        return file_get_contents($image['tmp_name']);
+    }
+    return 'null';
+}
+
+function getUserInformation() {
+    global $conn;
+
+    $query = "SELECT * FROM utilisateur WHERE username = '" . $_COOKIE['username']. "'";
+    $result = $conn->query($query);
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        return $row;
+    }
+
+}
+
+function loadAvatar($username) {
+    global $conn;
+    $sql = "SELECT avatar FROM utilisateur WHERE username = '" . $username . "'";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        return $row["avatar"];
+
+    } else {
+        echo "Aucune image trouvée.";
+    }
+}
+
+
+function mainMessages($loginStatus) {
+    global $conn;
+
+    if(isset($_GET['tag'])){
+        $tag = $_GET['tag'];
+        $query = "SELECT DISTINCT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username FROM message JOIN hashtag ON message.id = hashtag.message_id JOIN utilisateur ON message.auteur_username=utilisateur.username WHERE message.contenu like '%$tag%' OR hashtag.tag = '$tag' ORDER BY message.date DESC";
+    } else {
+        if($loginStatus[0]) {
+            $query = "SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username FROM message JOIN utilisateur ON message.auteur_username=utilisateur.username ORDER BY message.date DESC";
+        }
+    }
+    $result = $conn->query($query);
+
+    if($result) {
+        displayContent($result);
+    }
+}
+
+function profilMessages() {
+    global $conn;
+
+    $username = $_GET["username"];
+
+    $query = "SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username FROM message JOIN utilisateur ON message.auteur_username=utilisateur.username WHERE auteur_username = '$username' ORDER BY date DESC";
+    $result = $conn->query($query);
+
+    if($result) {
+        displayContent($result);
+    }
+}
+
+function getInformationMessage($row) {
+    $auteur_username = $row['auteur_username'];
+    $contenu = $row['contenu'];
+    $date = $row['date'];
+
+    // Convertir la date en timestamp
+    $timestamp = strtotime($date);
+
+    // Calculer la différence de temps
+    $diff = date_diff(new DateTime("@$timestamp"), new DateTime());
+
+    $days = $diff->d;
+    $hours = $diff->h;
+    $minutes = $diff->i;
+    $seconds = $diff->s;
+
+    if ($days > 0) {
+        $diff = $days."j";
+    } elseif ($hours > 0) {
+        $diff = $hours."h";
+    } elseif ($minutes > 0) {
+        $diff = $minutes."m";
+    } else {
+        $diff = $seconds."s";
+    }
+
+    $avatar = loadAvatar($auteur_username);
+
+    $image = $row["image"];
+
+    return array($contenu, $diff, $avatar, $image, $auteur_username);
+}
+
 //Méthode pour détruire les cookies de Login
 //--------------------------------------------------------------------------------
 function DestroyLoginCookie(){
@@ -114,10 +244,11 @@ function CheckNewAccountForm(){
             $prenom = SecurizeString_ForSQL($_POST["prenom"]);
             $date_de_naissance = $_POST["date_de_naissance"];
             $organisation = $_POST["organisation"];
-
+            $avatar = file_get_contents('images/default_avatar.png');
+            $avatarBLOB = mysqli_real_escape_string($conn, $avatar);
 		    $password = md5($_POST["password"]);
 
-            $query = "INSERT INTO `utilisateur` VALUES ('$username', '$nom', '$prenom', '$date_de_naissance', '$password', 'null', '$organisation' )";
+            $query = "INSERT INTO `utilisateur` VALUES ('$username', '$nom', '$prenom', '$date_de_naissance', '$password', '$avatarBLOB', '$organisation', 'null' )";
             $conn->query($query);
 
             if( mysqli_affected_rows($conn) == 0 )
@@ -132,81 +263,6 @@ function CheckNewAccountForm(){
 
     return array($creationAttempted, $creationSuccessful, $error);
 }
-
-// Function to display a page with 10 posts for a blog
-//--------------------------------------------------------------------------------
-function DisplayPostsPage($blogID, $ownerName, $isMyBlog){
-    global $conn;
-
-    $query = "SELECT * FROM `post` WHERE `owner_login` = ".$blogID." ORDER BY `date_lastedit` DESC LIMIT 10";
-    $result = $conn->query($query);
-    if( mysqli_num_rows($result) != 0 ){
-
-        if ($isMyBlog){
-        ?>
-
-        <form action="editPost.php" method="POST">
-            <input type="hidden" name="newPost" value="1">
-            <button type="submit">Ajouter un nouveau post!</button>
-        </form>
-
-        <?php    
-        }
-
-        while( $row = $result->fetch_assoc() ){
-
-            $timestamp = strtotime($row["date_lastedit"]);
-            echo '
-            <div class="blogPost">
-                <div class="postTitle">';
-
-            if ($isMyBlog){
-
-                echo '
-                <div class="postModify">
-                    <form action="editPost.php" method="GET">
-                        <input type="hidden" name="postID" value="'.$row["ID_post"].'">
-                        <button type="submit">Modifier/effacer</button>
-                    </form>
-                </div>';
-            }
-            else {
-                echo '
-                <div class="postAuthor">par '.$ownerName.'</div>
-                ';
-            }
-
-            echo '
-                <h3>•'.$row["title"].'</h3>
-                <p>dernière modification le '.date("d/m/y à h:i:s", $timestamp ).'
-            </div>
-            ';
-
-           
-
-            echo'
-            <p class="postContent">'.$row["content"].'</p>
-            </div>
-            ';
-        }
-    }
-    else {
-        echo '
-        <p>Il n\'y a pas de post dans ce blog.</p>';
-
-        if ($isMyBlog){
-        ?>
-            <form action="editPost.php" method="POST">
-                <input type="hidden" name="newPost" value="1">
-                <button type="submit">Ajouter un premier post!</button>
-            </form>
-        <?php
-        }
-        
-
-    }
-}
-
 
 // Function to close connection to database
 //--------------------------------------------------------------------------------

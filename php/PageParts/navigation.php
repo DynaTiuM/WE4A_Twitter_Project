@@ -1,5 +1,7 @@
 <?php
 $loginStatus = CheckLogin();
+
+include("windows.php");
 ?>
 
 <div class = "navigation">
@@ -21,9 +23,17 @@ $loginStatus = CheckLogin();
     </ul>
     <?php if($loginStatus[0]) { ?>
     <div class = "center">
-        <li class = "tweet-button">Message</li>
+        <a href="#" onclick="openWindow('new-message')"><li class = "tweet-button">Message</li></a>
     </div>
         <?php
     }
     ?>
+</div>
+
+<div id="new-message" class="window-background">
+    <div class="window-content">
+        <span class="close" onclick="closeWindow('new-message')">&times;</span>
+        <h2 class = "window-title">Nouveau message</h2>
+        <?php include("./PageParts/newMessageForm.php"); ?>
+    </div>
 </div>
