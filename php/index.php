@@ -17,6 +17,9 @@ include("./PageParts/sendingMessage.php");
     <link rel="shortcut icon" href="./favicon.ico">
     <script src="https://maps.googleapis.com/maps/api/js?key=KEY&callback=initMap"></script>
 
+
+
+
 <body>
 <div class = "Container">
     <?php include ("PageParts/navigation.php");?>
@@ -26,8 +29,8 @@ include("./PageParts/sendingMessage.php");
         <?php if ($loginStatus[0]) {?>
         <div class = "NewMessage">
             <form action = "" method = "post">
-                <a href = "profil.php"><img class = "AvatarMessage" src = "./images/titan.png"></a>
-                <textarea name = "content" class = "message-content" placeholder="Quoi de neuf ?" rows="1" maxlength="240"></textarea>
+                <a href = "profil.php?username=<?php echo $_COOKIE["username"]; ?>" ><img class = "AvatarMessage" src = "./images/titan.png"></a>
+                <textarea name = "content" class = "message-content" placeholder="Quoi de neuf ?" rows="1" maxlength="240" required></textarea>
                 <span class = "Border" style="width: 80%;"></span>
                 <div class = "ButtonPosition">
                     <button class = "Tweeter" type = "submit">Envoyer</button>

@@ -1,27 +1,20 @@
 <?php
 function mainMessages($loginStatus) {
-    if($loginStatus[0]) {
         global $conn;
 
-        $query = "SELECT * FROM `message` ORDER BY date DESC";
-        $result = $conn->query($query);
-
-        queryMessages($result);
-    }
-}
-
-function queryMessages($result) {
-    global $conn;
-    if($result) {
-        while($result->fetch_assoc()) {
-            $query = "SELECT utilisateur.nom, utilisateur.prenom, message.auteur_username, message.contenu, message.date FROM message JOIN utilisateur ON message.auteur_username=utilisateur.username ORDER BY message.date DESC";
-            $result = $conn->query($query);
-
-            if($result) {
-                displayContent($result);
-            }
+    if(isset($_GET['tag'])){
+        $tag = $_GET['tag'];
+        $query = "SELECT DISTINCT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username FROM message JOIN hashtag ON message.id = hashtag.message_id JOIN utilisateur ON message.auteur_username=utilisateur.username WHERE message.contenu like '%$tag%' OR hashtag.tag = '$tag' ORDER BY message.date DESC";
+    } else {
+        if($loginStatus[0]) {
+            $query = "SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username FROM message JOIN utilisateur ON message.auteur_username=utilisateur.username ORDER BY message.date DESC";
         }
     }
+        $result = $conn->query($query);
+
+        if($result) {
+            displayContent($result);
+        }
 }
 
 function displayContent($result) {
@@ -76,10 +69,12 @@ function profilMessages() {
 
     $username = $_GET["username"];
 
-    $query = "SELECT * FROM message WHERE auteur_username = '$username' ORDER BY date DESC";
+    $query = "SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username FROM message JOIN utilisateur ON message.auteur_username=utilisateur.username WHERE auteur_username = '$username' ORDER BY date DESC";
     $result = $conn->query($query);
 
-    queryMessages($result);
+    if($result) {
+        displayContent($result);
+    }
 }
 
     ?>
