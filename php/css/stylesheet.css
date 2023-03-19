@@ -257,7 +257,7 @@ label {
 }
 
 /* Contenu de la fenêtre flottante */
-.window-content {
+.window-content, .localisation-content {
     border-radius: 1vw;
     background-color: #fefefe;
     margin: 3% auto;
@@ -397,6 +397,7 @@ h4 {
     margin: auto;
 }
 
+
 .overlay {
     position: absolute;
     top: 50%;
@@ -420,7 +421,7 @@ h4 {
     height: 100%;
 }
 
-.button-modify-profile {
+.button-modify-profile, .button-following {
     margin-right: 1.1vw;
     align-self: flex-end;
     margin-top: -2.6vw;
@@ -430,5 +431,47 @@ h4 {
     font-size: 1.1vw;
     background: #1F7C62;
     border: none;
-    padding: 1vw 1.3vw;
+    padding: 1vw 1.7vw;
+}
+
+.button-following {
+    color: #1F7C62;
+    background: white;
+    border: 0.15vw solid #1F7C62;
+}
+
+.button-follow {
+    margin-right: 1.1vw;
+    align-self: flex-end;
+    margin-top: -2.6vw;
+}
+
+.message-image {
+    width: 100%;
+    border-radius: 1.1vw;
+}
+
+.icons {
+    display: inline-block;
+}
+
+.icon {
+    width: 3vw;
+    padding:1vw;
+    display: inline-block;
+}
+
+.localisation-window {
+    display: none;
+    width: 100%;
+}
+
+.localisation-content {
+    background-color: rgba(52, 143, 117, 0.14);
+    border: none;
+    width:70%;
+}
+
+.localisation-message {
+    font-size: 1vw;
 }

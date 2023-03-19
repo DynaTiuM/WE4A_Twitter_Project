@@ -8,7 +8,7 @@ include("windows.php");
     <a href = "index.php"><img src = "./images/logo_site.png" alt = "Logo" style = "width:5vw; height: 5vw; padding: 1.2vw; padding-bottom: 0;"></a>
     <ul>
         <li class = "menu-item"><a href = "index.php">Accueil</a></li>
-        <li class = "menu-item">Explorer</li>
+        <li class = "menu-item"><a href = "explorer.php">Explorer</a></li>
         <?php if($loginStatus[0]) { ?>
         <li class = "menu-item">Notifications</li>
         <li class = "menu-item">Messages</li>

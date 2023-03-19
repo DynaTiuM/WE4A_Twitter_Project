@@ -8,7 +8,7 @@
 			<input class = "answer" type="password" id="password" name="password" placeholder="Mot de passe" required>
 		</div>
 		<br>
-		<div class="formbutton">
+		<div class="form-button">
 			<button class = "form-button" type="submit">Se connecter</button>
 		</div>
 	</div>

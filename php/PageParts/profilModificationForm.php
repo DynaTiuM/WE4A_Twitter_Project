@@ -9,9 +9,6 @@ $date = $information['date_de_naissance'];
 $password = $information['mot_de_passe'];
 $bio = $information['bio'];
 
-if($bio == NULL){
-    $bio = "Bio";
-}
 ?>
 
 <!DOCTYPE html>
@@ -20,7 +17,7 @@ if($bio == NULL){
 <form  action="" method="post" enctype="multipart/form-data">
 
     <div class="image-container">
-        <label for="avatar" class="image-label">
+        <label for="avatar">
             <img class="image-modification" src="data:image/jpeg;base64,<?php echo base64_encode($avatar); ?>" alt="Bouton parcourir">
             <div class="overlay"></div>
         </label>
@@ -37,7 +34,7 @@ if($bio == NULL){
         <input type ="date" name = "date" class = "answer" value="<?php echo $date; ?>">
     </div>
     <div>
-        <input name = "bio" class = "answer" value="<?php echo $bio; ?>">
+        <input name = "bio" class = "answer" value="<?php echo $bio; ?>" placeholder="Bio">
     </div>
     <div>
         <input class = "answer" type="password" id="password" name="password" value="<?php echo $password; ?>">

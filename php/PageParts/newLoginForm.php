@@ -32,7 +32,7 @@
 
         </div>
         <br>
-        <div class="formbutton">
+        <div class="form-button">
             <button class = "form-button" type="submit">Créer le compte</button>
         </div>
     </div>

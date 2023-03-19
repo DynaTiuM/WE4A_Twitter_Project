@@ -32,11 +32,11 @@ include("./PageParts/sendingMessage.php");
             <div class = "hub-messages">
                 <?php
                 include("./PageParts/messagesForm.php");
-                mainMessages($loginStatus, 'main');
+                mainMessages($loginStatus ,'explorer');
                 ?>
 
             </div>
-        <?php
+            <?php
         }
         else {
             echo '<h2>Connectez-vous pour accéder au contenu</h2>';

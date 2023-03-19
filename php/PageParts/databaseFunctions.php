@@ -110,11 +110,37 @@ function modificationAvatarProfile() {
         }
 }
 
+// Modifying resolution of an image
 function formatImage($image) {
+    // Définir la nouvelle taille
+    $new_width = 500;
+    $ratio = $new_width / imagesx($image);
+    $new_height = imagesy($image) * $ratio;
+
+    // Créer une nouvelle image avec la nouvelle taille
+    $new_image = imagecreatetruecolor($new_width, $new_height);
+
+    // Redimensionner l'image
+    imagecopyresampled($new_image, $image, 0, 0, 0, 0, $new_width, $new_height, imagesx($image), imagesy($image));
+
+    // Enregistrer l'image redimensionnée
+    ob_start();
+    imagejpeg($new_image);
+
+    return ob_get_clean();
+}
+
+// Modifying a table into a GdImage
+function createImage($image){
     if (isset($image) && is_uploaded_file($image["tmp_name"])) {
-        return file_get_contents($image['tmp_name']);
+        $mime_type = mime_content_type($image["tmp_name"]);
+        if ($mime_type == "image/jpeg") {
+            return imagecreatefromjpeg($image["tmp_name"]);
+        } elseif ($mime_type == "image/png") {
+            return imagecreatefrompng($image["tmp_name"]);
+        }
     }
-    return 'null';
+    return null;
 }
 
 function getUserInformation() {
@@ -144,15 +170,54 @@ function loadAvatar($username) {
 }
 
 
-function mainMessages($loginStatus) {
+function mainMessages($loginStatus, $search) {
     global $conn;
 
     if(isset($_GET['tag'])){
         $tag = $_GET['tag'];
-        $query = "SELECT DISTINCT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username FROM message JOIN hashtag ON message.id = hashtag.message_id JOIN utilisateur ON message.auteur_username=utilisateur.username WHERE message.contenu like '%$tag%' OR hashtag.tag = '$tag' ORDER BY message.date DESC";
+        if($search == 'explorer') {
+            $query = "SELECT DISTINCT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username
+                FROM message
+                    JOIN hashtag ON message.id = hashtag.message_i
+                    JOIN utilisateur ON message.auteur_username=utilisateur.username
+                WHERE message.contenu like '%$tag%' OR hashtag.tag = '$tag'
+                ORDER BY message.date DESC";
+        }
+        else {
+            $query = "SELECT DISTINCT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username 
+                FROM message 
+                    JOIN hashtag ON message.id = hashtag.message_id 
+                    JOIN utilisateur ON message.auteur_username = utilisateur.username 
+                    JOIN suivre ON message.auteur_username = suivre.suivi_id_utilisateur 
+                WHERE (message.contenu LIKE '%$tag%' OR hashtag.tag = '$tag') 
+                AND utilisateur.username IN (
+                  SELECT suivi_id_utilisateur
+                  FROM suivre 
+                  WHERE utilisateur_username = '{$_COOKIE['username']}'
+                  AND suivi_type = 'utilisateur'
+                )
+                ORDER BY message.date DESC;";
+        }
+
+
     } else {
         if($loginStatus[0]) {
-            $query = "SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username FROM message JOIN utilisateur ON message.auteur_username=utilisateur.username ORDER BY message.date DESC";
+            if($search == 'explorer') {
+                $query = "SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username
+                    FROM message
+                        JOIN utilisateur ON message.auteur_username = utilisateur.username
+                    ORDER BY message.date DESC";
+            }
+
+            else {
+                $query = "SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username
+                    FROM message 
+                      JOIN utilisateur ON message.auteur_username=utilisateur.username 
+                      JOIN suivre ON suivre.suivi_id_utilisateur = message.auteur_username 
+                  WHERE suivre.utilisateur_username = '{$_COOKIE['username']}' 
+                  ORDER BY message.date DESC";
+            }
+
         }
     }
     $result = $conn->query($query);
@@ -167,7 +232,9 @@ function profilMessages() {
 
     $username = $_GET["username"];
 
-    $query = "SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username FROM message JOIN utilisateur ON message.auteur_username=utilisateur.username WHERE auteur_username = '$username' ORDER BY date DESC";
+    $query = "SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username
+            FROM message JOIN utilisateur ON message.auteur_username=utilisateur.username
+                WHERE auteur_username = '$username' ORDER BY date DESC";
     $result = $conn->query($query);
 
     if($result) {
@@ -204,9 +271,29 @@ function getInformationMessage($row) {
     $avatar = loadAvatar($auteur_username);
 
     $image = $row["image"];
+    $localisation = $row['localisation'];
 
-    return array($contenu, $diff, $avatar, $image, $auteur_username);
+    return array($contenu, $diff, $avatar, $image, $localisation, $auteur_username);
 }
+
+function follow($to_follow) {
+    global $conn;
+    $query = "INSERT INTO suivre (utilisateur_username, suivi_type, suivi_id_utilisateur) VALUES ('" . $_COOKIE['username'] . "', 'utilisateur', '" . $to_follow . "')";
+    $conn->query($query);
+}
+
+function checkFollow($to_follow) {
+    global $conn;
+    $query = "SELECT * FROM suivre WHERE utilisateur_username = '".$_COOKIE['username']."' AND suivi_type = 'utilisateur' AND suivi_id_utilisateur = '$to_follow'";
+    $result = $conn->query($query);
+
+    if ($result && $result->num_rows > 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 
 //Méthode pour détruire les cookies de Login
 //--------------------------------------------------------------------------------
@@ -248,7 +335,7 @@ function CheckNewAccountForm(){
             $avatarBLOB = mysqli_real_escape_string($conn, $avatar);
 		    $password = md5($_POST["password"]);
 
-            $query = "INSERT INTO `utilisateur` VALUES ('$username', '$nom', '$prenom', '$date_de_naissance', '$password', '$avatarBLOB', '$organisation', 'null' )";
+            $query = "INSERT INTO `utilisateur` VALUES ('$username', '$nom', '$prenom', '$date_de_naissance', '$password', '$avatarBLOB', '$organisation', null )";
             $conn->query($query);
 
             if( mysqli_affected_rows($conn) == 0 )

@@ -8,6 +8,10 @@ if(isset($_POST['modification-profile'])) {
     motificationProfile();
 }
 
+if(isset($_POST['follow'])) {
+    follow($_GET['username']);
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -47,25 +51,30 @@ if(isset($_POST['modification-profile'])) {
 
                 if($_COOKIE['username'] == $username) {?>
                 <button class = "button-modify-profile" onclick="openWindow('modification-profile')">Editer le profil</button>
-<?php }
+<?php           }
                 echo "<h4>" ."@" . $username . "</h4>";
-                if($row["bio"] != ("Bio" && 'null')) {
+                if($row["bio"] != ("Bio" && null)) {
                     echo'<div class = "bio"><p>' . $row["bio"].'</p></div>';
                 }
             }
             if ($loginStatus[0]) {
-               if($_COOKIE['username'] == $username) {
-            ?>
-
-            <form action="" method="post">
-                <input type="submit" name="delete_cookies" value="Déconnexion">
-            </form>
-                    <?php
-                        if(isset($_POST['delete_cookies'])) {
-                            DestroyLoginCookie();
-                        }
-                    }
-
+               if($_COOKIE['username'] == $username) { ?>
+                   <form action="" method="post">
+                       <input type="submit" name="delete_cookies" value="Déconnexion">
+                   </form>
+                   <?php
+                   if(isset($_POST['delete_cookies'])) {
+                       DestroyLoginCookie();
+                   }
+               }
+               elseif (!checkFollow($username)) { ?>
+                   <form action="" method="post" class = "button-follow">
+                       <button type = "submit" name="follow" class = "button-modify-profile">Suivre</button>
+                   </form>
+               <?php }
+               else { ?>
+                    <button type = "submit" name="follow" class = "button-following">Suivi</button>
+                <?php }
             }
             ?>
         </div>

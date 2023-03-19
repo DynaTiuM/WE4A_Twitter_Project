@@ -7,13 +7,21 @@ if(isset($_POST["content"])) {
     global $conn;
 
     $stmt = $conn->prepare("INSERT INTO message (auteur_username, date, contenu, localisation, image) VALUES (?, ?, ?, ?, ?)");
-    $image = formatImage($_FILES["image"]);
 
-    $localisation = 'null';
+    $image = createImage($_FILES["image"]);
+
+// Redimensionner l'image si elle a été chargée avec succès
+    if ($image !== null) {
+        $image = formatImage($image);
+    }
+
+    $localisation = null;
+    if(isset($_POST['localisation'])) {
+        $localisation = $_POST['localisation'];
+    }
     $date = date('Y-m-d H:i:s');
     $stmt->bind_param("sssss", $username, $date, $content, $localisation, $image);
     $stmt->execute();
-
     // On récupère l'id du message inséré
     $message_id = $stmt->insert_id;
 

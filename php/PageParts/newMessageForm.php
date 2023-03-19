@@ -1,6 +1,20 @@
+<!DOCTYPE html>
+
+<html lang ="fr">
+<head>
+    <meta charset = "utf-8">
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDUlRIAK-8v1vAkmyRDp-pu7C4KGjshby0&libraries=places"></script>
+
+    <link rel = "stylesheet" href = "./css/stylesheet.css">
+
+    <?php include("adressSearch.php"); ?>
+</head>
+
+<body>
+
 <div class = "NewMessage">
     <form action="" method="post" enctype="multipart/form-data">
-    <a href="profil.php?username=<?php echo $_COOKIE['username']; ?>">
+        <a href="profil.php?username=<?php echo $_COOKIE['username']; ?>">
             <img class = "AvatarMessage"  src="data:image/jpeg;base64,<?php echo base64_encode($image); ?> " />
         </a>
         <label>
@@ -11,27 +25,33 @@
             <button class = "Tweeter" type = "submit">Envoyer</button>
         </div>
 
-        <label>
-            <input type="file" name = "image">
-        </label>
 
-        <button onclick="openModal()">Choisir ma localisation</button>
-    </form>
+        <div class = "icons">
+            <label for ="image">
+                <img src="./images/image.png" class = "icon">
+            </label>
 
+        <input type="file" id = "image" name = "image" class = "invisibleFile">
 
-    <div id="modal">
-        <div id="modal-content">
-            <span onclick="closeModal()" style="float:right">&times;</span>
-            <h3>Choisir une localisation sur la carte</h3>
-            <div id="map" style="height: 400px"></div>
-            <form>
-                <label for="latitude">Latitude :</label>
-                <input type="text" id="latitude" name="latitude"><br>
+            <label for ="localisation">
+                <img onclick="showMap()" src="./images/localisation.png" class ="icon">
+            </label>
 
-                <label for="longitude">Longitude :</label>
-                <input type="text" id="longitude" name="longitude"><br>
-            </form>
+        </form>
+        <!-- Fenêtre flottante pour la carte -->
+        <div id="map-container" class="localisation-window">
+            <div class="localisation-content">
+                <h2 class = "window-title">Localisation</h2><div id="map"></div>
+
+                <input type="text" class = "answer" id="search" placeholder="Rechercher une adresse" name = "localisation">
+                <a href = '#' class = "form-button" onclick="closeWindow('map-container')">OK</a>
+
+            </div>
         </div>
     </div>
-
 </div>
+
+
+</body>
+
+</html>

@@ -7,7 +7,8 @@ function displayContent($result) {
         $date = $information[1];
         $avatar = $information[2];
         $image = $information[3];
-        $auteur_username = $information[4];
+        $localisation = $information[4];
+        $auteur_username = $information[5];
 
         ?>
         <div class="message">
@@ -21,8 +22,16 @@ function displayContent($result) {
                     echo '<h1 class = "tweet-information">'. ' @' . $auteur_username . ' · ' . $date . '</h1>'; ?>
                 </div>
                 <div class = "tweet-content">
-                    <?php echo'<p>' . stripcslashes($contenu) . '</p>'; ?>
-                    <img src="data:image/png;base64,<?php echo base64_encode($image); ?>" >
+                    <?php if($localisation != null) {
+                        echo '<div><img style="width: 1vw; float: left;" src="./images/localisation.png">
+                                <p class="localisation-message" style="margin-left: 1vw;">' . $localisation . '</p>
+                            </div>';
+                    }?>
+                    <?php echo'<p>' . stripcslashes($contenu) . '</p>';
+                    if($image != null) {?>
+                    <img class = "message-image" src="data:image/png;base64,<?php echo base64_encode($image); ?>" >
+
+                    <?php }?>
                 </div>
             </div>
         </div>
