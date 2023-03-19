@@ -37,3 +37,5 @@ include("windows.php");
         <?php include("./PageParts/newMessageForm.php"); ?>
     </div>
 </div>
+
+

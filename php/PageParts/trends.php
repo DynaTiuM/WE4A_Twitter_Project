@@ -10,7 +10,7 @@
 
     while ($row = $result->fetch_assoc()) {
         echo"<div class = hashtag_block>";
-        echo "<a href='index.php?tag=" . $row['tag'] . "' class='trend'>" ."#" . $row['tag'] ."</a>";
+        echo "<a href='explorer.php?tag=" . $row['tag'] . "' class='trend'>" ."#" . $row['tag'] ."</a>";
         echo "<p class='hashtags_count'>" . $row['count'] . " Messages" . "</p>";
         echo"</div>";
     }

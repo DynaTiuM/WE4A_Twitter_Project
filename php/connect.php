@@ -1,5 +1,5 @@
 <?php
-include("./PageParts/databaseFunctions.php");
+require_once("./PageParts/databaseFunctions.php");
 ConnectDatabase();
 $loginStatus = CheckLogin();
 
@@ -39,7 +39,7 @@ if(!$loginStatus[0]) {
         </div>
 
         <?php }
-        elseif ($loginStatus[0]) {
+        else {
             header("Location: index.php");
             exit();
         }

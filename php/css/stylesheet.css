@@ -142,6 +142,9 @@ h1 {
 
 .Trends {
     width:27%;
+    margin: 2vw;
+    background-color: #eef8f4;
+    border-radius: 1vw;
 }
 
 .navigation {
@@ -312,11 +315,6 @@ h3 {
     border-bottom: 0.1vw solid rgba(31, 124, 98, 0.29);
 }
 
-.Trends {
-    margin: 2vw;
-    background-color: #eef8f4;
-    border-radius: 1vw;
-}
 
 .trend, .hashtags_count {
     font-family: "Plus Jakarta Sans", sans-serif;
@@ -433,6 +431,23 @@ h4 {
     border: none;
     padding: 1vw 1.7vw;
 }
+
+.image-icon {
+    width: 3vw;
+    height: 3vw;
+}
+
+
+.comment {
+    background: none;
+    border: none;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
 
 .button-following {
     color: #1F7C62;

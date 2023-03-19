@@ -1,13 +1,18 @@
+<?php
+$filename = basename($_SERVER['SCRIPT_FILENAME']);
+
+include("adressSearch.php");
+?>
+
 <!DOCTYPE html>
 
 <html lang ="fr">
 <head>
     <meta charset = "utf-8">
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDUlRIAK-8v1vAkmyRDp-pu7C4KGjshby0&libraries=places"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=KEY&libraries=places"></script>
 
     <link rel = "stylesheet" href = "./css/stylesheet.css">
 
-    <?php include("adressSearch.php"); ?>
 </head>
 
 <body>
@@ -18,36 +23,32 @@
             <img class = "AvatarMessage"  src="data:image/jpeg;base64,<?php echo base64_encode($image); ?> " />
         </a>
         <label>
-            <textarea name = "content" class = "message-content" placeholder="Quoi de neuf ?" rows="1" maxlength="240" required></textarea>
+            <textarea name = "content" class = "message-content" placeholder="Message" rows="2" maxlength="240" required></textarea>
         </label>
         <span class = "Border" style="width: 80%;"></span>
         <div class = "ButtonPosition">
-            <button class = "Tweeter" type = "submit">Envoyer</button>
+            <button class = "Tweeter" type = "submit" name = "submit">Envoyer</button>
         </div>
-
 
         <div class = "icons">
-            <label for ="image">
-                <img src="./images/image.png" class = "icon">
-            </label>
-
-        <input type="file" id = "image" name = "image" class = "invisibleFile">
-
-            <label for ="localisation">
-                <img onclick="showMap()" src="./images/localisation.png" class ="icon">
-            </label>
-
-        </form>
-        <!-- Fenêtre flottante pour la carte -->
-        <div id="map-container" class="localisation-window">
-            <div class="localisation-content">
-                <h2 class = "window-title">Localisation</h2><div id="map"></div>
-
-                <input type="text" class = "answer" id="search" placeholder="Rechercher une adresse" name = "localisation">
-                <a href = '#' class = "form-button" onclick="closeWindow('map-container')">OK</a>
-
+            <div class = "button-wrap">
+                <label for ="file-input"></label>
+                <input id="file-input" type="file" name="image" accept=".jpg, .jpeg, .png">
             </div>
+
+            <img onclick="showMap()" src="./images/localisation.png" class ="icon">
         </div>
+        </form>
+
+</div>
+<div id="new-answer" class="window-background">
+    <div class="window-content">
+        <button class="close" onclick="window.location.href='explorer.php'">&times;</button>
+        <h2 class="window-title">Nouveau commentaire</h2>
+        <?php if(isset($_GET['reply_to'])) {
+            displayContentById($_GET['reply_to']);
+        } ?>
+        <?php include("./PageParts/newMessageForm.php"); ?>
     </div>
 </div>
 

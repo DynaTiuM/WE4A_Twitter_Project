@@ -152,7 +152,17 @@ function getUserInformation() {
         $row = $result->fetch_assoc();
         return $row;
     }
+}
 
+function displayContentById($id) {
+    global $conn;
+    $query = "SELECT * FROM message WHERE id = '$id'";
+    $result = $conn->query($query);
+
+    if($result->num_rows > 0) {
+        include("messageForm.php");
+        displayContent($result->fetch_assoc());
+    }
 }
 
 function loadAvatar($username) {
@@ -170,61 +180,83 @@ function loadAvatar($username) {
 }
 
 
-function mainMessages($loginStatus, $search) {
+function mainMessages($loginStatus, $search, $level) {
     global $conn;
+
+    if($level == null) {
+        $level_ = 'IS NULL';
+    }
+    else {
+        $level_ = "= ".$level;
+    }
 
     if(isset($_GET['tag'])){
         $tag = $_GET['tag'];
-        if($search == 'explorer') {
-            $query = "SELECT DISTINCT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username
+        $query = "SELECT DISTINCT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username
                 FROM message
-                    JOIN hashtag ON message.id = hashtag.message_i
-                    JOIN utilisateur ON message.auteur_username=utilisateur.username
+                    JOIN hashtag ON message.id = hashtag.message_id
+                    JOIN utilisateur ON message.auteur_username = utilisateur.username
                 WHERE message.contenu like '%$tag%' OR hashtag.tag = '$tag'
                 ORDER BY message.date DESC";
+    }
+    else {
+        if($search != 'main') {
+            $query = "SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username
+                        FROM message
+                        JOIN utilisateur ON message.auteur_username = utilisateur.username
+                        WHERE message.parent_message_id {$level_}
+                        ORDER BY message.date DESC";
+
         }
         else {
-            $query = "SELECT DISTINCT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username 
-                FROM message 
-                    JOIN hashtag ON message.id = hashtag.message_id 
-                    JOIN utilisateur ON message.auteur_username = utilisateur.username 
-                    JOIN suivre ON message.auteur_username = suivre.suivi_id_utilisateur 
-                WHERE (message.contenu LIKE '%$tag%' OR hashtag.tag = '$tag') 
-                AND utilisateur.username IN (
-                  SELECT suivi_id_utilisateur
-                  FROM suivre 
-                  WHERE utilisateur_username = '{$_COOKIE['username']}'
-                  AND suivi_type = 'utilisateur'
-                )
-                ORDER BY message.date DESC;";
-        }
-
-
-    } else {
-        if($loginStatus[0]) {
-            if($search == 'explorer') {
-                $query = "SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username
-                    FROM message
-                        JOIN utilisateur ON message.auteur_username = utilisateur.username
-                    ORDER BY message.date DESC";
-            }
-
-            else {
+            if($loginStatus[0]) {
                 $query = "SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username
                     FROM message 
                       JOIN utilisateur ON message.auteur_username=utilisateur.username 
                       JOIN suivre ON suivre.suivi_id_utilisateur = message.auteur_username 
-                  WHERE suivre.utilisateur_username = '{$_COOKIE['username']}' 
+                  WHERE (suivre.utilisateur_username = '{$_COOKIE['username']}' AND message.parent_message_id {$level_})
                   ORDER BY message.date DESC";
             }
-
         }
     }
+
     $result = $conn->query($query);
 
     if($result) {
-        displayContent($result);
+        while($row = $result->fetch_assoc()) {
+            displayContent($row);
+        }
     }
+}
+
+function likeMessage($id_message) {
+    global $conn;
+    $id_user = $_COOKIE['username'];
+    $date = date('Y-m-d H:i:s');
+
+    if(!isLiked($id_message))
+        $query = "INSERT INTO like_message VALUES (null, '$id_message', '$id_user', '$date')";
+    else
+        $query = "DELETE FROM like_message WHERE message_id = '$id_message' AND utilisateur_username = '$id_user'";
+
+    $conn->query($query);
+
+    return $query;
+}
+
+function isLiked($id_message) {
+    global $conn;
+    $id_user = $_COOKIE['username'];
+
+    $query = "SELECT * FROM like_message WHERE message_id = '$id_message' and utilisateur_username = '$id_user'";
+    $result = $conn->query($query);
+
+    if($result && $result->num_rows > 0) {
+        ?> <script>console.log("TRUE")</script> <?php
+        return true;
+    }
+    ?> <script>console.log("FALSE")</script> <?php
+    return false;
 }
 
 function profilMessages() {
@@ -238,14 +270,20 @@ function profilMessages() {
     $result = $conn->query($query);
 
     if($result) {
-        displayContent($result);
+        while($row = $result->fetch_assoc()) {
+            displayContent($row);
+        }
     }
 }
 
 function getInformationMessage($row) {
+    global $conn;
+
     $auteur_username = $row['auteur_username'];
     $contenu = $row['contenu'];
     $date = $row['date'];
+    $id = $row['id'];
+    $id_message_parent = $row['parent_message_id'];
 
     // Convertir la date en timestamp
     $timestamp = strtotime($date);
@@ -273,7 +311,16 @@ function getInformationMessage($row) {
     $image = $row["image"];
     $localisation = $row['localisation'];
 
-    return array($contenu, $diff, $avatar, $image, $localisation, $auteur_username);
+    $query = "SELECT nom, prenom FROM utilisateur JOIN message ON utilisateur.username = message.auteur_username WHERE auteur_username = '$auteur_username'";
+    $result = $conn->query($query);
+
+    if($result) {
+        $row = $result->fetch_assoc();
+        $prenom = $row['prenom'];
+        $nom = $row['nom'];
+    }
+
+    return array($id, $contenu, $diff, $avatar, $image, $localisation, $auteur_username, $prenom, $nom, $id_message_parent);
 }
 
 function follow($to_follow) {

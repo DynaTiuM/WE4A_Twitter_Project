@@ -81,7 +81,7 @@ if(isset($_POST['follow'])) {
 
         <div class = "tweets" onclick="openWindow('tweet')">
             <h2>Tweets</h2>
-            <?php include("./PageParts/messagesForm.php");
+            <?php include("./PageParts/messageForm.php");
             profilMessages();
             ?>
         </div>
