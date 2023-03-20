@@ -13,8 +13,14 @@ function displayContainer($type) {
 
     if(isset($_POST["submit"])) {
         include("./PageParts/sendingMessage.php");
-        if($_GET['reply_to']) sendMessage('answer');
-        else sendMessage('message');
+        if(isset($_POST['reply_to'])) sendMessage('answer');
+
+        else if(isset($_GET["answer"])) {
+            if($_GET['answer'] != null)
+                sendMessage('answer');
+            else
+                sendMessage('message');
+        }
     }
     ?>
 
@@ -68,7 +74,7 @@ function displayContainer($type) {
 }
 
 function popUpNewMessage() {
-    if (isset($_GET['reply_to']) && !empty($_GET['reply_to'])) {
+    if (isset($_POST['reply_to']) && !empty($_POST['reply_to'])) {
         // Afficher ici la section des messages avec la réponse au message sélectionné
         ?>
         <script>
@@ -105,11 +111,11 @@ function explorerMessages($loginStatus) {
         if(isset($_GET['answer'])) {
             displayContentById($_GET['answer']);
             include("./PageParts/adressSearch.php");
-            include("./PageParts/newMessageForm.php");
+            if(!isset($_POST['reply_to'])) include("./PageParts/newMessageForm.php");
             mainMessagesQuery($loginStatus, 'explorer', $_GET['answer']);
         }
         else {
-            include("./PageParts/newMessageForm.php");
+            if(!isset($_POST['reply_to'])) include("./PageParts/newMessageForm.php");
             mainMessagesQuery($loginStatus, 'explorer', null);
         }
 

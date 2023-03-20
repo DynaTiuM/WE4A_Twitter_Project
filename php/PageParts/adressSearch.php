@@ -1,9 +1,6 @@
 <script>
     // Fonction pour afficher la fenêtre flottante
     function showMap() {
-
-        console.log("ezezez");
-
         // Afficher la fenêtre flottante
         document.getElementById("map-container").style.display = "inline-block";
         // Récupérer l'élément de la carte

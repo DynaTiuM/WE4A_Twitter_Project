@@ -1,7 +1,7 @@
 <?php
 function sendMessage($type) {
-    if(isset($_GET['reply_to'])) {
-        $reply_id = $_GET['reply_to'];
+    if(isset($_POST['reply_to'])) {
+        $reply_id = $_POST['reply_to'];
     }
     else {
         $reply_id = $_GET['answer'];

@@ -8,8 +8,8 @@
         document.getElementById(window).style.display = "none";
     }
 
-    function closeWindowToNewDestination(window) {
+    function closeWindowToNewDestination(window, url) {
         document.getElementById(window).style.display = "none";
-        location.href = 'explorer.php';
+        location.href = url;
     }
 </script>
