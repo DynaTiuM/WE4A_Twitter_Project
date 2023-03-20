@@ -1,7 +1,11 @@
 <?php
 function sendMessage($type) {
-    session_start();
-    $reply_id = $_GET['reply_to'];
+    if(isset($_GET['reply_to'])) {
+        $reply_id = $_GET['reply_to'];
+    }
+    else {
+        $reply_id = $_GET['answer'];
+    }
 
     if(isset($_POST["content"])) {
         $content = SecurizeString_ForSQL($_POST["content"]);
@@ -44,7 +48,7 @@ function sendMessage($type) {
             $stmt->execute();
         }
 
-        header("Location: explorer.php?answer={$_GET["reply_to"]}");
+        header("Location: explorer.php?answer=$reply_id");
 
         exit();
     }

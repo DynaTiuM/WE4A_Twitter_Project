@@ -1,6 +1,7 @@
 <?php
 $filename = basename($_SERVER['SCRIPT_FILENAME']);
-
+$info = getUserInformation();
+$avatar = $info['avatar'];
 include("adressSearch.php");
 ?>
 
@@ -20,7 +21,7 @@ include("adressSearch.php");
 <div class = "NewMessage">
     <form action="" method="post" enctype="multipart/form-data">
         <a href="profil.php?username=<?php echo $_COOKIE['username']; ?>">
-            <img class = "AvatarMessage"  src="data:image/jpeg;base64,<?php echo base64_encode($image); ?> " />
+            <img class = "AvatarMessage"  src="data:image/jpeg;base64,<?php echo base64_encode($avatar); ?> " />
         </a>
         <label>
             <textarea name = "content" class = "message-content" placeholder="Message" rows="2" maxlength="240" required></textarea>

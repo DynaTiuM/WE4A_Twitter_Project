@@ -180,7 +180,7 @@ function loadAvatar($username) {
 }
 
 
-function mainMessages($loginStatus, $search, $level) {
+function mainMessagesQuery($loginStatus, $search, $level) {
     global $conn;
 
     if($level == null) {
