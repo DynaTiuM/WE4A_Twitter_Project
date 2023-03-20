@@ -51,7 +51,7 @@ function displayContent($row) {
                             <form method="get" action="<?php echo $filename ?>">
                                 <input type="hidden" name="reply_to" value="<?php echo $id?>">
                                 <button type="submit" class="comment">
-                                    <img style="width: 1.3vw; padding: 0.6vw;" src="./images/comment.png" alt="Commenter">
+                                    <img style="width: 1.5vw; padding: 0.6vw;" src="./images/comment.png" alt="Commenter">
                                 </button>
                             </form>
                         </div>
@@ -60,9 +60,12 @@ function displayContent($row) {
                         <input type="hidden" name="like" value="<?php echo $id?>">
                         <button type="submit" class="comment">
                             <?php if(isLiked($id)) { ?>
-                                <img style="width: 1.3vw; padding: 0.6vw;" src="./images/liked.png" alt="Aimer">
+                                    <label style ="display: flex;">
+                                        <img style="width: 1.5vw; padding: 0.6vw;" src="./images/liked.png" alt="Aimer">
+                                        <span style =" margin-top: 1vw; margin-left: -0.3vw;"><?php echo numLike($id)?></span>
+                                    </label>
                             <?php } else { ?>
-                                <img style="width: 1.3vw; padding: 0.6vw;" src="./images/like.png" alt="Ne plus aimer">
+                                <img style="width: 1.5vw; padding: 0.6vw;" src="./images/like.png" alt="Ne plus aimer">
                             <?php } ?>
                         </button>
                     </form>

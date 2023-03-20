@@ -252,11 +252,40 @@ function isLiked($id_message) {
     $result = $conn->query($query);
 
     if($result && $result->num_rows > 0) {
-        ?> <script>console.log("TRUE")</script> <?php
         return true;
     }
-    ?> <script>console.log("FALSE")</script> <?php
     return false;
+}
+
+function numLike($id_message) {
+    global $conn;
+
+    $query = "SELECT COUNT(*) FROM like_message WHERE message_id = '$id_message'";
+    $result = $conn->query($query);
+
+    if($result && $result->num_rows > 0) {
+        return $result->num_rows;
+    }
+}
+
+function findLikedMessages() {
+    global $conn;
+    $id_user = $_GET['username'];
+
+    $query = "SELECT message_id FROM like_message WHERE utilisateur_username = '$id_user'";
+    $result = $conn->query($query);
+
+    if($result) {
+        while($row = $result->fetch_assoc()) {
+            $query = "SELECT * FROM message WHERE id = ". $row['message_id'];
+            $result2 = $conn->query($query);
+            if($result2){
+                $row2 = $result2->fetch_assoc();
+                displayContent($row2);
+            }
+        }
+    }
+
 }
 
 function profilMessages() {
@@ -265,7 +294,8 @@ function profilMessages() {
     $username = $_GET["username"];
 
     $query = "SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username
-            FROM message JOIN utilisateur ON message.auteur_username=utilisateur.username
+                FROM message 
+                JOIN utilisateur ON message.auteur_username = utilisateur.username
                 WHERE auteur_username = '$username' ORDER BY date DESC";
     $result = $conn->query($query);
 

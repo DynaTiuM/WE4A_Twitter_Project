@@ -29,13 +29,3 @@ include("windows.php");
     }
     ?>
 </div>
-
-<div id="new-message" class="window-background">
-    <div class="window-content">
-        <span class="close" onclick="closeWindow('new-message')">&times;</span>
-        <h2 class = "window-title">Nouveau message</h2>
-        <?php include("./PageParts/newMessageForm.php"); ?>
-    </div>
-</div>
-
-

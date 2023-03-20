@@ -7,4 +7,9 @@
     function closeWindow(window) {
         document.getElementById(window).style.display = "none";
     }
+
+    function closeWindowToNewDestination(window) {
+        document.getElementById(window).style.display = "none";
+        location.href = 'explorer.php';
+    }
 </script>

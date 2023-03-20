@@ -1,26 +1,27 @@
 <script>
-    address_global = null;
     // Fonction pour afficher la fenêtre flottante
     function showMap() {
+
+        console.log("ezezez");
 
         // Afficher la fenêtre flottante
         document.getElementById("map-container").style.display = "inline-block";
         // Récupérer l'élément de la carte
-        const mapElement = document.getElementById("map");
+        var mapElement = document.getElementById("map");
 
         // Créer la carte avec les options
-        const map = new google.maps.Map(mapElement, {
+        var map = new google.maps.Map(mapElement, {
             center: { lat: 48.856614, lng: 2.3522219 },
             zoom: 13,
         });
 
         // Récupérer l'élément de recherche
-        const searchElement = document.getElementById("search");
-        const searchBox = new google.maps.places.SearchBox(searchElement);
+        var searchElement = document.getElementById("search");
+        var searchBox = new google.maps.places.SearchBox(searchElement);
 
         // Écouter les changements de la barre de recherche
         searchBox.addListener("places_changed", () => {
-            const places = searchBox.getPlaces();
+            var places = searchBox.getPlaces();
 
             if (places.length === 0) {
                 return;

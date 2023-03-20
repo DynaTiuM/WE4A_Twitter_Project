@@ -45,7 +45,7 @@ if(isset($_POST["submit"])) {
             <script>
                 // Ouverture automatique de la fenêtre erreur-connexion
                 window.onload = function() {
-                    openWindow('new-answer');
+                    openWindow('new-message');
                 }
             </script>
         <?php
@@ -54,16 +54,24 @@ if(isset($_POST["submit"])) {
         <div class = "hub-messages">
             <?php
             include("./PageParts/messageForm.php");
-            if(isset($_GET['answer']))
+            if(isset($_GET['answer'])) {
+                displayContentById($_GET['answer']);
+                include("./PageParts/adressSearch.php");
+                include("./PageParts/newMessageForm.php");
+
                 mainMessages($loginStatus, 'explorer', $_GET['answer']);
+            }
             else
                 mainMessages($loginStatus, 'explorer', null);
+
             ?>
         </div>
     </div>
 
     <?php
     include("./PageParts/trends.php");
+
+    include("./PageParts/popupNewMessage.php");
     ?>
 </div>
 

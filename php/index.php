@@ -41,7 +41,7 @@ if(isset($_POST["submit"])) {
             <script>
                 // Ouverture automatique de la fenêtre erreur-connexion
                 window.onload = function() {
-                    openWindow('new-answer');
+                    openWindow('new-message');
                 }
             </script>
         <?php

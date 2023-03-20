@@ -88,6 +88,7 @@ if(isset($_POST['follow'])) {
 
         <div class = "likes">
             <h2>J'aime</h2>
+            <?php findLikedMessages();?>
         </div>
 
 

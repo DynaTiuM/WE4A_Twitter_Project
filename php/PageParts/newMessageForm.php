@@ -31,28 +31,27 @@ include("adressSearch.php");
         </div>
 
         <div class = "icons">
-            <div class = "button-wrap">
-                <label for ="file-input"></label>
-                <input id="file-input" type="file" name="image" accept=".jpg, .jpeg, .png">
-            </div>
+            <label for ="image">
+                <img src="./images/image.png" class = "icon">
+            </label>
 
-            <img onclick="showMap()" src="./images/localisation.png" class ="icon">
-        </div>
+            <input type="file" id = "image" name = "image" class = "invisibleFile">
+
+            <label>
+                <img onclick="showMap()" src="./images/localisation.png" class ="icon">
+            </label>
         </form>
 
-</div>
-<div id="new-answer" class="window-background">
-    <div class="window-content">
-        <button class="close" onclick="window.location.href='explorer.php'">&times;</button>
-        <h2 class="window-title">Nouveau commentaire</h2>
-        <?php if(isset($_GET['reply_to'])) {
-            displayContentById($_GET['reply_to']);
-        } ?>
-        <?php include("./PageParts/newMessageForm.php"); ?>
+        <!-- Fenêtre flottante pour la localisation -->
+        <div id="map-container" class="localisation-window">
+            <div class="localisation-content">
+                <h2 class = "window-title">Localisation</h2><div id="map"></div>
+                <input type="text" class = "answer" id="search" placeholder="Rechercher une adresse" name = "localisation">
+                <a href = '' class = "form-button" onclick="closeWindow('map-container')">OK</a>
+            </div>
+        </div>
     </div>
 </div>
 
-
 </body>
-
 </html>
