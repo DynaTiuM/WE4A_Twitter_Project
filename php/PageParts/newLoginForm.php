@@ -29,12 +29,10 @@
                 <input type="radio" name="organisation" value="0">
                 Non
             </label>
-
         </div>
         <br>
-        <div class="form-button">
-            <button class = "form-button" type="submit">Créer le compte</button>
-        </div>
+
+        <button class = "form-button" type="submit">Créer le compte</button>
     </div>
 
 </form>

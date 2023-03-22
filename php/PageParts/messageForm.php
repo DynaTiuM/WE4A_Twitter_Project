@@ -13,6 +13,8 @@ function displayContent($row) {
         $localisation = $information[5];
         $auteur_username = $information[6];
 
+        $filename = basename($_SERVER['SCRIPT_FILENAME']);
+
         ?>
         <div class="message">
             <a href ="profil.php?username=<?php echo $auteur_username; ?>" >
@@ -20,6 +22,7 @@ function displayContent($row) {
             </a>
             <div class>
                 <div class = "tweet-header">
+                    <div class = "parameters"><a>...</a></div>
                     <h1 class="name"><?php echo $prenom . ' ' . $nom; ?></h1>
                     <?php
                     echo '<h1 class = "tweet-information">'. ' @' . $auteur_username . ' · ' . $date . '</h1>'; ?>
@@ -44,9 +47,9 @@ function displayContent($row) {
                 </div>
 
                 <div style="display: flex;">
-                    <?php if(!isset($_POST['reply_to'])) { ?>
+                    <?php if(!isset($_GET['reply_to'])) { ?>
                         <div>
-                            <form method="post" action="">
+                            <form method="get" action="<?php echo $filename ?>">
                                 <input type="hidden" name="reply_to" value="<?php echo $id?>">
                                 <button type="submit" class="comment">
                                     <img style="width: 1.5vw; padding: 0.6vw;" src="./images/comment.png" alt="Commenter">

@@ -4,23 +4,13 @@ function displayContainer($type) {
     require_once("./PageParts/databaseFunctions.php");
     ConnectDatabase();
     $loginStatus = CheckLogin();
-
-    global $image;
-    if($loginStatus[0]) {
-        $image = loadAvatar($_COOKIE['username']);
-    }
+    
     if(isset($_POST['like'])) likeMessage($_POST['like']);
 
     if(isset($_POST["submit"])) {
         include("./PageParts/sendingMessage.php");
-        if(isset($_POST['reply_to'])) sendMessage('answer');
-
-        else if(isset($_GET["answer"])) {
-            if($_GET['answer'] != null)
-                sendMessage('answer');
-            else
-                sendMessage('message');
-        }
+        if($_GET['reply_to']) sendMessage('answer');
+        else sendMessage('message');
     }
     ?>
 
@@ -74,7 +64,7 @@ function displayContainer($type) {
 }
 
 function popUpNewMessage() {
-    if (isset($_POST['reply_to']) && !empty($_POST['reply_to'])) {
+    if (isset($_GET['reply_to']) && !empty($_GET['reply_to'])) {
         // Afficher ici la section des messages avec la réponse au message sélectionné
         ?>
         <script>
@@ -111,11 +101,11 @@ function explorerMessages($loginStatus) {
         if(isset($_GET['answer'])) {
             displayContentById($_GET['answer']);
             include("./PageParts/adressSearch.php");
-            if(!isset($_POST['reply_to'])) include("./PageParts/newMessageForm.php");
+            include("./PageParts/newMessageForm.php");
             mainMessagesQuery($loginStatus, 'explorer', $_GET['answer']);
         }
         else {
-            if(!isset($_POST['reply_to'])) include("./PageParts/newMessageForm.php");
+            include("./PageParts/newMessageForm.php");
             mainMessagesQuery($loginStatus, 'explorer', null);
         }
 
