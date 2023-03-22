@@ -395,8 +395,11 @@ function addPet() {
         $stmt->close();
         return;
     }
+
+    $avatar = file_get_contents('images/default_avatar.png');
+    $avatarBLOB = mysqli_real_escape_string($conn, $avatar);
     $query = "INSERT INTO animal (id, nom, maitre_username, age, sexe, avatar, caracteristiques, espece) 
-              VALUES ('" . $_POST['id'] . "', '" . $_POST['nom'] . "', '" . $_COOKIE['username'] . "', " . $_POST['age'] . ", '" . $_POST['gender'] . "', NULL, '" . $_POST['bio'] . "', '" . $_POST['species'] . "')";
+              VALUES ('" . $_POST['id'] . "', '" . $_POST['nom'] . "', '" . $_COOKIE['username'] . "', " . $_POST['age'] . ", '" . $_POST['gender'] . "', '$avatarBLOB', '" . $_POST['bio'] . "', '" . $_POST['species'] . "')";
     $conn->query($query);
 }
 

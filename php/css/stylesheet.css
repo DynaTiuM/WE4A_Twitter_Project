@@ -391,9 +391,12 @@ h4 {
 
 .parameters {
     float:right;
-    padding:-10vw;
+    font-size: 2vw;
     transform: rotate(-90deg);
-    font-weight: 900;
+    font-weight: 400;
+    padding-left: 7vw;
+    margin-top: 4vw;
+    margin-bottom: -3vw;
 }
 
 .image-modification, .pet-preview {

@@ -22,10 +22,11 @@ function displayContent($row) {
             </a>
             <div class>
                 <div class = "tweet-header">
-                    <div class = "parameters"><a>...</a></div>
                     <h1 class="name"><?php echo $prenom . ' ' . $nom; ?></h1>
                     <?php
                     echo '<h1 class = "tweet-information">'. ' @' . $auteur_username . ' · ' . $date . '</h1>'; ?>
+
+                    <div class = "parameters"><a>...</a></div>
                 </div>
                 <div class = "tweet-content">
                     <?php if($localisation != null) {
