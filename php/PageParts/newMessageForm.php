@@ -33,15 +33,20 @@ include("adressSearch.php");
 
         <div class = "icons">
             <label for ="image">
-                <img src="./images/image.png" class = "icon">
+                <img src="./images/image.png" class = "icon" alt = "Image">
             </label>
 
             <input type="file" id = "image" name = "image" class = "invisibleFile">
 
             <label>
-                <img onclick="showMap()" src="./images/localisation.png" class ="icon">
+                <img onclick="showMap()" src="./images/localisation.png" class ="icon" alt = "Localisation">
+            </label>
+
+            <label>
+                <img onclick="openWindow('display-pet')" src="./images/pet.png" class ="icon" alt = "Animaux">
             </label>
         </form>
+
 
         <!-- Fenêtre flottante pour la localisation -->
         <div id="map-container" class="localisation-window">

@@ -168,7 +168,7 @@ function displayContentById($id) {
 function displayPets() {
     global $conn;
 
-    $query = "SELECT avatar, nom FROM animal WHERE maitre_username ='". $_COOKIE['username']. "'";
+    $query = "SELECT * FROM animal WHERE maitre_username ='". $_COOKIE['username']. "'";
 
     return $conn->query($query);
 }

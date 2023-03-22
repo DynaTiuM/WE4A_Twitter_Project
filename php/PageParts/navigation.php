@@ -2,7 +2,7 @@
 $loginStatus = CheckLogin();
 
 include("windows.php");
-include('popupNewMessage.php');
+if(isset($_POST['reply_to'])) include('popupNewMessage.php');
 ?>
 
 <div class = "navigation">

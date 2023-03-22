@@ -47,9 +47,9 @@ function displayContent($row) {
                 </div>
 
                 <div style="display: flex;">
-                    <?php if(!isset($_GET['reply_to'])) { ?>
+                    <?php if(!isset($_POST['reply_to'])) { ?>
                         <div>
-                            <form method="get" action="<?php echo $filename ?>">
+                            <form method="post" action="">
                                 <input type="hidden" name="reply_to" value="<?php echo $id?>">
                                 <button type="submit" class="comment">
                                     <img style="width: 1.5vw; padding: 0.6vw;" src="./images/comment.png" alt="Commenter">

@@ -48,7 +48,8 @@ function sendMessage($type) {
             $stmt->execute();
         }
 
-        header("Location: explorer.php?answer=$reply_id");
+       header("Location: explorer.php?answer=$reply_id");
+
 
         exit();
     }
