@@ -25,6 +25,7 @@ if(isset($_POST['follow'])) {
 <head>
     <meta charset = "utf-8">
     <link rel = "stylesheet" href = "./css/stylesheet.css">
+    <link rel = "stylesheet" href = "./css/profil.css">
     <title>Profil</title>
     <link rel="shortcut icon" href="./favicon.ico">
 
@@ -58,7 +59,6 @@ if(isset($_POST['follow'])) {
                     <form action="" method="post">
                         <input type="submit" name="delete_cookies" value="Déconnexion">
                     </form>
-                    <button class = "add-pet"  onclick="openWindow('add-pet')">Ajouter un animal</button>
                     <?php
                     if(isset($_POST['delete_cookies'])) {
                         DestroyLoginCookie();
@@ -80,18 +80,26 @@ if(isset($_POST['follow'])) {
             }
 
             ?>
+
+            <button class = "add-pet"  onclick="openWindow('add-pet')">Ajouter un animal</button>
         </div>
 
-        <div class = "tweets" onclick="openWindow('tweet')">
-            <h2>Tweets</h2>
-            <?php include("./PageParts/messageForm.php");
-            profilMessages();
-            ?>
-        </div>
 
-        <div class = "likes">
-            <h2>J'aime</h2>
-            <?php findLikedMessages();?>
+        <div id="message-like-section">
+            <button id="message-button" class="message-section" disabled>Tweet</button>
+            <button id="answer-button" class="answer-section">Réponses</button>
+            <button id="like-button" class="like-section" >J'aime</button>
+            <div id="message-content">
+                <?php include("./PageParts/messageForm.php");
+                profilMessages();
+                ?>
+            </div>
+            <div id="answer-content" style="display:none;">
+                <?php profilAnswers();?>
+            </div>
+            <div id="like-content" style="display:none;">
+                <?php findLikedMessages();?>
+            </div>
         </div>
 
 
@@ -115,6 +123,44 @@ if(isset($_POST['follow'])) {
 </div>
 
 </body>
+<script>
+    // Récupération des boutons
+    const messageBtn = document.getElementById("message-button");
+    const answerBtn = document.getElementById("answer-button");
+    const likeBtn = document.getElementById("like-button");
 
+    // Récupération des contenus
+    const messageContent = document.getElementById("message-content");
+    const answerContent = document.getElementById("answer-content");
+    const likeContent = document.getElementById("like-content");
+
+    // Fonction qui désactive les boutons et affiche le contenu correspondant
+    function switchContent(btn, content) {
+        // On désactive tous les boutons
+        messageBtn.disabled = false;
+        answerBtn.disabled = false;
+        likeBtn.disabled = false;
+
+        // On cache tous les contenus
+        messageContent.style.display = "none";
+        answerContent.style.display = "none";
+        likeContent.style.display = "none";
+
+        // On active le bouton cliqué et affiche le contenu correspondant
+        btn.disabled = true;
+        content.style.display = "block";
+    }
+    messageBtn.addEventListener("click", function() {
+        switchContent(this, messageContent);
+    });
+
+    answerBtn.addEventListener("click", function() {
+        switchContent(this, answerContent);
+    });
+
+    likeBtn.addEventListener("click", function() {
+        switchContent(this, likeContent);
+    });
+</script>
 </html>
 

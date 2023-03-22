@@ -306,7 +306,25 @@ function profilMessages() {
     $query = "SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username
                 FROM message 
                 JOIN utilisateur ON message.auteur_username = utilisateur.username
-                WHERE auteur_username = '$username' ORDER BY date DESC";
+                WHERE (auteur_username = '$username' AND parent_message_id is NULL) ORDER BY date DESC";
+    $result = $conn->query($query);
+
+    if($result) {
+        while($row = $result->fetch_assoc()) {
+            displayContent($row);
+        }
+    }
+}
+
+function profilAnswers() {
+    global $conn;
+
+    $username = $_GET["username"];
+
+    $query = "SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username
+                FROM message 
+                JOIN utilisateur ON message.auteur_username = utilisateur.username
+                WHERE (auteur_username = '$username' AND parent_message_id is not NULL) ORDER BY date DESC";
     $result = $conn->query($query);
 
     if($result) {

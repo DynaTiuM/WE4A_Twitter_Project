@@ -13,8 +13,6 @@ function displayContent($row) {
         $localisation = $information[5];
         $auteur_username = $information[6];
 
-        $filename = basename($_SERVER['SCRIPT_FILENAME']);
-
         ?>
         <div class="message">
             <a href ="profil.php?username=<?php echo $auteur_username; ?>" >

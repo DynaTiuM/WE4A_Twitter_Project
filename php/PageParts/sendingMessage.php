@@ -26,10 +26,8 @@ function sendMessage($type) {
         if(isset($_POST['localisation'])) {
             $localisation = $_POST['localisation'];
         }
-        $parent_message_id = null;
-        if($type == 'answer') {
-            $parent_message_id = $reply_id;
-        }
+
+        $parent_message_id = $reply_id;
 
         $date = date('Y-m-d H:i:s');
         $stmt->bind_param("ssssss", $username, $parent_message_id, $date, $content, $localisation, $image);
@@ -48,7 +46,7 @@ function sendMessage($type) {
             $stmt->execute();
         }
 
-       header("Location: explorer.php?answer=$reply_id");
+        header("Location: explorer.php?answer=$reply_id");
 
 
         exit();
