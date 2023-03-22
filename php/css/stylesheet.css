@@ -389,12 +389,25 @@ h4 {
      display: inline-block;
  }
 
-.image-modification {
+.parameters {
+    float:right;
+    padding:-10vw;
+    transform: rotate(-90deg);
+    font-weight: 900;
+}
+
+.image-modification, .pet-preview {
     width: 10vw;
     height: 10vw;
     border-radius: 100%;
     display: block;
     margin: auto;
+}
+
+.pet-preview {
+    display: inline-block;
+    width: 8vw;
+    height: 8vw;
 }
 
 

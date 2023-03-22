@@ -165,6 +165,14 @@ function displayContentById($id) {
     }
 }
 
+function displayPets() {
+    global $conn;
+
+    $query = "SELECT avatar, nom FROM animal WHERE maitre_username ='". $_COOKIE['username']. "'";
+
+    return $conn->query($query);
+}
+
 function loadAvatar($username) {
     global $conn;
     $sql = "SELECT avatar FROM utilisateur WHERE username = '" . $username . "'";
@@ -178,6 +186,8 @@ function loadAvatar($username) {
         echo "Aucune image trouvée.";
     }
 }
+
+
 
 
 function mainMessagesQuery($loginStatus, $search, $level) {
@@ -371,6 +381,24 @@ function checkFollow($to_follow) {
     }
 }
 
+function addPet() {
+    global $conn;
+
+    if (isset($_FILES["avatar_pet"]) && is_uploaded_file($_FILES["avatar_pet"]["tmp_name"])) {
+        $image = file_get_contents($_FILES["avatar_pet"]["tmp_name"]);
+
+        $query = "INSERT INTO animal (id, nom, maitre_username, age, sexe, avatar, caracteristiques, espece) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("sssissss", $_POST['id'], $_POST['nom'], $_COOKIE['username'], $_POST['age'], $_POST['gender'], $image, $_POST['bio'], $_POST['species']);
+        $stmt->execute();
+        $stmt->close();
+        return;
+    }
+    $query = "INSERT INTO animal (id, nom, maitre_username, age, sexe, avatar, caracteristiques, espece) 
+              VALUES ('" . $_POST['id'] . "', '" . $_POST['nom'] . "', '" . $_COOKIE['username'] . "', " . $_POST['age'] . ", '" . $_POST['gender'] . "', NULL, '" . $_POST['bio'] . "', '" . $_POST['species'] . "')";
+    $conn->query($query);
+}
 
 //Méthode pour détruire les cookies de Login
 //--------------------------------------------------------------------------------
