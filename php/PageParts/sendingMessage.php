@@ -1,10 +1,13 @@
 <?php
-function sendMessage($type) {
+function sendMessage() {
+    $reply_id = null;
     if(isset($_POST['reply_to'])) {
         $reply_id = $_POST['reply_to'];
     }
-    else {
-        $reply_id = $_GET['answer'];
+    elseif(isset($_GET['answer'])){
+        if($_GET['answer'] != "") {
+            $reply_id = $_GET['answer'];
+        }
     }
 
     if(isset($_POST["content"])) {
@@ -39,7 +42,7 @@ function sendMessage($type) {
         session_start();
         if(!empty($_POST['animaux'])) {
             foreach($_POST['animaux'] as $animal_id){
-                $stmt = $conn->prepare("INSERT INTO animaux (message_id, animal_id) VALUES (?, ?)");
+                $stmt = $conn->prepare("INSERT INTO message_animaux (message_id, animal_id) VALUES (?, ?)");
                 $stmt->bind_param("is", $message_id, $animal_id);
                 $stmt->execute();
             }

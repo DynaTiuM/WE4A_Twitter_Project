@@ -10,14 +10,7 @@ function displayContainer($type) {
     if(isset($_POST["submit"])) {
         include("./PageParts/sendingMessage.php");
 
-        if(isset($_POST['reply_to'])) sendMessage('answer');
-
-        else if(isset($_GET["answer"])) {
-            if($_GET['answer'] != null)
-                sendMessage('answer');
-            else
-                sendMessage('message');
-        }
+        sendMessage();
     }
     if(isset($_POST['animaux'])) {
         if(!empty($_POST['animaux'])) {

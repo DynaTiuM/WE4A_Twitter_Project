@@ -3,6 +3,8 @@ $filename = basename($_SERVER['SCRIPT_FILENAME']);
 $info = getUserInformation();
 $avatar = $info['avatar'];
 include("adressSearch.php");
+
+
 ?>
 
 <!DOCTYPE html>
@@ -57,29 +59,30 @@ include("adressSearch.php");
             </div>
         </div>
 
-    </div>
-</div>
 
+        <div id="display-pet" class="localisation-window">
+            <div class="localisation-content">
+                <span class="close" onclick="closeWindow('display-pet')">&times;</span>
+                <h2 class = "window-title">Sélectionner animaux</h2>
 
-<div id="display-pet" class="window-background">
-    <div class="window-content">
-        <span class="close" onclick="closeWindow('display-pet')">&times;</span>
-        <h2 class = "window-title">Sélectionner animaux</h2>
-
-        <?php
-        $result = displayPets();
-        while ($row = $result->fetch_assoc()) {
-            ?>
-            <div class="image-container">
-                <label for="<?php echo $row['id']?>">
-                    <img class="image-modification" src="data:image/jpeg;base64,<?php echo base64_encode($row['avatar']); ?>" alt="Bouton parcourir">
-                </label>
-                <label><?php echo $row['nom']?></label>
+                <?php
+                $result = displayPets();
+                while ($row = $result->fetch_assoc()) {
+                    ?>
+                    <div class="image-container">
+                        <label for="<?php echo $row['id']?>">
+                            <img class="image-modification" src="data:image/jpeg;base64,<?php echo base64_encode($row['avatar']); ?>" alt="Bouton parcourir">
+                        </label>
+                        <label><?php echo $row['nom']?></label>
+                    </div>
+                    <input type="checkbox" id="<?php echo $row['id']?>" name="animaux[]" value="<?php echo $row['id']?>">
+                    <?php
+                }?>
             </div>
-            <input type="checkbox" id="<?php echo $row['id']?>" name="animaux[]" value="<?php echo $row['id']?>">
-            <?php
-        }?>
+        </div>
+
     </div>
 </div>
+
 </body>
 </html>
