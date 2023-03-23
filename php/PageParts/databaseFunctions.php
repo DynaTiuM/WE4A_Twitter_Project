@@ -181,10 +181,18 @@ function loadAvatar($username) {
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
         return $row["avatar"];
-
-    } else {
-        echo "Aucune image trouvée.";
     }
+    else {
+        $sql = "SELECT avatar FROM animal WHERE id = '" . $username . "'";
+        $result = $conn->query($sql);
+
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            return $row["avatar"];
+        }
+    }
+
+    echo "Aucune image trouvée.";
 }
 
 
@@ -419,6 +427,22 @@ function addPet() {
     $query = "INSERT INTO animal (id, nom, maitre_username, age, sexe, avatar, caracteristiques, espece) 
               VALUES ('" . $_POST['id'] . "', '" . $_POST['nom'] . "', '" . $_COOKIE['username'] . "', " . $_POST['age'] . ", '" . $_POST['gender'] . "', '$avatarBLOB', '" . $_POST['bio'] . "', '" . $_POST['species'] . "')";
     $conn->query($query);
+}
+
+function determinePetOrUser($conn, $username) {
+    $query = "SELECT * FROM utilisateur WHERE username = '$username'";
+    $result = $conn->query($query);
+    if($result->num_rows > 0) {
+        return 'user';
+    }
+    return 'pet';
+}
+
+function findPets($id) {
+    global $conn;
+
+    $query = "SELECT animal.* FROM animal JOIN message_animaux ON animal.id = message_animaux.animal_id WHERE message_id = '$id'";
+    return $conn->query($query);
 }
 
 //Méthode pour détruire les cookies de Login

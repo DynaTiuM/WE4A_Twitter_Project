@@ -25,6 +25,12 @@ body {
     overflow: hidden;
 }
 
+.pet-image-message {
+    width: 2.5vw;
+    height: 2.5vw;
+    border-radius: 100%;
+}
+
 #modal-content {
     background-color: #fefefe;
     margin: 0 auto;
@@ -58,6 +64,7 @@ body {
 .form-button, .connexion-button, .inscription-button {
     font-size: 1.13vw;
     border:none;
+    font-family: "Plus Jakarta Sans", sans-serif;
     width: 65%;
     padding: 0.7vw;
     border-radius: 2vw;
@@ -160,13 +167,6 @@ h1 {
     justify-content: center;
     align-items: flex-start;
     width: 82%;
-}
-
-.NewMessage {
-    border-top: 0.1vw solid rgba(31, 124, 98, 0.29);
-    border-bottom: 0.1vw solid rgba(31, 124, 98, 0.29);
-    margin-top: 3.3vw;
-    background-color: white;
 }
 
 
@@ -290,18 +290,7 @@ h3 {
     font-family: inherit;
 }
 
-.message-content {
-    display: inline-block;
-    margin-left: -0.8vw;
-    width: 80%;
-    font-size: 1.4vw;
-    color: #3a3230;
-    resize: none;
-    border: none;
-    box-sizing: border-box;
-}
-
-.AvatarMessage {
+.avatar-message {
     width: 3.4vw;
     height: 3.4vw;
     margin: 0.5vw 1vw 1vw;
@@ -383,8 +372,6 @@ h4 {
 .invisibleFile {
     display: none;
 }
-
-
 
 .image-container {
      position: relative;
@@ -494,20 +481,4 @@ a {
     width: 3vw;
     padding:1vw;
     display: inline-block;
-}
-
-.localisation-window {
-    display: none;
-    width: 100%;
-}
-
-.localisation-content {
-    background-color: rgba(52, 143, 117, 0.14);
-    border: none;
-    width:70%;
-}
-
-.localisation-message {
-    font-size: 1vw;
-    width:100%;
 }

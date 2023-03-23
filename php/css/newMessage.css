@@ -1,0 +1,90 @@
+.new-message {
+    text-align: center;
+    border-top: 0.1vw solid rgba(31, 124, 98, 0.29);
+    border-bottom: 0.1vw solid rgba(31, 124, 98, 0.29);
+    margin-top: 3.3vw;
+    background-color: white;
+}
+
+.message-content {
+    display: inline-block;
+    margin-left: -0.8vw;
+    width: 80%;
+    font-size: 1.4vw;
+    color: #3a3230;
+    resize: none;
+    border: none;
+    box-sizing: border-box;
+}
+
+.avatar-new-message {
+    width: 3.4vw;
+    height: 3.4vw;
+    margin: 1vw 1vw 1vw 0;
+    border-radius: 50%;
+    background-color: blueviolet;
+}
+
+#display-pet {
+    display: none;
+    width: 80%;
+}
+
+.pets-content {
+    border-radius: 1vw;
+    background-color: #fefefe;
+    margin-left: auto; /* modifier la marge gauche */
+    margin-right: auto; /* modifier la marge droite */
+    padding: 2vw;
+    border: 0.1vw solid #888;
+    text-align: center;
+    margin-bottom: 1vw;
+}
+
+.pet-image {
+    width: 5vw;
+    height: 5vw;
+    border-radius: 100%;
+    display: block;
+    margin: auto;
+}
+
+.pet-name {
+    font-size: 1vw;
+    font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+.checkbox {
+    width: 1vw;
+    height: 1vw;
+    margin-top: 0;
+    border-radius: 50%;
+    -webkit-appearance: none;
+    background-color: white;
+    border: 0.1vw solid #999;
+}
+
+.checkbox:checked {
+    background-color: #1F7C62;
+}
+
+.image-container {
+    margin: 1vw;
+}
+
+
+.localisation-window {
+    display: none;
+    width: 100%;
+}
+
+.localisation-content {
+    background-color: rgba(52, 143, 117, 0.14);
+    border: none;
+    width:70%;
+}
+
+.localisation-message {
+    font-size: 1vw;
+    width:100%;
+}

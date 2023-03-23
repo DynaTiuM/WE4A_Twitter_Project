@@ -15,15 +15,17 @@ include("adressSearch.php");
     <script src="https://maps.googleapis.com/maps/api/js?key=KEY&libraries=places"></script>
 
     <link rel = "stylesheet" href = "./css/stylesheet.css">
+    <link rel = "stylesheet" href = "./css/newMessage.css">
 
 </head>
 
 <body>
 
-<div class = "NewMessage">
+<div class = "new-message">
+
     <form action="" method="post" enctype="multipart/form-data">
         <a href="profil.php?username=<?php echo $_COOKIE['username']; ?>">
-            <img class = "AvatarMessage"  src="data:image/jpeg;base64,<?php echo base64_encode($avatar); ?> " />
+            <img class = "avatar-new-message"  src="data:image/jpeg;base64,<?php echo base64_encode($avatar); ?> " />
         </a>
         <label>
             <textarea name = "content" class = "message-content" placeholder="Message" rows="2" maxlength="240" required></textarea>
@@ -60,8 +62,8 @@ include("adressSearch.php");
         </div>
 
 
-        <div id="display-pet" class="localisation-window">
-            <div class="localisation-content">
+        <div id="display-pet">
+            <div class="pets-content">
                 <span class="close" onclick="closeWindow('display-pet')">&times;</span>
                 <h2 class = "window-title">Sélectionner animaux</h2>
 
@@ -71,12 +73,11 @@ include("adressSearch.php");
                     ?>
                     <div class="image-container">
                         <label for="<?php echo $row['id']?>">
-                            <img class="image-modification" src="data:image/jpeg;base64,<?php echo base64_encode($row['avatar']); ?>" alt="Bouton parcourir">
+                            <img class="pet-image" src="data:image/jpeg;base64,<?php echo base64_encode($row['avatar']); ?>" alt="Bouton parcourir">
                         </label>
-                        <label><?php echo $row['nom']?></label>
+                        <label class = "pet-name"><?php echo $row['nom']?></label>  <input class ="checkbox" type="checkbox" id="<?php echo $row['id']?>" name="animaux[]" value="<?php echo $row['id']?>">
                     </div>
-                    <input type="checkbox" id="<?php echo $row['id']?>" name="animaux[]" value="<?php echo $row['id']?>">
-                    <?php
+                   <?php
                 }?>
             </div>
         </div>

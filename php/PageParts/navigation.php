@@ -13,7 +13,7 @@ if(isset($_POST['reply_to'])) include('popupNewMessage.php');
         <?php if($loginStatus[0]) { ?>
         <li class = "menu-item">Notifications</li>
         <li class = "menu-item">Messages</li>
-        <li class = "menu-item"><a href = "profil.php?username=<?php echo urlencode($_COOKIE['username']); ?>">Profil</a></li>
+        <li class = "menu-item"><a href = "profile.php?username=<?php echo urlencode($_COOKIE['username']); ?>">Profil</a></li>
         <?php
         } else {
         ?>

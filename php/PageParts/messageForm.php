@@ -16,7 +16,7 @@ function displayContent($row) {
         ?>
         <div class="message">
             <a href ="profil.php?username=<?php echo $auteur_username; ?>" >
-                <img class = "AvatarMessage" src="data:image/jpeg;base64,<?php echo base64_encode($avatar); ?>" >
+                <img class = "avatar-message" src="data:image/jpeg;base64,<?php echo base64_encode($avatar); ?>" >
             </a>
             <div class>
                 <div class = "tweet-header">
@@ -69,7 +69,22 @@ function displayContent($row) {
                             <?php } ?>
                         </button>
                     </form>
+
+                    <div id = "pets">
+                        <div style = "display: flex; margin-left: 1vw; margin-top: 0.2vw">
+                            <?php $result = findPets($id);
+                            while($row = $result->fetch_assoc()) {  ?>
+                                <label>
+                                    <a href = "./profile.php?username=<?php echo $row['id']; ?>"><img class="pet-image-message" src="data:image/jpeg;base64,<?php echo base64_encode($row['avatar']); ?>" alt="Animal : <?php echo $row['nom']?>"></a>
+                                </label>
+                                <?php
+                            }
+                            ?>
+                        </div>
+                    </div>
                 </div>
+
+
 
 
             </div>
