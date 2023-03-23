@@ -32,8 +32,18 @@ function sendMessage($type) {
         $date = date('Y-m-d H:i:s');
         $stmt->bind_param("ssssss", $username, $parent_message_id, $date, $content, $localisation, $image);
         $stmt->execute();
+
         // On récupère l'id du message inséré
         $message_id = $stmt->insert_id;
+
+        session_start();
+        if(!empty($_POST['animaux'])) {
+            foreach($_POST['animaux'] as $animal_id){
+                $stmt = $conn->prepare("INSERT INTO animaux (message_id, animal_id) VALUES (?, ?)");
+                $stmt->bind_param("is", $message_id, $animal_id);
+                $stmt->execute();
+            }
+        }
 
         // We prevent the user to use the ' symbol to make a bugged hashtag
         $content = str_replace("\&#039", " ", $content);

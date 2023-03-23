@@ -19,11 +19,3 @@
     </div>
 </div>
 
-<div id="display-pet" class="window-background">
-    <div class="window-content">
-        <span class="close" onclick="closeWindow('display-pet')">&times;</span>
-        <h2 class = "window-title">Sélectionner animaux</h2>
-
-       <?php require_once("./PageParts/selectPetForm.php");  ?>
-    </div>
-</div>

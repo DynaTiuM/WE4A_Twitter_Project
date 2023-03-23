@@ -19,6 +19,13 @@ function displayContainer($type) {
                 sendMessage('message');
         }
     }
+    if(isset($_POST['animaux'])) {
+        if(!empty($_POST['animaux'])) {
+            foreach($_POST['animaux'] as $animal_id){
+                echo $animal_id;
+            }
+        }
+    }
     ?>
 
     <!DOCTYPE html>

@@ -11,9 +11,7 @@
     text-align: center;
 }
 
-#message-content,
-#answer-content,
-#like-content {
+#message-content, #answer-content, #like-content {
     width: 100%;
 }
 
