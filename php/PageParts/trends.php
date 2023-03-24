@@ -16,7 +16,7 @@
     }
     ?>
     <br>
-    <?php $result = displayPets();
+    <?php $result = displayPets($_COOKIE['username']);
     if($result->num_rows > 0) {
         ?>
 
@@ -24,7 +24,7 @@
         <div class = "center">
         <?php
         while($row = $result->fetch_assoc()) {?>
-            <img class="pet-preview" src="data:image/jpeg;base64,<?php echo base64_encode($row['avatar']); ?>" alt="Bouton parcourir">
+            <a href = './profile.php?username=<?php echo $row['id']?>'><img class="pet-preview" src="data:image/jpeg;base64,<?php echo base64_encode($row['avatar']); ?>" alt="Animal : <?php echo $row['nom']?>"></a>
             <p><?php echo $row['nom']?></p>
             <?php
         }

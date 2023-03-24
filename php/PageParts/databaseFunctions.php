@@ -165,10 +165,10 @@ function displayContentById($id) {
     }
 }
 
-function displayPets() {
+function displayPets($username) {
     global $conn;
 
-    $query = "SELECT * FROM animal WHERE maitre_username ='". $_COOKIE['username']. "'";
+    $query = "SELECT * FROM animal WHERE maitre_username ='". $username. "'";
 
     return $conn->query($query);
 }
@@ -293,7 +293,7 @@ function findLikedMessages() {
     $query = "SELECT message_id FROM like_message WHERE utilisateur_username = '$id_user'";
     $result = $conn->query($query);
 
-    if($result) {
+    if($result->num_rows > 0) {
         while($row = $result->fetch_assoc()) {
             $query = "SELECT * FROM message WHERE id = ". $row['message_id'];
             $result2 = $conn->query($query);
@@ -303,6 +303,9 @@ function findLikedMessages() {
             }
         }
     }
+    else {
+        echo '<h3>Ce profil n\'a aimé aucun message</h3>';
+    }
 
 }
 
@@ -311,15 +314,39 @@ function profilMessages() {
 
     $username = $_GET["username"];
 
-    $query = "SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username
-                FROM message 
+    $type = determinePetOrUser($conn, $username);
+    if($type == 'user') {
+        $query = "SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username
+                FROM message
                 JOIN utilisateur ON message.auteur_username = utilisateur.username
                 WHERE (auteur_username = '$username' AND parent_message_id is NULL) ORDER BY date DESC";
-    $result = $conn->query($query);
+        $result = $conn->query($query);
 
-    if($result) {
-        while($row = $result->fetch_assoc()) {
-            displayContent($row);
+        if($result->num_rows > 0) {
+            while($row = $result->fetch_assoc()) {
+                displayContent($row);
+            }
+        }
+        else {
+            echo '<h3>Ce profil ne contient aucun message</h3>';
+        }
+    }
+    else {
+        $query = "SELECT message.*
+            FROM message
+                JOIN message_animaux
+                    ON message.id = message_animaux.message_id
+                JOIN animal
+                    ON animal.id = message_animaux.animal_id
+            WHERE animal.id = '$username'";
+        $result = $conn->query($query);
+        if($result->num_rows > 0) {
+            while($row = $result->fetch_assoc()) {
+                displayContent($row);
+            }
+        }
+        else {
+            echo '<h3>Ce profil ne contient aucun message</h3>';
         }
     }
 }
@@ -335,10 +362,13 @@ function profilAnswers() {
                 WHERE (auteur_username = '$username' AND parent_message_id is not NULL) ORDER BY date DESC";
     $result = $conn->query($query);
 
-    if($result) {
+    if($result->num_rows > 0) {
         while($row = $result->fetch_assoc()) {
             displayContent($row);
         }
+    }
+    else {
+        echo '<h3>Ce profil n\'a répondu à aucun message</h3>';
     }
 }
 

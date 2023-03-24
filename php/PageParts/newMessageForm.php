@@ -24,7 +24,7 @@ include("adressSearch.php");
 <div class = "new-message">
 
     <form action="" method="post" enctype="multipart/form-data">
-        <a href="profil.php?username=<?php echo $_COOKIE['username']; ?>">
+        <a href="profile.php?username=<?php echo $_COOKIE['username']; ?>">
             <img class = "avatar-new-message"  src="data:image/jpeg;base64,<?php echo base64_encode($avatar); ?> " />
         </a>
         <label>

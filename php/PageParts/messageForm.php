@@ -15,7 +15,7 @@ function displayContent($row) {
 
         ?>
         <div class="message">
-            <a href ="profil.php?username=<?php echo $auteur_username; ?>" >
+            <a href ="profile.php?username=<?php echo $auteur_username; ?>" >
                 <img class = "avatar-message" src="data:image/jpeg;base64,<?php echo base64_encode($avatar); ?>" >
             </a>
             <div class>
@@ -71,7 +71,7 @@ function displayContent($row) {
                     </form>
 
                     <div id = "pets">
-                        <div style = "display: flex; margin-left: 1vw; margin-top: 0.2vw">
+                        <div style = "display: flex; margin-left: 1vw; margin-top: 0.2vw;">
                             <?php $result = findPets($id);
                             while($row = $result->fetch_assoc()) {  ?>
                                 <label>

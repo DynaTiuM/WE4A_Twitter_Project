@@ -59,20 +59,27 @@ if(isset($_POST['follow'])) {
 
 
         <div id="message-like-section">
-            <button id="message-button" class="message-section" disabled>Tweet</button>
+            <button id="message-button" class="message-section" disabled>Messages</button>
+            <?php if($result == 'user') {?>
             <button id="answer-button" class="answer-section">Réponses</button>
             <button id="like-button" class="like-section" >J'aime</button>
+                <?php
+            }?>
             <div id="message-content">
                 <?php include("./PageParts/messageForm.php");
                 profilMessages();
                 ?>
             </div>
-            <div id="answer-content" style="display:none;">
-                <?php profilAnswers();?>
-            </div>
-            <div id="like-content" style="display:none;">
+            <?php if($result == 'user') {?>
+                <div id="answer-content" style="display:none;">
+                    <?php profilAnswers();?>
+                </div>
+                <div id="like-content" style="display:none;">
                 <?php findLikedMessages();?>
-            </div>
+                </div>
+                <?php
+            }?>
+
         </div>
 
 
