@@ -75,6 +75,28 @@ function CheckLogin(){
     return array($loginSuccessful, $loginAttempted, $error, $userID);
 }
 
+function isLogged() {
+    $loginAttempted = false;
+    if ( isset( $_COOKIE["username"] ) && isset( $_COOKIE["password"] ) ) {
+        $username = $_COOKIE["username"];
+        $password = $_COOKIE["password"];
+        $loginAttempted = true;
+    }
+    if ($loginAttempted){
+        global $conn;
+        $query = "SELECT * FROM `utilisateur` WHERE username = '".$username."' AND mot_de_passe ='".$password."'";
+        $result = $conn->query($query);
+
+        if ($result->num_rows > 0){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    return false;
+}
+
 //Méthode pour créer/mettre à jour le cookie de Login
 //--------------------------------------------------------------------------------
 function CreateLoginCookie($username, $encryptedPasswd){
@@ -143,10 +165,21 @@ function createImage($image){
     return null;
 }
 
-function getUserInformation() {
+function getUserInformation($username) {
     global $conn;
 
-    $query = "SELECT * FROM utilisateur WHERE username = '" . $_COOKIE['username']. "'";
+    $query = "SELECT * FROM utilisateur WHERE username = '$username'";
+    $result = $conn->query($query);
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        return $row;
+    }
+}
+
+function getPetInformation($pet) {
+    global $conn;
+
+    $query = "SELECT * FROM animal WHERE id = '$pet'";
     $result = $conn->query($query);
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
@@ -227,7 +260,7 @@ function mainMessagesQuery($loginStatus, $search, $level) {
 
         }
         else {
-            if($loginStatus[0]) {
+            if($loginStatus) {
                 $query = "SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username
                     FROM message 
                       JOIN utilisateur ON message.auteur_username=utilisateur.username 
@@ -240,11 +273,25 @@ function mainMessagesQuery($loginStatus, $search, $level) {
 
     $result = $conn->query($query);
 
-    if($result) {
+    if($result->num_rows > 0) {
         while($row = $result->fetch_assoc()) {
             displayContent($row);
         }
     }
+    else {
+        echo '<h3>Aucun contenu disponible</h3>';
+    }
+}
+
+function isOwner($username) {
+    global $conn;
+    $query = "SELECT maitre_username FROM animal WHERE id = '$username'";
+    $result = $conn->query($query);
+    if($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        if($row['maitre_username'] == $_COOKIE['username']) return true;
+    }
+    return false;
 }
 
 function likeMessage($id_message) {
@@ -264,14 +311,21 @@ function likeMessage($id_message) {
 
 function isLiked($id_message) {
     global $conn;
-    $id_user = $_COOKIE['username'];
 
-    $query = "SELECT * FROM like_message WHERE message_id = '$id_message' and utilisateur_username = '$id_user'";
-    $result = $conn->query($query);
+    ConnectDatabase();
+    $loginStatus = isLogged();
 
-    if($result && $result->num_rows > 0) {
-        return true;
+    if($loginStatus) {
+        $id_user = $_COOKIE['username'];
+
+        $query = "SELECT * FROM like_message WHERE message_id = '$id_message' and utilisateur_username = '$id_user'";
+        $result = $conn->query($query);
+
+        if($result && $result->num_rows > 0) {
+            return true;
+        }
     }
+
     return false;
 }
 

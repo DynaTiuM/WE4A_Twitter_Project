@@ -5,7 +5,7 @@ function displayContainer($type) {
     ConnectDatabase();
     $loginStatus = CheckLogin();
 
-    if(isset($_POST['like'])) likeMessage($_POST['like']);
+    if(isset($_POST['like']) && $loginStatus[0]) likeMessage($_POST['like']);
 
     if(isset($_POST["submit"])) {
         include("./PageParts/sendingMessage.php");
@@ -40,17 +40,14 @@ function displayContainer($type) {
             <h1>Accueil</h1>
             <?php
             if($type == 'main') {
-                if ($loginStatus[0]) {
-
-                    popUpNewMessage();
+                if ($loginStatus) {
                     mainMessages($loginStatus);
                 }
                 else {
-                    echo '<h2>Connectez-vous pour accéder au contenu</h2>';
+                    echo '<h3>Connectez-vous pour accéder au contenu</h3>';
                 }
             }
             else {
-                popUpNewMessage();
                 explorerMessages($loginStatus);
             }
             ?>
@@ -105,14 +102,15 @@ function explorerMessages($loginStatus) {
     <div class = "hub-messages">
         <?php
         include("./PageParts/messageForm.php");
+
         if(isset($_GET['answer'])) {
             displayContentById($_GET['answer']);
             include("./PageParts/adressSearch.php");
-            if(!isset($_POST['reply_to'])) include("./PageParts/newMessageForm.php");
+            if(!isset($_POST['reply_to']) && $loginStatus) include("./PageParts/newMessageForm.php");
             mainMessagesQuery($loginStatus, 'explorer', $_GET['answer']);
         }
         else {
-            if(!isset($_POST['reply_to'])) include("./PageParts/newMessageForm.php");
+            if(!isset($_POST['reply_to']) && $loginStatus) include("./PageParts/newMessageForm.php");
             mainMessagesQuery($loginStatus, 'explorer', null);
         }
 

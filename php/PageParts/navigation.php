@@ -1,5 +1,9 @@
 <?php
-$loginStatus = CheckLogin();
+require_once('./PageParts/databaseFunctions.php');
+
+ConnectDatabase();
+$loginStatus = isLogged();
+
 
 include("windows.php");
 if(isset($_POST['reply_to'])) include('popupNewMessage.php');
@@ -10,7 +14,7 @@ if(isset($_POST['reply_to'])) include('popupNewMessage.php');
     <ul>
         <li class = "menu-item"><a href = "index.php">Abonnements</a></li>
         <li class = "menu-item"><a href = "explorer.php">Explorer</a></li>
-        <?php if($loginStatus[0]) { ?>
+        <?php if($loginStatus) { ?>
         <li class = "menu-item">Notifications</li>
         <li class = "menu-item">Messages</li>
         <li class = "menu-item"><a href = "profile.php?username=<?php echo urlencode($_COOKIE['username']); ?>">Profil</a></li>
@@ -22,9 +26,9 @@ if(isset($_POST['reply_to'])) include('popupNewMessage.php');
         }
         ?>
     </ul>
-    <?php if($loginStatus[0]) { ?>
+    <?php if($loginStatus) { ?>
     <div class = "center">
-        <a href="#" onclick="openWindow('new-message')"><li class = "tweet-button">Message</li></a>
+        <a href="#" onclick="openWindowByNavigation('new-message')"><li class = "tweet-button">Message</li></a>
     </div>
         <?php
     }

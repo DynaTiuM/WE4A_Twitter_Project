@@ -2,6 +2,11 @@
 
 if (!function_exists('displayContent')) {
 function displayContent($row) {
+    require_once('./PageParts/databaseFunctions.php');
+
+    ConnectDatabase();
+    $loginStatus = isLogged();
+
         $information = getInformationMessage($row);
         $prenom = $information[7];
         $nom = $information[8];
@@ -46,7 +51,7 @@ function displayContent($row) {
                 </div>
 
                 <div style="display: flex;">
-                    <?php if(!isset($_POST['reply_to'])) { ?>
+                    <?php if(!isset($_POST['reply_to']) && $loginStatus) { ?>
                         <div>
                             <form method="post" action="">
                                 <input type="hidden" name="reply_to" value="<?php echo $id?>">
@@ -59,7 +64,9 @@ function displayContent($row) {
                     <form method="post" action="">
                         <input type="hidden" name="like" value="<?php echo $id?>">
                         <button type="submit" class="comment">
-                            <?php if(isLiked($id)) { ?>
+                            <?php
+
+                            if(isLiked($id)) { ?>
                                     <label style ="display: flex;">
                                         <img style="width: 1.5vw; padding: 0.6vw;" src="./images/liked.png" alt="Aimer">
                                         <span style =" margin-top: 1vw; margin-left: -0.3vw;"><?php echo numLike($id)?></span>

@@ -1,6 +1,7 @@
 <?php
 $filename = basename($_SERVER['SCRIPT_FILENAME']);
-$info = getUserInformation();
+
+$info = getUserInformation($_COOKIE['username']);
 $avatar = $info['avatar'];
 include("adressSearch.php");
 
@@ -68,7 +69,7 @@ include("adressSearch.php");
                 <h2 class = "window-title">Sélectionner animaux</h2>
 
                 <?php
-                $result = displayPets();
+                $result = displayPets($_COOKIE['username']);
                 while ($row = $result->fetch_assoc()) {
                     ?>
                     <div class="image-container">

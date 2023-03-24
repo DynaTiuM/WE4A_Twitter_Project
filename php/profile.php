@@ -1,8 +1,4 @@
 <?php
-require_once('./PageParts/databaseFunctions.php');
-
-ConnectDatabase();
-$loginStatus = CheckLogin();
 
 if(isset($_POST['modification-profile'])) {
     motificationProfile();
@@ -57,7 +53,6 @@ if(isset($_POST['follow'])) {
             ?>
         </div>
 
-
         <div id="message-like-section">
             <button id="message-button" class="message-section" disabled>Messages</button>
             <?php if($result == 'user') {?>
@@ -79,18 +74,24 @@ if(isset($_POST['follow'])) {
                 </div>
                 <?php
             }?>
-
         </div>
-
-
     </div>
+
     <div id="modification-profile" class="window-background">
         <div class="window-content">
             <span class="close" onclick="closeWindow('modification-profile')">&times;</span>
             <h2 class = "window-title">Modification du profil</h2>
-            <?php include("./PageParts/profilModificationForm.php"); ?>
+            <?php include("./PageParts/profileModificationForm.php"); ?>
         </div>
     </div>
+    <div id="modification-pet-profile" class="window-background">
+        <div class="window-content">
+            <span class="close" onclick="closeWindow('modification-pet-profile')">&times;</span>
+            <h2 class = "window-title">Modification du profil de l'animal</h2>
+            <?php include("./PageParts/petProfileModificationForm.php"); ?>
+        </div>
+    </div>
+
 
     <div id="add-pet" class="window-background">
         <div class="window-content">

@@ -1,7 +1,7 @@
 <?php
 require_once('databaseFunctions.php');
 
-$information = getUserInformation();
+$information = getUserInformation($_GET['username']);
 $prenom = $information['prenom'];
 $avatar = loadAvatar($_GET['username']);
 $nom = $information['nom'];
@@ -43,8 +43,8 @@ $bio = $information['bio'];
         <input class = "answer" type="password" id="confirm" name="confirm" value="<?php echo $password; ?>">
     </div>
     <br>
-    <div class="formbutton">
-        <button class = "form-button" type="submit" name = "modification-profile">Modifier le profil</button>
-    </div>
+
+    <button class = "form-button" type="submit" name = "modification-profile">Modifier le profil</button>
+
 </form>
 </html>

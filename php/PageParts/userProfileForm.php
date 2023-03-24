@@ -40,6 +40,4 @@ function displayUserProfile($conn, $username) {
     return false;
 }
 
-function displayPetProfile() {
-
-}
+?>

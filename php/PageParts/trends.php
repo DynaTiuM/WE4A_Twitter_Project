@@ -1,3 +1,10 @@
+<?php
+require_once('./PageParts/databaseFunctions.php');
+
+ConnectDatabase();
+$loginStatus = isLogged();
+?>
+
 <div class="Trends">
     <h1>Tendances pour vous</h1>
     <?php
@@ -16,21 +23,25 @@
     }
     ?>
     <br>
-    <?php $result = displayPets($_COOKIE['username']);
-    if($result->num_rows > 0) {
-        ?>
+    <?php
+    if($loginStatus) {
+        $result = displayPets($_COOKIE['username']);
+        if($result->num_rows > 0) {
+            ?>
 
-        <h1>Animaux</h1>
-        <div class = "center">
-        <?php
-        while($row = $result->fetch_assoc()) {?>
-            <a href = './profile.php?username=<?php echo $row['id']?>'><img class="pet-preview" src="data:image/jpeg;base64,<?php echo base64_encode($row['avatar']); ?>" alt="Animal : <?php echo $row['nom']?>"></a>
-            <p><?php echo $row['nom']?></p>
+            <h1>Animaux</h1>
+            <div class = "center">
+                <?php
+                while($row = $result->fetch_assoc()) {?>
+                    <a href = './profile.php?username=<?php echo $row['id']?>'><img class="pet-preview" src="data:image/jpeg;base64,<?php echo base64_encode($row['avatar']); ?>" alt="Animal : <?php echo $row['nom']?>"></a>
+                    <p><?php echo $row['nom']?></p>
+                    <?php
+                }
+                ?>
+            </div>
             <?php
         }
-        ?>
-        </div>
-            <?php
     }
+
     ?>
 </div>
