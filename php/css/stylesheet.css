@@ -63,13 +63,13 @@ body {
 
 .form-button, .connexion-button, .inscription-button {
     font-size: 1.13vw;
-    border:none;
     font-family: "Plus Jakarta Sans", sans-serif;
     width: 65%;
     padding: 0.7vw;
     border-radius: 2vw;
-    color: white;
-    background-color: #1F7C62;
+    background-color: white;
+    color: #1F7C62;
+    border: 0.2vw solid #1F7C62;
 }
 
 .connexion-button, .inscription-button {
@@ -79,17 +79,17 @@ body {
 }
 
 .connexion-button:hover {
-    background-color: #348f75;
+    background-color: #e7e7e7;
 }
 
-.inscription-button {
-    background-color: white;
-    color: #1F7C62;
-    border: 0.2vw solid #1F7C62;
+.inscription-button, .form-button {
+    color: white;
+    background-color: #1F7C62;
+    border:none;
 }
 
 .inscription-button:hover {
-    background-color: #e7e7e7;
+    background-color: #348f75;
 }
 
 .message {

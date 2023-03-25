@@ -71,16 +71,22 @@ include("adressSearch.php");
 
                 <?php
                 $result = displayPets($_COOKIE['username']);
-                while ($row = $result->fetch_assoc()) {
-                    ?>
-                    <div class="image-container">
-                        <label for="<?php echo $row['id']?>">
-                            <img class="pet-image" src="data:image/jpeg;base64,<?php echo base64_encode($row['avatar']); ?>" alt="Bouton parcourir">
-                        </label>
-                        <label class = "pet-name"><?php echo $row['nom']?></label>  <input class ="checkbox" type="checkbox" id="<?php echo $row['id']?>" name="animaux[]" value="<?php echo $row['id']?>">
-                    </div>
-                   <?php
-                }?>
+                if($result->num_rows == 0) {
+                    echo '<h4>Vous n\'avez ajouté aucun animal</h4>';
+                }
+                else {
+                    while ($row = $result->fetch_assoc()) {
+                        ?>
+                        <div class="image-container">
+                            <label for="<?php echo $row['id']?>">
+                                <img class="pet-image" src="data:image/jpeg;base64,<?php echo base64_encode($row['avatar']); ?>" alt="Bouton parcourir">
+                            </label>
+                            <label class = "pet-name"><?php echo $row['nom']?></label>  <input class ="checkbox" type="checkbox" id="<?php echo $row['id']?>" name="animaux[]" value="<?php echo $row['id']?>">
+                        </div>
+                        <?php
+                    }
+                }
+                ?>
             </div>
         </div>
 

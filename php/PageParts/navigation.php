@@ -4,6 +4,11 @@ require_once('./PageParts/databaseFunctions.php');
 ConnectDatabase();
 $loginStatus = isLogged();
 
+if(isset($_POST["destroyCookies"])) {
+    DestroyLoginCookie();
+    header("Location: ./connect.php");
+}
+
 
 include("windows.php");
 if(isset($_POST['reply_to'])) include('popupNewMessage.php');
@@ -39,10 +44,14 @@ if(isset($_POST['reply_to'])) include('popupNewMessage.php');
             <div class = "center">
                 <a href="#" onclick="openWindowByNavigation('new-message')"><li class = "tweet-button">Message</li></a>
             </div>
+
+
+            <form action = "" method = "post" class = "center">
+                <button type = "submit" name ="destroyCookies" class = "deconnexion">Déconnexion</button>
+            </form>
             <?php
         }
         ?>
     </div>
-
 </body>
 </html>

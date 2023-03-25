@@ -30,7 +30,7 @@ function displayContent($row) {
                 <div class = "tweet-header">
                     <?php
                     if($organisation) echo "<h1 class = 'name-profile'>" . $prenom . " " . $nom . "<img src = './images/organisation.png' style = 'margin-left: 0.8vw; width:1.4vw; height: 1.4vw;'></h1>";
-
+                    else  echo "<h1 class = 'name-profile'>" . $prenom . " " . $nom . " ";
                     echo '<h1 class = "tweet-information">'. ' @' . $auteur_username . ' · ' . $date . '</h1>'; ?>
 
                    <!-- <div class = "parameters"><a>...</a></div> -->

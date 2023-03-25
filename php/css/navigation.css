@@ -73,3 +73,14 @@ ul {
     border-radius: 3vw;
     background-color: #1F7C62;
 }
+
+.deconnexion {
+    margin-top: 6vw;
+    border-radius: 3vw;
+    border: 0.1vw solid #b95757;
+    background: none;
+    padding:1vw;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 1.2vw;
+    color: #b95757;
+}
