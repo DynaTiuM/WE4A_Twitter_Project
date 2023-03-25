@@ -44,7 +44,7 @@ function displayContainer($type) {
                     mainMessages($loginStatus);
                 }
                 else {
-                    echo '<h3>Connectez-vous pour accéder au contenu</h3>';
+                    echo '<h4>Connectez-vous pour accéder au contenu</h4>';
                 }
             }
             else {

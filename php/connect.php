@@ -1,9 +1,9 @@
 <?php
 require_once("./PageParts/databaseFunctions.php");
 ConnectDatabase();
-$loginStatus = CheckLogin();
+$newLoginStatus = CheckLogin();
 
-if(!$loginStatus[0]) {
+if(!$newLoginStatus[0]) {
     $newAccountStatus = CheckNewAccountForm();
 }
 ?>
@@ -30,9 +30,9 @@ if(!$loginStatus[0]) {
 
 	<div class = "MainContainer">
 
-        <h2>Connexion à Twitturtle</h2>
+        <h3>Connexion à Twitturtle</h3>
 
-        <?php if(!$loginStatus[0]) {?>
+        <?php if(!$newLoginStatus[0]) {?>
         <div class = "center">
             <button class = "connexion-button" onclick="openWindow('connexion')">Connexion</button>
             <button class = "inscription-button" onclick="openWindow('inscription')">Inscription</button>
@@ -43,7 +43,7 @@ if(!$loginStatus[0]) {
             header("Location: index.php");
             exit();
         }
-        if($loginStatus[2] != NULL) {
+        if($newLoginStatus[2] != NULL) {
             ?>
             <script>
                 // Ouverture automatique de la fenêtre erreur-connexion

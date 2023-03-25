@@ -19,7 +19,7 @@ if(isset($_POST['reply_to'])) include('popupNewMessage.php');
     <div class = "navigation">
         <a href = "index.php"><img src = "./images/logo.png" alt = "Logo" style = "width:3vw; height: 3vw; padding: 0.5vw; margin-left: 0.6vw; padding-bottom: 0;"></a>
         <ul>
-            <li class="menu-item"><a href="index.php"><img src="./images/follow.png">Abonnements</a></li>
+            <li class="menu-item" style = "font-weight: 900;"><a href="index.php"><img src="./images/follow.png">Abonnements</a></li>
             <li class="menu-item"><a href="explorer.php"><img src="./images/explorer.png">Explorer</a></li>
 
             <?php if($loginStatus) { ?>
@@ -30,7 +30,7 @@ if(isset($_POST['reply_to'])) include('popupNewMessage.php');
                 <?php
             } else {
                 ?>
-                <li class = "menu-item"><a href = "connect.php">Se connecter</a></li>
+                <li class = "menu-item"><a href = "connect.php"><img src="./images/enter.png">Se connecter</a></li>
                 <?php
             }
             ?>

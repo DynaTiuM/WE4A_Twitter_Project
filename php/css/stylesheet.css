@@ -104,11 +104,13 @@ body {
     margin-bottom: -2.3vw;
 }
 
+
 .tweet-information {
-    margin-top: 0.4vw;
-    font-family: Arial, sans-serif;
+    margin-top: 0.2vw;
+    font-family: "Plus Jakarta Sans", sans-serif;
     font-size: 1vw;
     color: gray;
+    font-weight: 200;
 }
 
 .tweet-content {
@@ -153,7 +155,6 @@ h1 {
     align-items: flex-start;
     width: 82%;
 }
-
 
 
 .center {
@@ -225,7 +226,7 @@ label {
     height: 3.4vw;
     margin: 0.5vw 1vw 1vw;
     border-radius: 50%;
-    background-color: blueviolet;
+    background-color: #348f75;
 }
 
 .Border {
@@ -318,7 +319,6 @@ a {
     text-decoration: none;
     color: black;
 }
-
 
 .message-image {
     width: 100%;

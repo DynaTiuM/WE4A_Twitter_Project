@@ -302,7 +302,8 @@ function mainMessagesQuery($loginStatus, $search, $level) {
         }
     }
     else {
-        echo '<h3>Aucun contenu disponible</h3>';
+        if($level == null) echo '<h4>Aucun contenu disponible</h4>';
+        else echo '<h4>Aucune réponse disponible</h4>';
     }
 }
 
@@ -348,8 +349,28 @@ function isLiked($id_message) {
             return true;
         }
     }
-
     return false;
+}
+
+function isCommented($id_message) {
+    $query = "SELECT * FROM message WHERE parent_message_id = '$id_message'";
+    global $conn;
+    $result = $conn->query($query);
+    if($result->num_rows > 0) {
+        return true;
+    }
+    return false;
+}
+
+function numComments($id_message) {
+    global $conn;
+
+    $query = "SELECT COUNT(*) FROM message WHERE parent_message_id = '$id_message'";
+    $result = $conn->query($query);
+
+    if($result && $result->num_rows > 0) {
+        return $result->fetch_Column();
+    }
 }
 
 function numLike($id_message) {
@@ -359,7 +380,7 @@ function numLike($id_message) {
     $result = $conn->query($query);
 
     if($result && $result->num_rows > 0) {
-        return $result->num_rows;
+        return $result->fetch_Column();
     }
 }
 
@@ -381,9 +402,18 @@ function findLikedMessages() {
         }
     }
     else {
-        echo '<h3>Ce profil n\'a aimé aucun message</h3>';
+        echo '<br><h4>Ce profil n\'a aimé aucun message</h4>';
     }
 
+}
+
+function countAllMessages($username, $type) {
+    global $conn;
+    if($type == "utilisateur") $query = "SELECT COUNT(*) FROM message WHERE auteur_username = '$username'";
+    else $query = "SELECT COUNT(*) FROM message_animaux WHERE animal_id = '$username'";
+    $result = $conn->query($query);
+
+    return $result->fetch_Column();
 }
 
 function profilMessages() {
@@ -405,7 +435,7 @@ function profilMessages() {
             }
         }
         else {
-            echo '<h3>Ce profil ne contient aucun message</h3>';
+            echo '<br><h4>Ce profil ne contient aucun message</h4>';
         }
     }
     else {
@@ -423,7 +453,7 @@ function profilMessages() {
             }
         }
         else {
-            echo '<h3>Ce profil ne contient aucun message</h3>';
+            echo '<br><h4>Ce profil ne contient aucun message</h4>';
         }
     }
 }
@@ -445,7 +475,7 @@ function profilAnswers() {
         }
     }
     else {
-        echo '<h3>Ce profil n\'a répondu à aucun message</h3>';
+        echo '<br><h4>Ce profil n\'a répondu à aucun message</h4>';
     }
 }
 
@@ -484,16 +514,17 @@ function getInformationMessage($row) {
     $localisation = $row['localisation'];
     $category = $row['categorie'];
 
-    $query = "SELECT nom, prenom FROM utilisateur JOIN message ON utilisateur.username = message.auteur_username WHERE auteur_username = '$auteur_username'";
+    $query = "SELECT nom, prenom, organisation FROM utilisateur JOIN message ON utilisateur.username = message.auteur_username WHERE auteur_username = '$auteur_username'";
     $result = $conn->query($query);
 
     if($result) {
         $row = $result->fetch_assoc();
         $prenom = $row['prenom'];
         $nom = $row['nom'];
+        $organisation = $row['organisation'];
     }
 
-    return array($id, $contenu, $diff, $avatar, $image, $localisation, $auteur_username, $prenom, $nom, $category);
+    return array($id, $contenu, $diff, $avatar, $image, $localisation, $auteur_username, $prenom, $nom, $category, $organisation);
 }
 
 function follow($to_follow) {

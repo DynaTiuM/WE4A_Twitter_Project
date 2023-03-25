@@ -29,7 +29,7 @@ $espece = $information['espece'];
         <input name = "nom" class = "answer" value="<?php echo $nom; ?>">
     </div>
     <div>
-        <input type = "number" name = "age" class = "answer" value="<?php echo $age; ?>">
+        <input type = "number" min = "0" max = "100" name = "age" class = "answer" value="<?php echo $age; ?>">
     </div>
     <div>
         <label for="gender"></label>

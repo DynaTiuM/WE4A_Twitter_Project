@@ -26,15 +26,22 @@
             <?php
             global $conn;
             $username =  $_GET["username"];
+
             $result = determinePetOrUser($conn, $username);
+
             if($result == 'user') {
+                $numberOfMessages = countAllMessages($username, 'utilisateur');
                 include("./PageParts/userProfileForm.php");
+                displayNumMessages($numberOfMessages);
                 $result = displayUserProfile($conn, $username);
             }
             else {
+                $numberOfMessages = countAllMessages($username, 'animal');
                 include("./PageParts/petProfileForm.php");
+                displayNumMessages($numberOfMessages);
                 displayPetProfile($conn, $username);
             }
+
 
             ?>
         </div>
@@ -90,6 +97,14 @@
 </div>
 
 </body>
+
+<?php
+function displayNumMessages($num) {?>
+    <div style = "margin-left: 1vw; font-family: 'Plus Jakarta Sans', sans-serif">
+        <p><?php echo $num?> Messages</p>
+    </div>
+    <?php
+}?>
 <script>
     // Récupération des boutons
     const messageBtn = document.getElementById("message-button");

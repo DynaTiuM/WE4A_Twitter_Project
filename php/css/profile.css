@@ -13,6 +13,12 @@
     height: 100%;
 }
 
+
+.name-profile {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    margin-top: 0;
+}
+
 .button-modify-profile, .button-following {
     margin-right: 1.1vw;
     align-self: flex-end;
@@ -60,8 +66,12 @@
     border: 0.15vw solid #1F7C62;
 }
 
-.button-follow {
+.button-follow, .add-pet {
     margin-right: 1.1vw;
     align-self: flex-end;
     margin-top: -2.6vw;
+}
+
+.add-pet {
+    margin-top: 0;
 }
