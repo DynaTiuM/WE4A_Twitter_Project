@@ -1,18 +1,3 @@
-<?php
-
-if(isset($_POST['modification-profile'])) {
-    motificationProfile();
-}
-
-if(isset($_POST['add-pet'])) {
-    addPet();
-}
-
-if(isset($_POST['follow'])) {
-    follow($_GET['username']);
-}
-
-?>
 
 <!DOCTYPE html>
 
@@ -22,6 +7,7 @@ if(isset($_POST['follow'])) {
     <meta charset = "utf-8">
     <link rel = "stylesheet" href = "./css/stylesheet.css">
     <link rel = "stylesheet" href = "./css/profile.css">
+    <link rel = "stylesheet" href = "./css/newMessage.css">
     <title>Profil</title>
     <link rel="shortcut icon" href="./favicon.ico">
 

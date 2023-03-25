@@ -8,6 +8,10 @@ if (!function_exists('displayPetProfile')) {
         ConnectDatabase();
         $loginStatus = isLogged();
 
+        if (isset($_POST['modification-pet-profile'])) {
+            motificationProfile('animal');
+        }
+
         $query = "SELECT * FROM animal WHERE id = '$username'";
         $result = $conn->query($query);
 

@@ -33,9 +33,9 @@ $loginStatus = isLogged();
     ?>
     <br>
     <h1>Catégories</h1>
-    <a href = "explorer.php?category=sauvetage"><p>Sauvetage</p></a>
-    <a href = "explorer.php?category=evenement"><p>Evénements</p></a>
-    <a href = "explorer.php?category=conseil"><p>Conseils</p></a>
+    <a href = "explorer.php?category=sauvetage"><p class = "category">Sauvetage</p></a>
+    <a href = "explorer.php?category=evenement"><p class = "category">Événements</p></a>
+    <a href = "explorer.php?category=conseil"><p class = "category">Conseils</p></a>
     <?php
     if($loginStatus) {
         $result = displayPets($_COOKIE['username']);

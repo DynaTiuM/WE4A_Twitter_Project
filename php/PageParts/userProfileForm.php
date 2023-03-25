@@ -1,6 +1,21 @@
 <?php
 
 function displayUserProfile($conn, $username) {
+
+
+    if (isset($_POST['modification-profile'])) {
+        motificationProfile('utilisateur');
+    }
+
+    if (isset($_POST['add-pet'])) {
+        addPet();
+    }
+
+    if (isset($_POST['follow'])) {
+        follow($_GET['username']);
+    }
+
+
     $query = "SELECT * FROM `utilisateur` WHERE username = '".$username."'";
     $result = $conn->query($query);
 

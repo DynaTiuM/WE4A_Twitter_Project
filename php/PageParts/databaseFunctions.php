@@ -104,33 +104,45 @@ function CreateLoginCookie($username, $encryptedPasswd){
     setcookie("password", $encryptedPasswd, time() + 24*3600);
 }
 
-function motificationProfile() {
-    modificationAvatarProfile();
+function motificationProfile($type) {
+
+    $username = $_GET["username"];
+
+    modificationAvatarProfile('utilisateur', $username);
 
     global $conn;
 
-    $username = $_GET["username"];
-    $prenom = $_POST['prenom'];
     $nom = $_POST['nom'];
-    $date = $_POST['date'];
-    $password = $_POST['password'];
     $bio = $_POST['bio'];
 
-    $query = "UPDATE utilisateur SET prenom = '$prenom', nom = '$nom', date_de_naissance = '$date', mot_de_passe = '$password', bio = '$bio' WHERE username = '" . $username. "'";
+    if($type == 'utilisateur') {
+        $prenom = $_POST['prenom'];
+        $date = $_POST['date'];
+        $password = $_POST['password'];
+
+        $query = "UPDATE utilisateur SET prenom = '$prenom', nom = '$nom', date_de_naissance = '$date', mot_de_passe = '$password', bio = '$bio' WHERE username = '" . $username. "'";
+    }
+    else {
+        $sexe = $_POST['sexe'];
+        $age = $_POST['age'];
+        $espece = $_POST['espece'];
+
+        $query = "UPDATE animal SET nom = '$nom', age = '$age', sexe = '$sexe', caracteristiques = '$bio', espece = '$espece' WHERE id = '" . $username. "'";
+    }
     $conn->query($query);
 
 }
 
-function modificationAvatarProfile() {
+function modificationAvatarProfile($type, $username) {
         global $conn;
-        $username = $_GET["username"];
         if (isset($_FILES["avatar"]) && is_uploaded_file($_FILES["avatar"]["tmp_name"])) {
             $image = addslashes(file_get_contents($_FILES['avatar']['tmp_name']));
 
-            $query = "UPDATE utilisateur SET avatar = '$image' WHERE username = '" . $username. "'";
+            $query = "UPDATE $type SET avatar = '$image' WHERE username = '" . $username. "'";
             $conn->query($query);
         }
 }
+
 
 // Modifying resolution of an image
 function formatImage($image) {

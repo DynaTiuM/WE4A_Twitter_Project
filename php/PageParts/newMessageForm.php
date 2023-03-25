@@ -87,19 +87,19 @@ include("adressSearch.php");
     <div id="display-type">
         <div class = "type-content" style = "display: flex">
             <div class="classical">
-                <input class = "check-radio" type="radio" id="classical" name="category" value="classique">
+                <input class = "check-radio" style = "border: none" type="radio" id="classical" name="category" value="classique">
                 <label for="classical">Classique</label>
             </div>
             <div class="event">
-                <input class = "check-radio" type="radio" id="event" name="category" value="evenement">
-                <label for="event">Evénement</label><br>
+                <input class = "check-radio" style = "border: none" type="radio" id="event" name="category" value="evenement">
+                <label for="event">Événement</label><br>
             </div>
             <div class="rescue">
-                <input class = "check-radio" type="radio" id="rescue" name="category" value="sauvetage">
+                <input class = "check-radio" style = "border: none" type="radio" id="rescue" name="category" value="sauvetage">
                 <label for="rescue">Sauvetage</label><br>
             </div>
             <div class="advice">
-                <input class = "check-radio" type="radio" id="advice" name="category" value="conseil">
+                <input class = "check-radio" style = "border: none" type="radio" id="advice" name="category" value="conseil">
                 <label for="advice">Conseil</label><br>
             </div>
         </div>

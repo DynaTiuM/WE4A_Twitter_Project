@@ -32,7 +32,21 @@ $espece = $information['espece'];
         <input type = "number" name = "age" class = "answer" value="<?php echo $age; ?>">
     </div>
     <div>
+        <label for="gender"></label>
+        <label>
+            <input type="radio" name="sexe" value="masculin" required <?php if($sexe == 'masculin') {?> checked <?php }?>>
+            Masculin
+        </label>
+        <label>
+            <input type="radio" name="sexe" value="feminin" <?php if($sexe == 'féminin') {?> checked <?php }?>>
+            Féminin
+        </label>
+    </div>
+    <div>
         <input name = "bio" class = "answer" value="<?php echo $bio; ?>" placeholder="Bio">
+    </div>
+    <div>
+        <input name = "espece" class = "answer" value="<?php echo $espece; ?>" placeholder="Bio">
     </div>
     <br>
 

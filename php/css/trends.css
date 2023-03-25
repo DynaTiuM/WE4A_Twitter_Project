@@ -1,5 +1,4 @@
 .trend, .hashtags_count {
-    font-family: "Plus Jakarta Sans", sans-serif;
     padding-left: 2vw;
     margin-bottom: 0;
     font-size: 1vw;
@@ -25,11 +24,17 @@
     margin: 2vw;
     background-color: #eef8f4;
     border-radius: 1vw;
+    font-family: "Plus Jakarta Sans", sans-serif;
 }
 
 .trends a {
     text-decoration: none;
     color: #1F7C62;
+}
+
+.category {
+    margin-left: 2vw;
+    font-weight: 900;
 }
 
 .hashtags_count {

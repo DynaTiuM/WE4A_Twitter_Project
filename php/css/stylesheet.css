@@ -113,14 +113,12 @@ body {
 
 .tweet-content {
     margin-left: -1vw;
-    max-width: 90%;
     padding-left: 1vw;
     font-family: Arial, sans-serif;
     font-size: 1.2vw;
+    width: 30vw;
     word-wrap: break-word;
 }
-
-
 
 h1 {
     box-sizing: border-box;
@@ -243,6 +241,8 @@ label {
     margin-left: 1.1vw;
     font-family: "Plus Jakarta Sans", sans-serif;
 }
+
+
 
 h3, h4 {
     margin-bottom: 0;

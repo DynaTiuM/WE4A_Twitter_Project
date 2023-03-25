@@ -38,13 +38,13 @@ function displayContent($row) {
                         case null:
                             break;
                         case 'evenement':
-                            echo '<div class = "event" style = "font-size: 0.8vw; padding: 0.4vw; margin-left: 0">'.$category.'</div>';
+                            echo '<a href = "./explorer.php?category=evenement"><span class = "event" style = "padding: 0.5vw; margin-left: 0; margin-top: 1vw">ÉVÉNEMENT</span></a>';
                             break;
                         case 'sauvetage':
-                            echo '<div class = "rescue" style = "font-size: 0.8vw; padding: 0.4vw; margin-left: 0">'.$category.'</div>';
+                            echo '<a href = "./explorer.php?category=sauvetage"><span class = "rescue" style = "padding: 0.5vw; margin-left: 0; margin-top: 1vw">SAUVETAGE</span></a>';
                             break;
                         case 'conseil':
-                            echo '<div class = "advice" style = "font-size: 0.8vw; padding: 0.4vw; margin-left: 0">'.$category.'</div>';
+                            echo '<a href = "./explorer.php?category=conseil"><span class = "advice" style = "padding: 0.5vw; margin-left: 0; margin-top: 1vw">CONSEIL</span></a>';
                             break;
                     }
                     if($localisation != null) {
