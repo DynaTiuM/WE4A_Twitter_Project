@@ -1,0 +1,75 @@
+
+.navigation {
+    width: 22.5%;
+    height: 100vh;
+    padding: 0;
+    color: white;
+}
+
+.navigation img {
+    width: 1.5vw;
+    height: 1.5vw;
+    margin-top: 1vw;
+    margin-left: 0.3vw;
+}
+
+.navigation .menu-item {
+    display: inline-block;
+    position: relative;
+    padding-left: 3vw;
+    vertical-align: middle;
+}
+
+
+.navigation .menu-item img {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.navigation .menu-item:hover::before {
+    content: '';
+    display: block;
+    position: absolute;
+
+    /* Centrer le hover par rapport au contenu de la navigation bar */
+    top: 0;
+    left: -1vw;
+    width: 115%;
+    height: 100%;
+    border-radius: 2vw; /* Ajuster la valeur de la taille des coins arrondis */
+    background-color: #E0E0E0;
+    z-index: -1;
+}
+
+ul {
+    padding-left: 2vw;
+}
+
+.menu-item {
+    color: #1F7C62;
+    text-align: left;
+    padding: 1vw 1vw 1vw 0;
+    text-decoration: none;
+}
+
+.navigation a {
+    text-decoration: none;
+    color: #1F7C62;
+}
+
+.Tweeter, .tweet-button, .menu-item {
+    display: inline-block;
+    font-size: 1.4vw;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    list-style: none;
+}
+
+.tweet-button {
+    margin-top: 2vw;
+    text-align: center;
+    color:  white;
+    padding: 1vw 3vw;
+    border-radius: 3vw;
+    background-color: #1F7C62;
+}

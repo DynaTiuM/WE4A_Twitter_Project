@@ -109,6 +109,9 @@ function explorerMessages($loginStatus) {
             if(!isset($_POST['reply_to']) && $loginStatus) include("./PageParts/newMessageForm.php");
             mainMessagesQuery($loginStatus, 'explorer', $_GET['answer']);
         }
+        elseif(isset($_GET['category'])) {
+            displayContentByCategory($_GET['category']);
+        }
         else {
             if(!isset($_POST['reply_to']) && $loginStatus) include("./PageParts/newMessageForm.php");
             mainMessagesQuery($loginStatus, 'explorer', null);

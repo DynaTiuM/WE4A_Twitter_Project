@@ -17,6 +17,7 @@ function displayContent($row) {
         $image = $information[4];
         $localisation = $information[5];
         $auteur_username = $information[6];
+        $category = $information[9];
 
         ?>
         <div class="message">
@@ -32,7 +33,21 @@ function displayContent($row) {
                    <!-- <div class = "parameters"><a>...</a></div> -->
                 </div>
                 <div class = "tweet-content">
-                    <?php if($localisation != null) {
+                    <?php
+                    switch($category) {
+                        case null:
+                            break;
+                        case 'evenement':
+                            echo '<div class = "event" style = "font-size: 0.8vw; padding: 0.4vw; margin-left: 0">'.$category.'</div>';
+                            break;
+                        case 'sauvetage':
+                            echo '<div class = "rescue" style = "font-size: 0.8vw; padding: 0.4vw; margin-left: 0">'.$category.'</div>';
+                            break;
+                        case 'conseil':
+                            echo '<div class = "advice" style = "font-size: 0.8vw; padding: 0.4vw; margin-left: 0">'.$category.'</div>';
+                            break;
+                    }
+                    if($localisation != null) {
                         echo '<div>
                                 <img style="width: 1vw; float: left;" src="./images/localisation.png" alt = "Localisation">
                                 <p class="localisation-message" style="margin-left: 1vw;">' . $localisation . '</p>

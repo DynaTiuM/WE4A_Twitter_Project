@@ -198,6 +198,17 @@ function displayContentById($id) {
     }
 }
 
+function displayContentByCategory($category) {
+    global $conn;
+    $query = "SELECT * FROM message WHERE categorie = '$category'";
+    $result = $conn->query($query);
+
+    if($result->num_rows > 0) {
+        include("messageForm.php");
+        displayContent($result->fetch_assoc());
+    }
+}
+
 function displayPets($username) {
     global $conn;
 
@@ -433,7 +444,6 @@ function getInformationMessage($row) {
     $contenu = $row['contenu'];
     $date = $row['date'];
     $id = $row['id'];
-    $id_message_parent = $row['parent_message_id'];
 
     // Convertir la date en timestamp
     $timestamp = strtotime($date);
@@ -460,6 +470,7 @@ function getInformationMessage($row) {
 
     $image = $row["image"];
     $localisation = $row['localisation'];
+    $category = $row['categorie'];
 
     $query = "SELECT nom, prenom FROM utilisateur JOIN message ON utilisateur.username = message.auteur_username WHERE auteur_username = '$auteur_username'";
     $result = $conn->query($query);
@@ -470,7 +481,7 @@ function getInformationMessage($row) {
         $nom = $row['nom'];
     }
 
-    return array($id, $contenu, $diff, $avatar, $image, $localisation, $auteur_username, $prenom, $nom, $id_message_parent);
+    return array($id, $contenu, $diff, $avatar, $image, $localisation, $auteur_username, $prenom, $nom, $category);
 }
 
 function follow($to_follow) {

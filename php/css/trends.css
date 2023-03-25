@@ -1,0 +1,47 @@
+.trend, .hashtags_count {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    padding-left: 2vw;
+    margin-bottom: 0;
+    font-size: 1vw;
+    font-weight: bold;
+}
+.hashtag_block:last-child {
+    margin-bottom: 0;
+    border-bottom-left-radius: 1vw;
+    border-bottom-right-radius: 1vw;
+}
+.hashtag_block:hover {
+    padding : 0.5vw;
+    background-color: #d3eae0;
+}
+
+.hashtag_block {
+    padding: 0.5vw;
+    margin-bottom: 0;
+}
+
+.trends {
+    width:27%;
+    margin: 2vw;
+    background-color: #eef8f4;
+    border-radius: 1vw;
+}
+
+.trends a {
+    text-decoration: none;
+    color: #1F7C62;
+}
+
+.hashtags_count {
+    font-weight: normal;
+    margin-top: 0.5vw;
+    margin-bottom: 0.5vw;
+    font-size: 0.8vw;
+}
+
+
+.pet-preview {
+    border-radius: 50%;
+    width: 7vw;
+    height: 7vw;
+}

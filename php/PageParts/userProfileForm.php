@@ -9,6 +9,10 @@ function displayUserProfile($conn, $username) {
         $prenom = $row["prenom"];
         $nom = $row["nom"];
         echo "<h3 class = 'name-profile'>" . $prenom . " " . $nom . "</h3>";
+        echo "<h4>" ."@" . $username . "</h4>";
+        if($row["bio"] != ("Bio" && null)) {
+            echo'<div class = "bio"><p>' . $row["bio"].'</p></div>';
+        }
 
         if($_COOKIE['username'] == $username) {?>
             <button class = "button-modify-profile" onclick="openWindow('modification-profile')">Editer le profil</button>
@@ -16,7 +20,8 @@ function displayUserProfile($conn, $username) {
                 <input type="submit" name="delete_cookies" value="Déconnexion">
             </form>
 
-            <button class = "add-pet"  onclick="openWindow('add-pet')">Ajouter un animal</button>
+
+            <button class = "add-pet" onclick="openWindow('add-pet')">Ajouter un animal</button>
             <?php
             if(isset($_POST['delete_cookies'])) {
                 DestroyLoginCookie();
@@ -31,10 +36,20 @@ function displayUserProfile($conn, $username) {
             <button type = "submit" name="follow" class = "button-following">Suivi</button>
         <?php }
 
-        echo "<h4>" ."@" . $username . "</h4>";
-        if($row["bio"] != ("Bio" && null)) {
-            echo'<div class = "bio"><p>' . $row["bio"].'</p></div>';
-        }
+        ?>
+
+        <div style = "margin-top: 1vw; display: inline-block">
+            <?php
+            $result = displayPets($username);
+            if($result->num_rows > 0) echo'<h3>Animaux</h3> <br>';
+            while ($row = $result->fetch_assoc()) {
+                ?>
+                <a href="./profile.php?username=<?php echo $row['id']; ?>"><img style = "border-radius: 50%; width: 4vw; height: 4vw; margin-left: 1vw;" src="data:image/jpeg;base64,<?php echo base64_encode($row['avatar']); ?>" alt="Bouton parcourir"></a>
+                <?php
+            }
+            ?>
+        </div>
+<?php
         return true;
     }
     return false;

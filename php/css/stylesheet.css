@@ -147,19 +147,6 @@ h1 {
     border-left: 0.1vw solid rgba(31, 124, 98, 0.29);
 }
 
-.Trends {
-    width:27%;
-    margin: 2vw;
-    background-color: #eef8f4;
-    border-radius: 1vw;
-}
-
-.navigation {
-    width: 22.5%;
-    height: 100vh;
-    padding: 0;
-    color: white;
-}
 
 .Container{
     margin:0 auto;
@@ -170,58 +157,6 @@ h1 {
 }
 
 
-.menu-item:hover {
-    color: #1F7C62;
-    background-color: rgba(0, 0, 0, 0.1);
-    border-radius: 3vw;
-    width:87%;
-}
-
-ul {
-    padding-left: 2vw;
-}
-
-.menu-item {
-    color: #1F7C62;
-    text-align: left;
-    padding: 1vw 1vw 1vw 0;
-    text-decoration: none;
-}
-
-.navigation a {
-    text-decoration: none;
-    color: #1F7C62;
-}
-
-.navigation a:hover {
-    color: #1F7C62;
-    text-decoration: none;
-}
-
-.Tweeter, .tweet-button, .menu-item {
-    display: inline-block;
-    font-size: 1.4vw;
-    font-family: "Plus Jakarta Sans", sans-serif;
-    list-style: none;
-}
-
-.menu-item:before {
-    content: "\2192";
-    font-size: 1.2vw;
-    color: #1F7C62;
-    margin-right: 1vw;
-    margin-left: 0;
-    padding-left: 0;
-}
-
-.tweet-button {
-    margin-top: 2vw;
-    text-align: center;
-    color:  white;
-    padding: 1vw 3vw;
-    border-radius: 3vw;
-    background-color: #1F7C62;
-}
 
 .center {
     text-align: center;
@@ -273,9 +208,10 @@ label {
 
 /* Bouton pour fermer la fenêtre flottante */
 .close {
+    font-family: "Plus Jakarta Sans", sans-serif;
     color: #aaaaaa;
     float: right;
-    font-size: 28px;
+    font-size: 2vw;
     font-weight: bold;
 }
 
@@ -302,48 +238,6 @@ label {
     border-bottom: 0.1vw solid rgba(31, 124, 98, 0.29);
 }
 
-
-.trend, .hashtags_count {
-    font-family: "Plus Jakarta Sans", sans-serif;
-    padding-left: 2vw;
-    margin-bottom: 0;
-    font-size: 1vw;
-    font-weight: bold;
-}
-.hashtag_block:last-child {
-    margin-bottom: 0;
-    border-bottom-left-radius: 1vw;
-    border-bottom-right-radius: 1vw;
-}
-.hashtag_block:hover {
-    padding : 0.5vw;
-    background-color: #d3eae0;
-}
-
-.hashtag_block {
-    padding: 0.5vw;
-    margin-bottom: 0vw;
-}
-
-.Trends a {
-    text-decoration: none;
-    color: #1F7C62;
-}
-
-.hashtags_count {
-    font-weight: normal;
-    margin-top: 0.5vw;
-    margin-bottom: 0.5vw;
-    font-size: 0.8vw;
-}
-
-.profile-picture {
-    width: 9vw;
-    height: 9vw;
-    object-fit: cover;
-    border-radius: 100%;
-    border: 0.1vw solid #1F7C62;
-}
 
 .profile-picture, h3, h4, .bio {
     margin-left: 1.1vw;
@@ -384,18 +278,12 @@ h4 {
     margin-bottom: -3vw;
 }
 
-.image-modification, .pet-preview {
+.image-modification {
     width: 10vw;
     height: 10vw;
     border-radius: 100%;
     display: block;
     margin: auto;
-}
-
-.pet-preview {
-    display: inline-block;
-    width: 8vw;
-    height: 8vw;
 }
 
 
@@ -415,26 +303,6 @@ h4 {
     opacity: 0;
 }
 
-.profile {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
-}
-
-.button-modify-profile, .button-following {
-    margin-right: 1.1vw;
-    align-self: flex-end;
-    margin-top: -2.6vw;
-
-    color: white;
-    border-radius: 2vw;
-    font-size: 1.1vw;
-    background: #1F7C62;
-    border: none;
-    padding: 1vw 1.7vw;
-}
-
 .image-icon {
     width: 3vw;
     height: 3vw;
@@ -451,18 +319,6 @@ a {
     color: black;
 }
 
-
-.button-following {
-    color: #1F7C62;
-    background: white;
-    border: 0.15vw solid #1F7C62;
-}
-
-.button-follow {
-    margin-right: 1.1vw;
-    align-self: flex-end;
-    margin-top: -2.6vw;
-}
 
 .message-image {
     width: 100%;

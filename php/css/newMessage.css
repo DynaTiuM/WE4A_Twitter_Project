@@ -30,6 +30,10 @@
     width: 80%;
 }
 
+#display-type{
+    display: none;
+}
+
 .pets-content {
     border-radius: 1vw;
     background-color: #fefefe;
@@ -40,6 +44,45 @@
     text-align: center;
     margin-bottom: 1vw;
 }
+
+.type-content {
+    padding: 0.8vw;
+    text-align: center;
+}
+
+.radio-container, .classical, .rescue, .advice, .event  {
+    display: inline-block;
+    padding: 0.8vw;
+    border-radius: 1.2vw;
+    margin: 0.5vw;
+}
+
+.classical {
+    background-color: rgba(106,182,158,0.75);
+}
+
+.event {
+    background-color: rgba(194,126,101,0.75);
+}
+
+.rescue {
+    background-color: rgba(201,165,110,0.75);
+}
+
+.advice {
+    background-color: rgba(101,167,208,0.75);
+}
+
+.classical, .rescue, .advice, .event {
+    color : white;
+    font-size: 1vw;
+}
+
+.radio-container label {
+    display: inline-block;
+    font-size: 1vw;
+}
+
 
 .pet-image {
     width: 5vw;
@@ -54,7 +97,7 @@
     font-family: "Plus Jakarta Sans", sans-serif;
 }
 
-.checkbox {
+.checkbox, .check-radio {
     width: 1vw;
     height: 1vw;
     margin-top: 0;
@@ -66,6 +109,10 @@
 
 .checkbox:checked {
     background-color: #1F7C62;
+}
+
+.check-radio:checked{
+    background-color: #3a3a3a;
 }
 
 .image-container {

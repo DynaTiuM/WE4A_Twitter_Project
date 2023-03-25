@@ -4,8 +4,17 @@ require_once('./PageParts/databaseFunctions.php');
 ConnectDatabase();
 $loginStatus = isLogged();
 ?>
+<!DOCTYPE html>
+<html lang = "fr">
+<head>
+    <meta charset="UTF-8">
+    <link rel = "stylesheet" href = "./css/trends.css">
+</head>
+<body>
 
-<div class="Trends">
+</body>
+</html>
+<div class="trends">
     <h1>Tendances pour vous</h1>
     <?php
     global $conn;
@@ -23,6 +32,10 @@ $loginStatus = isLogged();
     }
     ?>
     <br>
+    <h1>Catégories</h1>
+    <a href = "explorer.php?category=sauvetage"><p>Sauvetage</p></a>
+    <a href = "explorer.php?category=evenement"><p>Evénements</p></a>
+    <a href = "explorer.php?category=conseil"><p>Conseils</p></a>
     <?php
     if($loginStatus) {
         $result = displayPets($_COOKIE['username']);

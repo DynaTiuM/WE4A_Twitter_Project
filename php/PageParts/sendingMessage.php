@@ -16,7 +16,7 @@ function sendMessage() {
 
         global $conn;
 
-        $stmt = $conn->prepare("INSERT INTO message (auteur_username, parent_message_id, date, contenu, localisation, image) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO message (auteur_username, parent_message_id, date, contenu, localisation, image, categorie) VALUES (?, ?, ?, ?, ?, ?, ?)");
 
         $image = createImage($_FILES["image"]);
 
@@ -26,14 +26,14 @@ function sendMessage() {
         }
 
         $localisation = null;
-        if(isset($_POST['localisation'])) {
-            $localisation = $_POST['localisation'];
-        }
+        $category = null;
+        if(isset($_POST['localisation'])) $localisation = $_POST['localisation'];
+        if(isset($_POST['category'])) if($_POST['category'] != 'classique') $category = $_POST['category'];
 
         $parent_message_id = $reply_id;
 
         $date = date('Y-m-d H:i:s');
-        $stmt->bind_param("ssssss", $username, $parent_message_id, $date, $content, $localisation, $image);
+        $stmt->bind_param("sssssss", $username, $parent_message_id, $date, $content, $localisation, $image, $category);
         $stmt->execute();
 
         // On récupère l'id du message inséré

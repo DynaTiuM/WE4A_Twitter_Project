@@ -17,7 +17,6 @@ include("adressSearch.php");
 
     <link rel = "stylesheet" href = "./css/stylesheet.css">
     <link rel = "stylesheet" href = "./css/newMessage.css">
-
 </head>
 
 <body>
@@ -50,22 +49,24 @@ include("adressSearch.php");
             <label>
                 <img onclick="openWindow('display-pet')" src="./images/pet.png" class ="icon" alt = "Animaux">
             </label>
-        </form>
 
+            <label>
+                <img onclick="openWindow('display-type', 'block')" src="./images/select.png" class ="icon" alt = "Type">
+            </label>
+        </form>
 
         <!-- Fenêtre flottante pour la localisation -->
         <div id="map-container" class="localisation-window">
             <div class="localisation-content">
+                <span style ="font-size: 1.3vw;" class="close" onclick="closeMap()">OK</span>
                 <h2 class = "window-title">Localisation</h2><div id="map"></div>
                 <input type="text" class = "answer" id="search" placeholder="Rechercher une adresse" name = "localisation">
-                <a href = '' class = "form-button" onclick="closeWindow('map-container')">OK</a>
             </div>
         </div>
 
-
         <div id="display-pet">
             <div class="pets-content">
-                <span class="close" onclick="closeWindow('display-pet')">&times;</span>
+                <span style ="font-size: 1.3vw;" class="close" onclick="closeWindow('display-pet')">OK</span>
                 <h2 class = "window-title">Sélectionner animaux</h2>
 
                 <?php
@@ -82,6 +83,31 @@ include("adressSearch.php");
                 }?>
             </div>
         </div>
+
+    <div id="display-type">
+        <div class = "type-content" style = "display: flex">
+            <div class="classical">
+                <input class = "check-radio" type="radio" id="classical" name="category" value="classique">
+                <label for="classical">Classique</label>
+            </div>
+            <div class="event">
+                <input class = "check-radio" type="radio" id="event" name="category" value="evenement">
+                <label for="event">Evénement</label><br>
+            </div>
+            <div class="rescue">
+                <input class = "check-radio" type="radio" id="rescue" name="category" value="sauvetage">
+                <label for="rescue">Sauvetage</label><br>
+            </div>
+            <div class="advice">
+                <input class = "check-radio" type="radio" id="advice" name="category" value="conseil">
+                <label for="advice">Conseil</label><br>
+            </div>
+        </div>
+        <div class = "center">
+            <span style ="font-size: 1.3vw; margin-right: 3vw; margin-bottom: 2vw" class="close" onclick="closeWindow('display-type')">OK</span>
+        </div>
+
+    </div>
 
     </div>
 </div>

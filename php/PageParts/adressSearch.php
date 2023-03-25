@@ -3,6 +3,9 @@
     function showMap() {
         // Afficher la fenêtre flottante
         document.getElementById("map-container").style.display = "inline-block";
+        document.getElementById("display-type").style.display = "none";
+        document.getElementById("display-pet").style.display = "none";
+
         // Récupérer l'élément de la carte
         var mapElement = document.getElementById("map");
 
@@ -35,6 +38,10 @@
 
         // Ajouter l'élément de recherche à la carte
         map.controls[google.maps.ControlPosition.TOP_LEFT].push(searchElement);
+    }
+
+    function closeMap() {
+        document.getElementById("map-container").style.display = "none";
     }
 
 </script>
