@@ -112,6 +112,29 @@ body {
     padding-left: 0;
 }
 
+.parent-message {
+    scale: 0.7;
+    transform-origin: left;
+    margin-left: 0.9vw;
+}
+
+.container-parent-message {
+    position: relative; /* ajout de cette propriété */
+    margin-left: 2.6vw;
+}
+.container-parent-message::before { /* ajout de ce pseudo-élément */
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0.2vw;
+    height: 7.2vw;
+    border-radius: 1vw;
+    margin-top: -4.2vw;
+    background-color: #1F7C62;
+}
+
+
 .tweet-content {
     margin-left: -1vw;
     padding-left: 1vw;

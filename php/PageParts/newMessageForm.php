@@ -28,7 +28,7 @@ include("adressSearch.php");
             <img class = "avatar-new-message"  src="data:image/jpeg;base64,<?php echo base64_encode($avatar); ?> " />
         </a>
         <label>
-            <textarea name = "content" class = "message-content" placeholder="Message" rows="2" maxlength="240" required></textarea>
+            <textarea name = "content" class = "message-content" placeholder="Nouveau message" rows="2" maxlength="240" required></textarea>
         </label>
         <span class = "Border" style="width: 80%;"></span>
         <div class = "ButtonPosition">
@@ -50,9 +50,14 @@ include("adressSearch.php");
                 <img onclick="openWindow('display-pet')" src="./images/pet.png" class ="icon" alt = "Animaux">
             </label>
 
+            <?php if(!isset($_COOKIE['reply_to']) && !isset($_GET['answer'])) {
+            ?>
             <label>
                 <img onclick="openWindow('display-type', 'block')" src="./images/select.png" class ="icon" alt = "Type">
             </label>
+            <?php
+            }
+            ?>
     </form>
 
     <!-- Fenêtre flottante pour la localisation -->

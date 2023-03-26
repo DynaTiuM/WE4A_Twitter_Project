@@ -100,10 +100,11 @@ function explorerMessages($loginStatus) {
             $parent_message_id = getParentMessageId($_GET['answer']);
             if($parent_message_id) {
                 ?>
-                <div style = "scale: 0.8; display: flex">
-                <?php displayContentbyId($parent_message_id);?>
+                <div class ="parent-message">
+                    <?php displayContentbyId($parent_message_id);?>
+                    <span class = "container-parent-message"></span>
                 </div>
-        <?php
+            <?php
             }
             displayContentById($_GET['answer']);
             include("./PageParts/adressSearch.php");
