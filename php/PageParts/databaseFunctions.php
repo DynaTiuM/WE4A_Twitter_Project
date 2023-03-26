@@ -201,12 +201,22 @@ function getPetInformation($pet) {
 
 function displayContentById($id) {
     global $conn;
-    $query = "SELECT * FROM message WHERE id = '$id'";
+    $query = "SELECT * FROM message WHERE id ='$id'";
     $result = $conn->query($query);
 
     if($result->num_rows > 0) {
         include("messageForm.php");
         displayContent($result->fetch_assoc());
+    }
+}
+
+function getParentMessageId($id_son) {
+    global $conn;
+    $query = "SELECT parent_message_id FROM message WHERE id = $id_son";
+    $result = $conn->query($query);
+    if($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        return $row['parent_message_id'];
     }
 }
 
@@ -613,6 +623,31 @@ function findPets($id) {
 
     $query = "SELECT animal.* FROM animal JOIN message_animaux ON animal.id = message_animaux.animal_id WHERE message_id = '$id'";
     return $conn->query($query);
+}
+
+function getNotifications() {
+    global $conn;
+    $query = "SELECT notification.*, message.*, utilisateur.*, animal.nom
+            FROM notification
+            INNER JOIN message ON notification.message_id = message.id
+            LEFT JOIN message_animaux ON message.id = message_animaux.message_id
+            LEFT JOIN animal ON message_animaux.animal_id = animal.id
+            INNER JOIN utilisateur ON message.auteur_username = utilisateur.username
+            WHERE notification.utilisateur_username = '{$_COOKIE['username']}'
+            ORDER BY notification.date DESC;";
+    $result = $conn->query($query);
+    if($result->num_rows > 0){
+        return $result;
+    }
+    return null;
+}
+
+function deleteNotification($notification_id) {
+    global $conn;
+
+    $sql = "DELETE FROM notification WHERE id = $notification_id";
+
+    $conn->close();
 }
 
 //Méthode pour détruire les cookies de Login

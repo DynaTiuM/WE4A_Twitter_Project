@@ -55,6 +55,7 @@
 }
 
 .radio-container, .classical, .rescue, .advice, .event  {
+    font-family: "Plus Jakarta Sans", sans-serif;
     display: inline-block;
     padding: 0.8vw;
     border-radius: 1.2vw;

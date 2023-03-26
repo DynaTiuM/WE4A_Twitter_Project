@@ -11,7 +11,15 @@
     <title>Profil</title>
     <link rel="shortcut icon" href="./favicon.ico">
 
-    <?php include("./PageParts/windows.php"); ?>
+    <?php
+    include("./PageParts/windows.php");
+    include("./PageParts/hubMessages.php");
+
+    global $loginStatus;
+    /* DUPLICATED!!!! */
+    if(isset($_POST['like']) && $loginStatus) likeMessage($_POST['like']);
+
+    ?>
 
 </head>
 

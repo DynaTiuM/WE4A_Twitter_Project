@@ -32,7 +32,7 @@ include("adressSearch.php");
         </label>
         <span class = "Border" style="width: 80%;"></span>
         <div class = "ButtonPosition">
-            <button class = "Tweeter" type = "submit" name = "submit">Envoyer</button>
+            <button class = "Tweeter" type = "submit" name = "submit" value = "<?php if(isset($_POST['reply_to'])) echo $_POST['reply_to']?>">Envoyer</button>
         </div>
 
         <div class = "icons">

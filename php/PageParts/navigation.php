@@ -9,9 +9,8 @@ if(isset($_POST["destroyCookies"])) {
     header("Location: ./connect.php");
 }
 
-
 include("windows.php");
-if(isset($_POST['reply_to'])) include('popupNewMessage.php');
+if(isset($_POST['reply_to'])) include('popupNewMessageForm.php');
 ?>
 <!DOCTYPE html>
 <html lang = "fr">
@@ -28,7 +27,7 @@ if(isset($_POST['reply_to'])) include('popupNewMessage.php');
             <li class="menu-item"><a href="explorer.php"><img src="./images/explorer.png">Explorer</a></li>
 
             <?php if($loginStatus) { ?>
-                <li class = "menu-item"><a href="notifications.php"><img src="./images/notification.png">Notifications</a></li>
+                <li class = "menu-item"><a href="./notifications.php"><img src="./images/notification.png">Notifications</a></li>
                 <li class = "menu-item"><a href="messages.php"><img src="./images/message.png">Messages</a></li>
 
                 <li class = "menu-item"><a href = "profile.php?username=<?php echo urlencode($_COOKIE['username']); ?>"><img src="./images/profile.png">Profil</a></li>
@@ -53,6 +52,7 @@ if(isset($_POST['reply_to'])) include('popupNewMessage.php');
             <?php
 
             if(isset($_POST['new-message'])) {
+                include("./PageParts/popupnewMessage.php");
                 popUpNewMessage(true);
             }
         }

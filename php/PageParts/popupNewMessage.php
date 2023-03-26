@@ -1,20 +1,14 @@
-<div id="new-message" class="window-background">
-    <div class="window-content">
-        <?php if(isset($_POST['reply_to'])) {
-
-            echo '<span class="close" onclick="closeWindowToNewDestination(\'new-message\', location.href)">&times;</span>';
-
-            echo '<h2 class = "window-title">Nouveau commentaire</h2>';
-
-            displayContentById($_POST['reply_to']);
-        }
-        else {
-            echo '<span class="close" onclick="closeWindowToNewDestination(\'new-message\', location.href)">&times;</span>';
-            ?>
-            <h2 class = "window-title">Nouveau message</h2>
+<?php
+function popUpNewMessage($forced = false) {
+    if (isset($_POST['reply_to']) && !empty($_POST['reply_to']) || $forced) {
+        // Afficher ici la section des messages avec la réponse au message sélectionné
+        ?>
+        <script>
+            // Ouverture automatique de la fenêtre erreur-connexion
+            window.onload = function() {
+                openWindow('new-message');
+            }
+        </script>
         <?php
-        }
-        require_once("./PageParts/newMessageForm.php");  ?>
-    </div>
-</div>
-
+    }
+}
