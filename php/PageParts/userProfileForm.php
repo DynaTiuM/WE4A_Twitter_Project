@@ -11,11 +11,6 @@ function displayUserProfile($conn, $username) {
         addPet();
     }
 
-    if (isset($_POST['follow'])) {
-        follow($_GET['username']);
-    }
-
-
     $query = "SELECT * FROM utilisateur WHERE username = '".$username."'";
     $result = $conn->query($query);
 
@@ -24,6 +19,9 @@ function displayUserProfile($conn, $username) {
         $prenom = $row["prenom"];
         $nom = $row["nom"];
 
+        $organisation = $row['organisation'] ?>
+        <img <?php if($organisation == 1) { ?> class = "profile-picture-organisation" <?php } else { ?> class = "profile-picture" <?php } ?> src="data:image/jpeg;base64,<?php echo base64_encode(loadAvatar($username)); ?>"  alt="Photo de profil">
+<?php
         if($row['organisation']) echo "<h3 class = 'name-profile'>" . $prenom . " " . $nom . "<img src = './images/organisation.png' style = 'margin-left: 0.8vw; width:1.4vw; height: 1.4vw;'></h3>";
         else echo "<h3 class = 'name-profile'>" . $prenom . " " . $nom . "</h3>";
 
@@ -47,7 +45,7 @@ function displayUserProfile($conn, $username) {
                     DestroyLoginCookie();
                 }
             }
-            elseif (!checkFollow($username)) { ?>
+            elseif (!checkFollow($username, 'utilisateur')) { ?>
                 <form action="" method="post" class = "button-follow">
                     <button type = "submit" name="follow" class = "button-modify-profile">Suivre</button>
                 </form>

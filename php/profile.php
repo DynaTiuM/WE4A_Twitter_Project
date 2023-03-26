@@ -19,17 +19,19 @@
 <div class = "Container">
     <?php include ("./PageParts/navigation.php")?>
     <div class = "MainContainer">
-        <h1>Profil</h1>
+        <h1 style = "margin-bottom: 0; padding-bottom: 0.5vw">Profil</h1>
         <div class = "profile">
-            <img class = "profile-picture" src="data:image/jpeg;base64,<?php echo base64_encode(loadAvatar($_GET['username'])); ?>"  alt="Photo de profil">
-
             <?php
-            global $conn;
             $username =  $_GET["username"];
+            global $conn;
 
-            $result = determinePetOrUser($conn, $username);
+            $type = determinePetOrUser($conn, $username);
 
-            if($result == 'user') {
+            if (isset($_POST['follow'])) {
+                follow($username, $type);
+            }
+
+            if($type == 'user') {
                 $numberOfMessages = countAllMessages($username, 'utilisateur');
                 include("./PageParts/userProfileForm.php");
                 displayNumMessages($numberOfMessages);
@@ -48,7 +50,7 @@
 
         <div id="message-like-section">
             <button id="message-button" class="message-section" disabled>Messages</button>
-            <?php if($result == 'user') {?>
+            <?php if($type == 'user') {?>
             <button id="answer-button" class="answer-section">Réponses</button>
             <button id="like-button" class="like-section" >J'aime</button>
                 <?php
@@ -58,7 +60,7 @@
                 profilMessages();
                 ?>
             </div>
-            <?php if($result == 'user') {?>
+            <?php if($type == 'user') {?>
                 <div id="answer-content" style="display:none;">
                     <?php profilAnswers();?>
                 </div>
@@ -100,8 +102,8 @@
 
 <?php
 function displayNumMessages($num) {?>
-    <div style = "margin-left: 1vw; font-family: 'Plus Jakarta Sans', sans-serif">
-        <p><?php echo $num?> Messages</p>
+    <div style = "margin-left: 1vw; font-family: 'Plus Jakarta Sans', sans-serif;">
+        <p style = "margin-top: 0; padding-top: 0; font-size: 0.9vw; padding-bottom: 1vw"><?php echo $num?> Messages</p>
     </div>
     <?php
 }?>

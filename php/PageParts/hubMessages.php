@@ -22,16 +22,13 @@ function displayContainer($type) {
     ?>
 
     <!DOCTYPE html>
-
     <html lang = "fr">
-
     <head>
         <meta charset = "utf-8">
         <link rel = "stylesheet" href = "./css/stylesheet.css">
         <title>Twitturtle</title>
         <link rel="shortcut icon" href="./favicon.ico">
     </head>
-
     <body>
     <div class = "Container">
         <?php include ("PageParts/navigation.php");?>
@@ -41,6 +38,7 @@ function displayContainer($type) {
             <?php
             if($type == 'main') {
                 if ($loginStatus) {
+                    popUpNewMessage();
                     mainMessages($loginStatus);
                 }
                 else {
@@ -48,6 +46,7 @@ function displayContainer($type) {
                 }
             }
             else {
+                popUpNewMessage();
                 explorerMessages($loginStatus);
             }
             ?>

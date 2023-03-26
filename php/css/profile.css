@@ -1,9 +1,22 @@
-.profile-picture {
+.profile-picture, .profile-picture-organisation, .profile-picture-pet {
     width: 9vw;
     height: 9vw;
     object-fit: cover;
     border-radius: 100%;
-    border: 0.1vw solid #1F7C62;
+    border: 0.2vw solid #1F7C62;
+    margin-bottom: 0.7vw;
+}
+
+.profile-picture-organisation {
+    border: 0.1vw solid rgb(164, 110, 9);
+    padding: 0.5vw;
+    margin-left: 0.8vw;
+    background: -webkit-linear-gradient(left top, rgb(206, 130, 35), rgb(252, 223, 68));
+}
+
+.profile-picture-pet {
+    border: 0.2vw solid #7c1f62;
+    margin-left: 1.1vw;
 }
 
 .profile {

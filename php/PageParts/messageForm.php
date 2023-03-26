@@ -29,7 +29,7 @@ function displayContent($row) {
             <div class>
                 <div class = "tweet-header">
                     <?php
-                    if($organisation) echo "<h1 class = 'name-profile'>" . $prenom . " " . $nom . "<img src = './images/organisation.png' style = 'margin-left: 0.8vw; width:1.4vw; height: 1.4vw;'></h1>";
+                    if($organisation) echo "<h1 class='name-profile'>" . $prenom . " " . $nom . "<img title=\"Ce compte est certifié car il s'agit d'une organisation\" src='./images/organisation.png' style='margin-left: 0.8vw; width:1.4vw; height: 1.4vw;'></h1>";
                     else  echo "<h1 class = 'name-profile'>" . $prenom . " " . $nom . " ";
                     echo '<h1 class = "tweet-information">'. ' @' . $auteur_username . ' · ' . $date . '</h1>'; ?>
 
@@ -74,7 +74,6 @@ function displayContent($row) {
                             <form method="post" action="">
                                 <input type="hidden" name="reply_to" value="<?php echo $id?>">
                                 <button type="submit" class="comment" <?php if(!$loginStatus) { ?> disabled<?php } ?>>
-
                                     <label style ="display: flex;">
                                     <img style="width: 1.5vw; padding: 0.6vw;" src="./images/comment.png" alt="Commenter">
                                     <?php if(isCommented($id)) { ?>

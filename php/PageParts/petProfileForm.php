@@ -18,6 +18,9 @@ if (!function_exists('displayPetProfile')) {
         if($result && $result->num_rows > 0) {
             $row = $result->fetch_assoc();
             $nom = $row["nom"];
+            ?>
+            <img class = "profile-picture-pet" src="data:image/jpeg;base64,<?php echo base64_encode(loadAvatar($username)); ?>"  alt="Photo de profil">
+            <?php
             echo "<h3 class = 'name-profile'>" . $nom . "</h3>";
 
             if($loginStatus) {
@@ -25,7 +28,7 @@ if (!function_exists('displayPetProfile')) {
                     <button class = "button-modify-profile" onclick="openWindow('modification-pet-profile')">Editer le profil</button>
                     <?php
                 }
-                elseif (!checkFollow($username)) { ?>
+                elseif (!checkFollow($username, 'animal')) { ?>
                     <form action="" method="post" class = "button-follow">
                         <button type = "submit" name="follow" class = "button-modify-profile">Suivre</button>
                     </form>

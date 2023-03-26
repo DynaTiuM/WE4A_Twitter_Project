@@ -4,6 +4,7 @@
     height: 100vh;
     padding: 0;
     color: white;
+    position:sticky;
 }
 
 .navigation img {

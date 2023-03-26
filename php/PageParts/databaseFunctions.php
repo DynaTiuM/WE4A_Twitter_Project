@@ -527,15 +527,19 @@ function getInformationMessage($row) {
     return array($id, $contenu, $diff, $avatar, $image, $localisation, $auteur_username, $prenom, $nom, $category, $organisation);
 }
 
-function follow($to_follow) {
+function follow($to_follow, $type) {
     global $conn;
-    $query = "INSERT INTO suivre (utilisateur_username, suivi_type, suivi_id_utilisateur) VALUES ('" . $_COOKIE['username'] . "', 'utilisateur', '" . $to_follow . "')";
+    if($type == 'user') $type = 'utilisateur';
+    else $type = 'animal';
+
+    $query = "INSERT INTO suivre (utilisateur_username, suivi_type, suivi_id_$type) VALUES ('" . $_COOKIE['username'] . "', '$type', '" . $to_follow . "')";
+
     $conn->query($query);
 }
 
-function checkFollow($to_follow) {
+function checkFollow($to_follow, $type) {
     global $conn;
-    $query = "SELECT * FROM suivre WHERE utilisateur_username = '".$_COOKIE['username']."' AND suivi_type = 'utilisateur' AND suivi_id_utilisateur = '$to_follow'";
+    $query = "SELECT * FROM suivre WHERE utilisateur_username = '".$_COOKIE['username']."' AND suivi_type = '$type' AND suivi_id_$type = '$to_follow'";
     $result = $conn->query($query);
 
     if ($result && $result->num_rows > 0) {
