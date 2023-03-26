@@ -274,7 +274,7 @@ function mainMessagesQuery($loginStatus, $search, $level) {
                 ORDER BY message.date DESC";
     }
     else {
-        if($search != 'main') {
+        if($search != 'subs') {
             $query = "SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username
                         FROM message
                         JOIN utilisateur ON message.auteur_username = utilisateur.username
@@ -284,12 +284,14 @@ function mainMessagesQuery($loginStatus, $search, $level) {
         }
         else {
             if($loginStatus) {
-                $query = "SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username
-                    FROM message 
-                      JOIN utilisateur ON message.auteur_username=utilisateur.username 
-                      JOIN suivre ON suivre.suivi_id_utilisateur = message.auteur_username 
-                  WHERE (suivre.utilisateur_username = '{$_COOKIE['username']}' AND message.parent_message_id {$level_})
-                  ORDER BY message.date DESC";
+                $query = "SELECT DISTINCT message.*
+                            FROM message
+                            LEFT JOIN message_animaux ON message.id = message_animaux.message_id
+                            LEFT JOIN animal ON message_animaux.animal_id = animal.id
+                            LEFT JOIN suivre ON suivre.suivi_id_utilisateur = message.auteur_username OR (suivre.suivi_type = 'animal' AND suivre.suivi_id_animal = animal.id)
+                            WHERE suivre.utilisateur_username = '{$_COOKIE['username']}'
+                            ORDER BY message.date DESC;
+                             ";
             }
         }
     }
@@ -316,6 +318,23 @@ function isOwner($username) {
         if($row['maitre_username'] == $_COOKIE['username']) return true;
     }
     return false;
+}
+
+function numFollowers($username, $type) {
+    global $conn;
+    $query = "SELECT COUNT(*) FROM suivre WHERE suivi_id_$type = '$username'";
+    $result = $conn->query($query);
+
+    return $result->fetch_Column();
+}
+
+function numFollowing($username) {
+    global $conn;
+
+    $query = "SELECT COUNT(*)FROM suivre WHERE utilisateur_username = '$username'";
+    $result = $conn->query($query);
+
+    return $result->fetch_Column();
 }
 
 function likeMessage($id_message) {
@@ -527,10 +546,19 @@ function getInformationMessage($row) {
     return array($id, $contenu, $diff, $avatar, $image, $localisation, $auteur_username, $prenom, $nom, $category, $organisation);
 }
 
-function follow($to_follow, $type) {
+function follow_unfollow($to_follow, $type) {
     global $conn;
     if($type == 'user') $type = 'utilisateur';
     else $type = 'animal';
+
+    $query = "SELECT * FROM suivre WHERE utilisateur_username = '". $_COOKIE['username']. "' AND suivi_id_$type = '$to_follow' ";
+    $result = $conn->query($query);
+
+    if($result->num_rows > 0) {
+        $query = "DELETE FROM suivre WHERE utilisateur_username = '". $_COOKIE['username']. "' AND suivi_id_$type = '$to_follow' ";
+        $conn->query($query);
+        return;
+    }
 
     $query = "INSERT INTO suivre (utilisateur_username, suivi_type, suivi_id_$type) VALUES ('" . $_COOKIE['username'] . "', '$type', '" . $to_follow . "')";
 

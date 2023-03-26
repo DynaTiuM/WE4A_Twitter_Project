@@ -22,7 +22,7 @@ if(isset($_POST['reply_to'])) include('popupNewMessage.php');
 <body>
 
     <div class = "navigation">
-        <a href = "index.php"><img src = "./images/logo.png" alt = "Logo" style = "width:3vw; height: 3vw; padding: 0.5vw; margin-left: 0.6vw; padding-bottom: 0;"></a>
+        <a href = "explorer.php"><img src = "./images/logo.png" alt = "Logo" style = "width:3vw; height: 3vw; padding: 0.5vw; margin-left: 0.6vw; padding-bottom: 0;"></a>
         <ul>
             <li class="menu-item" style = "font-weight: 900;"><a href="index.php"><img src="./images/follow.png">Abonnements</a></li>
             <li class="menu-item"><a href="explorer.php"><img src="./images/explorer.png">Explorer</a></li>
@@ -41,15 +41,20 @@ if(isset($_POST['reply_to'])) include('popupNewMessage.php');
             ?>
         </ul>
         <?php if($loginStatus) { ?>
-            <div class = "center">
-                <a href="#" onclick="openWindowByNavigation('new-message')"><li class = "tweet-button">Message</li></a>
-            </div>
-
+                <div class = "center">
+                    <form method = "post" action = "">
+                        <input type ="submit" name = "new-message" class = "tweet-button" style ="border: none;" value = "Message">
+                    </form>
+                </div>
 
             <form action = "" method = "post" class = "center">
                 <button type = "submit" name ="destroyCookies" class = "deconnexion">Déconnexion</button>
             </form>
             <?php
+
+            if(isset($_POST['new-message'])) {
+                popUpNewMessage(true);
+            }
         }
         ?>
     </div>

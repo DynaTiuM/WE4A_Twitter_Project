@@ -13,3 +13,5 @@
 
 	</div>
 </form>
+
+<a href = "./PageParts/lostPasswordForm"><div>Mot de passe oublié</div></a>

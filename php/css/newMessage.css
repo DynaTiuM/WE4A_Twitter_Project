@@ -17,10 +17,14 @@
     box-sizing: border-box;
 }
 
+.hide {
+    display: none;
+}
+
 .avatar-new-message {
     width: 3.4vw;
     height: 3.4vw;
-    margin: 1vw 1vw 1vw 0;
+    margin: 0.6vw 1vw 1vw -2.5vw;
     border-radius: 50%;
     background-color: blueviolet;
 }

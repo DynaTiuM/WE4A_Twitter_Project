@@ -26,7 +26,6 @@ function displayContainer($type) {
     <head>
         <meta charset = "utf-8">
         <link rel = "stylesheet" href = "./css/stylesheet.css">
-        <title>Twitturtle</title>
         <link rel="shortcut icon" href="./favicon.ico">
     </head>
     <body>
@@ -34,10 +33,13 @@ function displayContainer($type) {
         <?php include ("PageParts/navigation.php");?>
 
         <div class = "MainContainer">
-            <h1>Accueil</h1>
             <?php
-            if($type == 'main') {
+            if($type == 'subs') {
+                ?>
+                <h1>Abonnements</h1>
+                <?php
                 if ($loginStatus) {
+
                     popUpNewMessage();
                     mainMessages($loginStatus);
                 }
@@ -46,6 +48,9 @@ function displayContainer($type) {
                 }
             }
             else {
+                ?>
+                <h1>Explorer</h1>
+                <?php
                 popUpNewMessage();
                 explorerMessages($loginStatus);
             }
@@ -66,8 +71,8 @@ function displayContainer($type) {
     <?php
 }
 
-function popUpNewMessage() {
-    if (isset($_POST['reply_to']) && !empty($_POST['reply_to'])) {
+function popUpNewMessage($forced = false) {
+    if (isset($_POST['reply_to']) && !empty($_POST['reply_to']) || $forced) {
         // Afficher ici la section des messages avec la réponse au message sélectionné
         ?>
         <script>
@@ -87,9 +92,9 @@ function mainMessages($loginStatus) {
         <?php
         include("./PageParts/messageForm.php");
         if(isset($_GET['answer']))
-            mainMessagesQuery($loginStatus, 'main', $_GET['answer']);
+            mainMessagesQuery($loginStatus, 'subs', $_GET['answer']);
         else
-            mainMessagesQuery($loginStatus, 'main', null);
+            mainMessagesQuery($loginStatus, 'subs', null);
         ?>
 
     </div>
@@ -105,14 +110,14 @@ function explorerMessages($loginStatus) {
         if(isset($_GET['answer'])) {
             displayContentById($_GET['answer']);
             include("./PageParts/adressSearch.php");
-            if(!isset($_POST['reply_to']) && $loginStatus) include("./PageParts/newMessageForm.php");
+            if(!isset($_POST['reply_to']) && !isset($_POST['new-message']) && $loginStatus) include("./PageParts/newMessageForm.php");
             mainMessagesQuery($loginStatus, 'explorer', $_GET['answer']);
         }
         elseif(isset($_GET['category'])) {
             displayContentByCategory($_GET['category']);
         }
         else {
-            if(!isset($_POST['reply_to']) && $loginStatus) include("./PageParts/newMessageForm.php");
+            if(!isset($_POST['reply_to']) && !isset($_POST['new-message']) && $loginStatus) include("./PageParts/newMessageForm.php");
             mainMessagesQuery($loginStatus, 'explorer', null);
         }
 
@@ -121,4 +126,4 @@ function explorerMessages($loginStatus) {
     <?php
 }
 
-
+?>

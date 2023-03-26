@@ -2,4 +2,4 @@
 
 require_once('./PageParts/hubMessages.php');
 
-displayContainer('main');
+displayContainer('subs');

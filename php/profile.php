@@ -27,8 +27,8 @@
 
             $type = determinePetOrUser($conn, $username);
 
-            if (isset($_POST['follow'])) {
-                follow($username, $type);
+            if(isset($_POST['follow'])) {
+                follow_unfollow($username, $type);
             }
 
             if($type == 'user') {
@@ -43,8 +43,6 @@
                 displayNumMessages($numberOfMessages);
                 displayPetProfile($conn, $username);
             }
-
-
             ?>
         </div>
 
@@ -56,7 +54,8 @@
                 <?php
             }?>
             <div id="message-content">
-                <?php include("./PageParts/messageForm.php");
+                <?php
+                include("./PageParts/messageForm.php");
                 profilMessages();
                 ?>
             </div>
@@ -68,7 +67,7 @@
                 <?php findLikedMessages();?>
                 </div>
                 <?php
-            }?>
+                }?>
         </div>
     </div>
 
@@ -86,7 +85,6 @@
             <?php include("./PageParts/petProfileModificationForm.php"); ?>
         </div>
     </div>
-
 
     <div id="add-pet" class="window-background">
         <div class="window-content">

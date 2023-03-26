@@ -29,8 +29,8 @@ function displayContent($row) {
             <div class>
                 <div class = "tweet-header">
                     <?php
-                    if($organisation) echo "<h1 class='name-profile'>" . $prenom . " " . $nom . "<img title=\"Ce compte est certifié car il s'agit d'une organisation\" src='./images/organisation.png' style='margin-left: 0.8vw; width:1.4vw; height: 1.4vw;'></h1>";
-                    else  echo "<h1 class = 'name-profile'>" . $prenom . " " . $nom . " ";
+                    if($organisation) echo "<a href = './profile.php?username=$auteur_username'><h1 class='name-profile'>" . $prenom . " " . $nom . "<img title=\"Ce compte est certifié car il s'agit d'une organisation\" src='./images/organisation.png' style='margin-left: 0.8vw; width:1.4vw; height: 1.4vw;'></h1></a>";
+                    else  echo "<a href = './profile.php?username=$auteur_username'><h1 class = 'name-profile'>" . $prenom . " " . $nom . " </h1></a>";
                     echo '<h1 class = "tweet-information">'. ' @' . $auteur_username . ' · ' . $date . '</h1>'; ?>
 
                    <!-- <div class = "parameters"><a>...</a></div> -->
@@ -87,15 +87,18 @@ function displayContent($row) {
                     <form method="post" action="">
                         <input type="hidden" name="like" value="<?php echo $id?>">
                         <button type="submit" class="comment"  <?php if(!$loginStatus) { ?> disabled<?php } ?>>
+                            <label style ="display: flex;">
                             <?php
                             if(isLiked($id)) { ?>
-                                    <label style ="display: flex;">
                                         <img style="width: 1.5vw; padding: 0.6vw;" src="./images/liked.png" alt="Aimer">
-                                        <span style =" margin-top: 1vw; margin-left: -0.3vw; font-size: 1vw"><?php echo numLike($id)?></span>
-                                    </label>
+
                             <?php } else { ?>
                                 <img style="width: 1.5vw; padding: 0.6vw;" src="./images/like.png" alt="Ne plus aimer">
-                            <?php } ?>
+                            <?php }
+                            if(numLike($id) > 0) {?>
+                            <span style =" margin-top: 1vw; margin-left: -0.3vw; font-size: 1vw"><?php echo numLike($id)?></span>
+                            <?php }?>
+                            </label>
                         </button>
                     </form>
 
@@ -104,7 +107,7 @@ function displayContent($row) {
                             <?php $result = findPets($id);
                             while($row = $result->fetch_assoc()) {  ?>
                                 <label>
-                                    <a href = "./profile.php?username=<?php echo $row['id']; ?>"><img class="pet-image-message" src="data:image/jpeg;base64,<?php echo base64_encode($row['avatar']); ?>" alt="Animal : <?php echo $row['nom']?>"></a>
+                                    <a href = "./profile.php?username=<?php echo $row['id']; ?>"><img style = "margin-left: 0.3vw" class="pet-image-message" src="data:image/jpeg;base64,<?php echo base64_encode($row['avatar']); ?>" alt="Animal : <?php echo $row['nom']?>"></a>
                                 </label>
                                 <?php
                             }

@@ -7,7 +7,7 @@
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 999; /* assure que la navigation sera au-dessus du reste de la page */
+    z-index: 2; /* assure que la navigation sera au-dessus du reste de la page */
 }
 
 .navigation img {

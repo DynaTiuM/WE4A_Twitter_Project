@@ -9,9 +9,8 @@
             displayContentById($_POST['reply_to']);
         }
         else {
+            echo '<span class="close" onclick="closeWindowToNewDestination(\'new-message\', location.href)">&times;</span>';
             ?>
-
-            <span class="close" onclick="closeWindow('new-message')">&times;</span>
             <h2 class = "window-title">Nouveau message</h2>
         <?php
         }

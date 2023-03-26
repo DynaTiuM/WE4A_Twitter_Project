@@ -2,7 +2,6 @@
 
 function displayUserProfile($conn, $username) {
 
-
     if (isset($_POST['modification-profile'])) {
         motificationProfile('utilisateur');
     }
@@ -34,16 +33,9 @@ function displayUserProfile($conn, $username) {
         if($loginStatus) {
             if($_COOKIE['username'] == $username) {?>
                 <button class = "button-modify-profile" onclick="openWindow('modification-profile')">Editer le profil</button>
-                <form action="" method="post">
-                    <input type="submit" name="delete_cookies" value="Déconnexion">
-                </form>
-
 
                 <button class = "add-pet" onclick="openWindow('add-pet')">Ajouter un animal</button>
                 <?php
-                if(isset($_POST['delete_cookies'])) {
-                    DestroyLoginCookie();
-                }
             }
             elseif (!checkFollow($username, 'utilisateur')) { ?>
                 <form action="" method="post" class = "button-follow">
@@ -51,12 +43,16 @@ function displayUserProfile($conn, $username) {
                 </form>
             <?php }
             else { ?>
-                <button type = "submit" name="follow" class = "button-following">Suivi</button>
+                <form action="" method="post" class = "button-follow">
+                    <button type = "submit" name="follow" class = "button-following">Suivi</button>
+                </form>
             <?php }
         }
-
         ?>
-
+        <div style = "display: flex; padding-top: 1.4vw">
+            <h4 style = "color: #3a3a3a"><?php echo numFollowing($username)." abonnements" ?></h4>
+            <h4 style = "color: #3a3a3a"><?php echo numFollowers($username, "utilisateur")." abonnés" ?></h4>
+        </div>
         <div style = "margin-top: 1vw; display: inline-block">
             <?php
             $result = displayPets($username);

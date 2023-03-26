@@ -53,42 +53,42 @@ include("adressSearch.php");
             <label>
                 <img onclick="openWindow('display-type', 'block')" src="./images/select.png" class ="icon" alt = "Type">
             </label>
-        </form>
+    </form>
 
-        <!-- Fenêtre flottante pour la localisation -->
-        <div id="map-container" class="localisation-window">
-            <div class="localisation-content">
-                <span style ="font-size: 1.3vw;" class="close" onclick="closeMap()">OK</span>
-                <h2 class = "window-title">Localisation</h2><div id="map"></div>
-                <input type="text" class = "answer" id="search" placeholder="Rechercher une adresse" name = "localisation">
-            </div>
+    <!-- Fenêtre flottante pour la localisation -->
+    <div id="map-container" class="localisation-window">
+        <div class="localisation-content">
+            <span style ="font-size: 1.3vw;" class="close" onclick="closeMap()">OK</span>
+            <h2 class = "window-title">Localisation</h2><div id="map"></div>
+            <input type="text" class = "answer" id="search" placeholder="Rechercher une adresse" name = "localisation">
         </div>
+    </div>
 
-        <div id="display-pet">
-            <div class="pets-content">
-                <span style ="font-size: 1.3vw;" class="close" onclick="closeWindow('display-pet')">OK</span>
-                <h2 class = "window-title">Sélectionner animaux</h2>
+    <div id="display-pet">
+        <div class="pets-content">
+            <span style ="font-size: 1.3vw;" class="close" onclick="closeWindow('display-pet')">OK</span>
+            <h2 class = "window-title">Sélectionner animaux</h2>
 
-                <?php
-                $result = displayPets($_COOKIE['username']);
-                if($result->num_rows == 0) {
-                    echo '<h4>Vous n\'avez ajouté aucun animal</h4>';
+            <?php
+            $result = displayPets($_COOKIE['username']);
+            if($result->num_rows == 0) {
+                echo '<h4>Vous n\'avez ajouté aucun animal</h4>';
+            }
+            else {
+                while ($row = $result->fetch_assoc()) {
+                    ?>
+                    <div class="image-container">
+                        <label for="<?php echo $row['id']?>">
+                            <img class="pet-image" src="data:image/jpeg;base64,<?php echo base64_encode($row['avatar']); ?>" alt="Bouton parcourir">
+                        </label>
+                        <label class = "pet-name"><?php echo $row['nom']?></label>  <input class ="checkbox" type="checkbox" id="<?php echo $row['id']?>" name="animaux[]" value="<?php echo $row['id']?>">
+                    </div>
+                    <?php
                 }
-                else {
-                    while ($row = $result->fetch_assoc()) {
-                        ?>
-                        <div class="image-container">
-                            <label for="<?php echo $row['id']?>">
-                                <img class="pet-image" src="data:image/jpeg;base64,<?php echo base64_encode($row['avatar']); ?>" alt="Bouton parcourir">
-                            </label>
-                            <label class = "pet-name"><?php echo $row['nom']?></label>  <input class ="checkbox" type="checkbox" id="<?php echo $row['id']?>" name="animaux[]" value="<?php echo $row['id']?>">
-                        </div>
-                        <?php
-                    }
-                }
-                ?>
-            </div>
+            }
+            ?>
         </div>
+    </div>
 
     <div id="display-type">
         <div class = "type-content" style = "display: flex">
@@ -115,7 +115,7 @@ include("adressSearch.php");
 
     </div>
 
-    </div>
+</div>
 </div>
 
 </body>

@@ -32,7 +32,7 @@
     position: fixed;
     top: 0;
     right: 0;
-    z-index: 999; /* assure que les tendances seront au-dessus du reste de la page */
+    z-index: 2; /* assure que les tendances seront au-dessus du reste de la page */
 }
 
 .trends a {
