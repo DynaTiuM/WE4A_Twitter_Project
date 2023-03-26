@@ -4,27 +4,35 @@
     font-size: 1vw;
     font-weight: bold;
 }
-.hashtag_block:last-child {
-    margin-bottom: 0;
-    border-bottom-left-radius: 1vw;
-    border-bottom-right-radius: 1vw;
+
+.hashtags_count {
+    color: black;
 }
+
 .hashtag_block:hover {
-    padding : 0.5vw;
+    padding-top : 0.1vw;
+    padding-bottom: 0.6vw;
     background-color: #d3eae0;
 }
 
 .hashtag_block {
-    padding: 0.5vw;
+    padding-top: 0.1vw;
+    padding-bottom: 0.6vw;
     margin-bottom: 0;
 }
 
 .trends {
-    width:27%;
-    margin: 2vw;
+    width: 23%; /* largeur fixe pour les tendances */
+    margin-left: auto; /* décale les tendances vers la droite */
+    margin-right: 9%; /* réinitialise la marge droite */
+    margin-top: 1.8%;
     background-color: #eef8f4;
     border-radius: 1vw;
     font-family: "Plus Jakarta Sans", sans-serif;
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 999; /* assure que les tendances seront au-dessus du reste de la page */
 }
 
 .trends a {
@@ -35,6 +43,7 @@
 .category {
     margin-left: 2vw;
     font-weight: 900;
+    font-size: 1vw;
 }
 
 .hashtags_count {

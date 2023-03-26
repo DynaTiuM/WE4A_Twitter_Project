@@ -1,10 +1,13 @@
-
 .navigation {
-    width: 22.5%;
+    width: 17%; /* largeur fixe pour la navigation */
+    margin-left: 7%;
     height: 100vh;
     padding: 0;
     color: white;
-    position:sticky;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999; /* assure que la navigation sera au-dessus du reste de la page */
 }
 
 .navigation img {

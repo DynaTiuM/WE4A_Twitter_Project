@@ -77,7 +77,7 @@ function displayContent($row) {
                                     <label style ="display: flex;">
                                     <img style="width: 1.5vw; padding: 0.6vw;" src="./images/comment.png" alt="Commenter">
                                     <?php if(isCommented($id)) { ?>
-                                    <span style =" margin-top: 1vw; margin-left: -0.3vw;"><?php echo numComments($id)?></span>
+                                    <span style =" margin-top: 1vw; margin-left: -0.3vw; font-size: 1vw"><?php echo numComments($id)?></span>
                                     <?php } ?>
                                     </label>
                                 </button>
@@ -91,7 +91,7 @@ function displayContent($row) {
                             if(isLiked($id)) { ?>
                                     <label style ="display: flex;">
                                         <img style="width: 1.5vw; padding: 0.6vw;" src="./images/liked.png" alt="Aimer">
-                                        <span style =" margin-top: 1vw; margin-left: -0.3vw;"><?php echo numLike($id)?></span>
+                                        <span style =" margin-top: 1vw; margin-left: -0.3vw; font-size: 1vw"><?php echo numLike($id)?></span>
                                     </label>
                             <?php } else { ?>
                                 <img style="width: 1.5vw; padding: 0.6vw;" src="./images/like.png" alt="Ne plus aimer">

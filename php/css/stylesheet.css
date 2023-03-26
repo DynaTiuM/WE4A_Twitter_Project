@@ -141,18 +141,17 @@ h1 {
 }
 
 .MainContainer {
-    width: 50.5%;
+    width: 42.8%; /* largeur fixe pour le conteneur principal */
+    margin-left: -4%;
     background-color: white;
-    border-right: 0.1vw solid rgba(31, 124, 98, 0.29);
-    border-left: 0.1vw solid rgba(31, 124, 98, 0.29);
+    border-right: 1px solid rgba(31, 124, 98, 0.29);
+    border-left: 1px solid rgba(31, 124, 98, 0.29);
 }
 
 .Container{
-    margin:0 auto;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    width: 82%;
+    width: 95%;
 }
 
 
