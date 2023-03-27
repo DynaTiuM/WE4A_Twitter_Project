@@ -20,7 +20,7 @@ if (!function_exists('displayContent')) {
         $category = $information[9];
         $organisation = $information[10];
 
-        if(isset($_GET['answer']) && isFollowing($auteur_username)) {
+        if(isset($_GET['answer']) && (isFollowing($auteur_username))) {
             markNotificationAsRead($id);
         }
 
@@ -33,9 +33,9 @@ if (!function_exists('displayContent')) {
                 <div class>
                     <div class = "tweet-header">
                         <?php
-                        if($organisation) echo "<a href = './profile.php?username=$auteur_username'><h1 class='name-profile'>" . $prenom . " " . $nom . "<img title=\"Ce compte est certifié car il s'agit d'une organisation\" src='./images/organisation.png' style='margin-left: 0.8vw; width:1.4vw; height: 1.4vw;'></h1></a>";
-                        else  echo "<a href = './profile.php?username=$auteur_username'><h1 class = 'name-profile'>" . $prenom . " " . $nom . " </h1></a>";
-                        echo '<h1 class = "tweet-information">'. ' @' . $auteur_username . ' · ' . $date . '</h1>'; ?>
+                        if($organisation) echo "<a href = './profile.php?username=$auteur_username'><h2 class='name-profile'>" . $prenom . " " . $nom . "<img title=\"Ce compte est certifié car il s'agit d'une organisation\" src='./images/organisation.png' style='margin-left: 0.8vw; width:1.4vw; height: 1.4vw;'></h2></a>";
+                        else  echo "<a href = './profile.php?username=$auteur_username'><h2 class = 'name-profile'>" . $prenom . " " . $nom . " </h2></a>";
+                        echo '<h2 class = "tweet-information">'. ' @' . $auteur_username . ' · ' . $date . '</h2>'; ?>
 
                        <!-- <div class = "parameters"><a>...</a></div> -->
                     </div>

@@ -26,28 +26,38 @@ ob_start();
 <div class = "Container">
     <?php include ("./PageParts/navigation.php")?>
     <div class = "MainContainer">
-        <h1 style = "margin-bottom: 0; padding-bottom: 0.5vw">Profil</h1>
-        <div class = "profile">
+        <div class = "h1-container">
+            <h1 style = "margin-bottom: 0.2vw">Profil</h1>
             <?php
+
             $username =  $_GET["username"];
             global $conn;
 
             $type = determinePetOrUser($conn, $username);
 
+            if($type == 'user'){
+                $numberOfMessages = countAllMessages($username, 'utilisateur');
+            }
+            else {
+                $numberOfMessages = countAllMessages($username, 'animal');
+            }
+            displayNumMessages($numberOfMessages);
+            ?>
+        </div>
+        <div class = "spacing"></div>
+
+        <div class = "profile">
+            <?php
             if(isset($_POST['follow'])) {
                 follow_unfollow($username, $type);
             }
 
             if($type == 'user') {
-                $numberOfMessages = countAllMessages($username, 'utilisateur');
                 include("./PageParts/userProfileForm.php");
-                displayNumMessages($numberOfMessages);
                 $result = displayUserProfile($conn, $username);
             }
             else {
-                $numberOfMessages = countAllMessages($username, 'animal');
                 include("./PageParts/petProfileForm.php");
-                displayNumMessages($numberOfMessages);
                 displayPetProfile($conn, $username);
             }
             ?>
@@ -108,7 +118,7 @@ ob_start();
 <?php
 function displayNumMessages($num) {?>
     <div style = "margin-left: 1vw; font-family: 'Plus Jakarta Sans', sans-serif;">
-        <p style = "margin-top: 0; padding-top: 0; font-size: 0.9vw; padding-bottom: 1vw"><?php echo $num?> Messages</p>
+        <p style = "margin-top: 0; padding-top: 0; font-size: 0.9vw;"><?php echo $num?> Messages</p>
     </div>
     <?php
 }?>

@@ -222,7 +222,14 @@ function numNotifications() {
 
 function isFollowing($auteur_username) {
     global $conn;
-    $sql = "SELECT * FROM suivre WHERE utilisateur_username = '{$_COOKIE['username']}' AND suivi_type = 'utilisateur' AND suivi_id_utilisateur = '$auteur_username'";
+    $sql = "SELECT COUNT(*) as count 
+                FROM suivre
+                WHERE utilisateur_username = '$auteur_username'
+                  AND (
+                      (suivi_type = 'utilisateur' AND suivi_id_utilisateur = 'id_utilisateur_suivi')
+                    OR (suivi_type = 'animal' AND suivi_id_animal IN (SELECT animal_id FROM message_animaux WHERE message_id IN (SELECT id FROM message WHERE auteur_username = '$auteur_username')))
+                      )";
+
     $result = $conn->query($sql);
     if ($result->num_rows > 0) {
         return true;
@@ -648,14 +655,17 @@ function findPets($id) {
 
 function getNotifications() {
     global $conn;
-    $query = "SELECT notification.*, message.*, utilisateur.*, animal.nom
-            FROM notification
-            INNER JOIN message ON notification.message_id = message.id
-            LEFT JOIN message_animaux ON message.id = message_animaux.message_id
-            LEFT JOIN animal ON message_animaux.animal_id = animal.id
-            INNER JOIN utilisateur ON message.auteur_username = utilisateur.username
-            WHERE notification.utilisateur_username = '{$_COOKIE['username']}'
-            ORDER BY notification.date DESC;";
+    $username = SecurizeString_ForSQL($_COOKIE['username']);
+    $query = "SELECT notification.*, message.*, utilisateur.*, GROUP_CONCAT(animal.nom SEPARATOR ', ')
+        FROM notification
+        INNER JOIN message ON notification.message_id = message.id
+        LEFT JOIN message_animaux ON message.id = message_animaux.message_id
+        LEFT JOIN animal ON message_animaux.animal_id = animal.id
+        INNER JOIN utilisateur ON message.auteur_username = utilisateur.username
+        WHERE notification.utilisateur_username = '$username'
+        GROUP BY notification.id
+        ORDER BY notification.vue ASC, notification.date DESC;";
+
     $result = $conn->query($query);
     if($result->num_rows > 0){
         return $result;

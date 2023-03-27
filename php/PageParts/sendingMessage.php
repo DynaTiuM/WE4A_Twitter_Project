@@ -37,17 +37,6 @@ function sendMessage($reply_id) {
         // On récupère l'id du message inséré
         $message_id = $stmt->insert_id;
 
-        $query = "INSERT INTO notification (utilisateur_username, message_id, date, vue)
-          SELECT suivre.utilisateur_username, message.id, NOW(), FALSE 
-          FROM suivre
-          INNER JOIN message ON (
-              (message.auteur_username = suivre.suivi_id_utilisateur AND suivre.suivi_type = 'utilisateur')
-              OR (message.id IN (SELECT message_id FROM message_animaux WHERE animal_id = suivre.suivi_id_animal) AND suivre.suivi_type = 'animal')
-          )
-          WHERE message.id = $message_id";
-
-        $conn->query($query);
-
         if(!empty($_POST['animaux'])) {
             foreach($_POST['animaux'] as $animal_id){
                 $stmt = $conn->prepare("INSERT INTO message_animaux (message_id, animal_id) VALUES (?, ?)");
@@ -55,6 +44,17 @@ function sendMessage($reply_id) {
                 $stmt->execute();
             }
         }
+
+        $query = "INSERT INTO notification (utilisateur_username, message_id, date, vue)
+          SELECT DISTINCT suivre.utilisateur_username, message.id, NOW(), FALSE 
+          FROM suivre
+          INNER JOIN message ON (
+              (message.auteur_username = suivre.suivi_id_utilisateur AND suivre.suivi_type = 'utilisateur')
+              OR (message.id IN (SELECT message_id FROM message_animaux WHERE animal_id = suivre.suivi_id_animal) AND suivre.suivi_type = 'animal')
+          )
+          WHERE message.id = '$message_id'";
+
+        $conn->query($query);
 
         // We prevent the user to use the ' symbol to make a bugged hashtag
         $content = str_replace("\&#039", " ", $content);

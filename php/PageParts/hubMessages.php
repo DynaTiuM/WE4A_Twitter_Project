@@ -32,7 +32,10 @@ function displayContainer($type) {
             <?php
             if($type == 'subs') {
                 ?>
-                <h1>Abonnements</h1>
+                <div class = "h1-container">
+                    <h1>Abonnements</h1>
+                </div>
+                <div class = "spacing"></div>
                 <?php
                 if ($loginStatus) {
 
@@ -45,7 +48,10 @@ function displayContainer($type) {
             }
             else {
                 ?>
-                <h1>Explorer</h1>
+                <div class = "h1-container">
+                    <h1>Explorer</h1>
+                </div>
+                <div class = "spacing"></div>
                 <?php
                 popUpNewMessage();
                 explorerMessages($loginStatus);

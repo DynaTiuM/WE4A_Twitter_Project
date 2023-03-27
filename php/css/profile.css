@@ -32,7 +32,7 @@
     margin-top: 0;
 }
 
-.button-modify-profile, .button-following {
+.button-modify-profile, .button-following, .add-pet {
     margin-right: 1.1vw;
     align-self: flex-end;
     margin-top: -2.6vw;
@@ -87,5 +87,7 @@
 }
 
 .add-pet {
-    margin-top: 0;
+    margin-top: 1vw;
+    background-color: #d993c4;
+
 }

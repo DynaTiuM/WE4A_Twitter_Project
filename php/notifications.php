@@ -23,7 +23,10 @@
     ?>
 
     <div class = "MainContainer">
-        <h1>Notifications</h1>
+        <div class = "h1-container">
+            <h1>Notifications</h1>
+        </div>
+        <div class = "spacing"></div>
             <?php
 
             include("./PageParts/popupnewMessage.php");
