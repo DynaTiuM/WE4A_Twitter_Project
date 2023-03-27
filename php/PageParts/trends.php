@@ -45,7 +45,7 @@ $loginStatus = isLogged();
             <div class = "center">
                 <?php
                 while($row = $result->fetch_assoc()) {?>
-                    <a href = './profile.php?username=<?php echo $row['id']?>'><img class="pet-preview" src="data:image/jpeg;base64,<?php echo base64_encode($row['avatar']); ?>" alt="Animal : <?php echo $row['nom']?>"></a>
+                    <a href = './profile.php?username=<?php echo $row['id']?>'><img class="pet-preview" phpmailer="data:image/jpeg;base64,<?php echo base64_encode($row['avatar']); ?>" alt="Animal : <?php echo $row['nom']?>"></a>
                     <p><?php echo $row['nom']?></p>
                     <?php
                 }

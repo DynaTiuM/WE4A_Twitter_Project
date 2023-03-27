@@ -14,4 +14,4 @@
 	</div>
 </form>
 
-<a href = "./PageParts/lostPasswordForm"><div>Mot de passe oublié</div></a>
+<div><button onclick = "openWindow('lost-password')">Mot de passe oublié</button></div>

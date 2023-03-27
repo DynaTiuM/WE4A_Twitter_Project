@@ -3,10 +3,15 @@
     function openWindow(window, type = 'inline-block') {
         document.getElementById(window).style.display = type;
 
-        if(window === 'display-pet') document.getElementById("display-type").style.display = "none";
-        else document.getElementById("display-pet").style.display = "none";
 
-        document.getElementById("map-container").style.display = "none";
+        if(window === 'lost-password'){
+            document.getElementById("connexion").style.display = "none";
+        }
+        if(window === 'display-pet') document.getElementById("display-type").style.display = "none";
+        else if(document.getElementById("display-pet")) document.getElementById("display-pet").style.display = "none";
+        if(document.getElementById("map-container")) document.getElementById("map-container").style.display = "none";
+
+
     }
     // fonction pour fermer la fenêtre
     function closeWindow(window) {

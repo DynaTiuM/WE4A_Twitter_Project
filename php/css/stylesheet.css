@@ -92,10 +92,11 @@ body {
 }
 
 .message {
+    text-align: left;
     margin:0;
     display: flex;
     align-items: flex-start;
-    border-top: 0.1vw solid rgba(31, 124, 98, 0.15);
+    /* border-bottom: 0.1vw solid rgba(31, 124, 98, 0.15); */
 }
 
 .tweet-header {
@@ -117,8 +118,8 @@ body {
 .parent-message {
     scale: 0.7;
     transform-origin: left;
-    margin-left: 0.8vw;
-    margin-bottom: -1.2vw;
+    margin-left: 0.9vw;
+    margin-bottom: -1.1vw;
 }
 
 .container-parent-message {
@@ -130,7 +131,7 @@ body {
     position: absolute;
     left: 0;
     top: 0;
-    width: 0.2vw;
+    width: 0.1vw;
     height: 3.6vw;
     border-radius: 1vw;
     margin-top: -2.1vw;
@@ -151,7 +152,7 @@ body {
     position: fixed;
     background-color: rgba(255, 255,255, 0.5);
     backdrop-filter: blur(1vw);
-    width: 100%;
+    width: 39.3%;
 }
 
 .spacing {
@@ -227,9 +228,6 @@ h1 {
     text-align: center;
 }
 
-.message {
-    text-align: left;
-}
 label {
     font-family: Arial, sans-serif;
 }

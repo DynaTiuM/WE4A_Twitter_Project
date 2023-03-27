@@ -6,6 +6,11 @@ $newLoginStatus = CheckLogin();
 if(!$newLoginStatus[0]) {
     $newAccountStatus = CheckNewAccountForm();
 }
+
+if(isset($_POST['submitEmail'])) {
+    require_once("./PageParts/sendEmail.php");
+    sendEmail($_POST['username']);
+}
 ?>
 
 
@@ -80,12 +85,21 @@ if(!$newLoginStatus[0]) {
             <div>
                 <label>Nom d'utilisateur ou mot de passe incorrect</label>
             </div>
-            <br><div>
+            <br>
+            <div>
                 <label>Veuillez réessayer</label>
             </div>
             <br>
             <br>
             <button class = "form-button" onclick="closeWindow('erreur-connexion')">D'accord</button>
+        </div>
+    </div>
+
+    <div id="lost-password" class="window-background">
+        <div class="window-content">
+            <span class="close" onclick="closeWindow('lost-password')">&times;</span>
+            <h2 class = "window-title">Mot de passe oublié</h2>
+            <?php include("./PageParts/lostPasswordForm.php"); ?>
         </div>
     </div>
 
