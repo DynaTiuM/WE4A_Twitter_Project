@@ -26,8 +26,19 @@ if(isset($_POST['reply_to'])) include('popupNewMessageForm.php');
             <li class="menu-item" style = "font-weight: 900;"><a href="index.php"><img src="./images/follow.png">Abonnements</a></li>
             <li class="menu-item"><a href="explorer.php"><img src="./images/explorer.png">Explorer</a></li>
 
-            <?php if($loginStatus) { ?>
-                <li class = "menu-item"><a href="./notifications.php"><img src="./images/notification.png">Notifications</a></li>
+            <?php if($loginStatus) {
+                $numNotifs = numNotifications();
+                if($numNotifs == 0) {
+                    ?>
+                    <li class = "menu-item"><a href="./notifications.php"><img src="./images/notification.png">Notifications</a></li>
+                    <?php
+                }
+                else {
+                    ?>
+                    <li class = "menu-item"><a href="./notifications.php"><img src="./images/notifications_not_read.png">Notifications (<?php echo $numNotifs?>)</a></li>
+                    <?php
+                }
+                ?>
                 <li class = "menu-item"><a href="messages.php"><img src="./images/message.png">Messages</a></li>
 
                 <li class = "menu-item"><a href = "profile.php?username=<?php echo urlencode($_COOKIE['username']); ?>"><img src="./images/profile.png">Profil</a></li>
@@ -52,7 +63,7 @@ if(isset($_POST['reply_to'])) include('popupNewMessageForm.php');
             <?php
 
             if(isset($_POST['new-message'])) {
-                include("./PageParts/popupnewMessage.php");
+                require_once("./PageParts/popupnewMessage.php");
                 popUpNewMessage(true);
             }
         }

@@ -32,6 +32,7 @@ $loginStatus = isLogged();
     }
     ?>
     <?php
+    /*
     if($loginStatus) {
         ?>
 
@@ -56,6 +57,6 @@ $loginStatus = isLogged();
     else {
         echo '<br><h4>Connectez-vous pour accéder aux catégories</h4><br>';
     }
-
+*/
     ?>
 </div>

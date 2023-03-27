@@ -199,15 +199,36 @@ function getPetInformation($pet) {
     }
 }
 
-function displayContentById($id) {
+function displayContentById($id, $parent = false) {
+
     global $conn;
     $query = "SELECT * FROM message WHERE id ='$id'";
     $result = $conn->query($query);
 
     if($result->num_rows > 0) {
         include("messageForm.php");
-        displayContent($result->fetch_assoc());
+        displayContent($result->fetch_assoc(), $parent);
     }
+}
+
+function numNotifications() {
+    global $conn;
+    $username = SecurizeString_ForSQL($_COOKIE['username']);
+    $query = "SELECT COUNT(*) FROM notification WHERE utilisateur_username = '$username' AND vue = 0";
+    $result = $conn->query($query);
+
+    return $result->fetch_Column();
+}
+
+function isFollowing($auteur_username) {
+    global $conn;
+    $sql = "SELECT * FROM suivre WHERE utilisateur_username = '{$_COOKIE['username']}' AND suivi_type = 'utilisateur' AND suivi_id_utilisateur = '$auteur_username'";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        return true;
+    }
+
+    return false;
 }
 
 function getParentMessageId($id_son) {
@@ -642,12 +663,10 @@ function getNotifications() {
     return null;
 }
 
-function deleteNotification($notification_id) {
+function markNotificationAsRead($message_id) {
+    $query = "UPDATE notification SET vue = 1 WHERE message_id = $message_id";
     global $conn;
-
-    $sql = "DELETE FROM notification WHERE id = $notification_id";
-
-    $conn->close();
+    $conn->query($query);
 }
 
 //Méthode pour détruire les cookies de Login

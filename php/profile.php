@@ -1,3 +1,6 @@
+<?php
+ob_start();
+?>
 
 <!DOCTYPE html>
 
@@ -13,12 +16,8 @@
 
     <?php
     include("./PageParts/windows.php");
-    include("./PageParts/hubMessages.php");
-
-    global $loginStatus;
-    /* DUPLICATED!!!! */
-    if(isset($_POST['like']) && $loginStatus) likeMessage($_POST['like']);
-
+    include("./PageParts/popupnewMessage.php");
+    popUpNewMessage();
     ?>
 
 </head>
@@ -153,4 +152,5 @@ function displayNumMessages($num) {?>
     });
 </script>
 </html>
+
 

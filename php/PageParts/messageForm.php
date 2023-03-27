@@ -1,7 +1,7 @@
 <?php
 
 if (!function_exists('displayContent')) {
-    function displayContent($row) {
+    function displayContent($row, $parent = false) {
         require_once('./PageParts/databaseFunctions.php');
 
         ConnectDatabase();
@@ -20,6 +20,10 @@ if (!function_exists('displayContent')) {
         $category = $information[9];
         $organisation = $information[10];
 
+        if(isset($_GET['answer']) && isFollowing($auteur_username)) {
+            markNotificationAsRead($id);
+        }
+
             ?>
             <div class="message">
 
@@ -35,7 +39,6 @@ if (!function_exists('displayContent')) {
 
                        <!-- <div class = "parameters"><a>...</a></div> -->
                     </div>
-                    <a class = "display-answer" href="explorer.php?answer=<?php echo $id ?>">
                         <div class = "tweet-content">
                             <?php
 
@@ -58,6 +61,8 @@ if (!function_exists('displayContent')) {
                                         <p class="localisation-message" style="margin-left: 1vw;">' . $localisation . '</p>
                                     </div>';
                             }?>
+
+                            <a class = "display-answer" href="./explorer.php?answer=<?php echo $id ?>">
                             <label>
                                     <p><?php echo stripcslashes($content) ?></p>
                             </label>
@@ -65,8 +70,11 @@ if (!function_exists('displayContent')) {
                             if($image != null) {?>
                             <img class = "message-image" src="data:image/png;base64,<?php echo base64_encode($image); ?>" >
                             <?php }?>
+
+                            </a>
                         </div>
-                    </a>
+
+                    <?php if(!$parent) { ?>
                     <div style="display: flex;">
                         <?php if(!isset($_POST['reply_to'])) { ?>
                             <div>
@@ -100,7 +108,6 @@ if (!function_exists('displayContent')) {
                                 </label>
                             </button>
                         </form>
-
                         <div id = "pets">
                             <div style = "display: flex; margin-left: 1vw; margin-top: 0.2vw;">
                                 <?php $result = findPets($id);
@@ -114,9 +121,12 @@ if (!function_exists('displayContent')) {
                             </div>
                         </div>
                     </div>
+
+                    <?php } ?>
+
                 </div>
             </div>
-    <?php
+          <?php
     }
 }
 ?>

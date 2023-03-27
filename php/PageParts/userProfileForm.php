@@ -9,6 +9,14 @@ function displayUserProfile($conn, $username) {
     if (isset($_POST['add-pet'])) {
         addPet();
     }
+    global $loginStatus;
+    /* DUPLICATED!!!! */
+    if(isset($_POST['like']) && $loginStatus) likeMessage($_POST['like']);
+
+    if(isset($_POST["submit"])) {
+        include("./PageParts/sendingMessage.php");
+        sendMessage($_POST["submit"]);
+    }
 
     $query = "SELECT * FROM utilisateur WHERE username = '".$username."'";
     $result = $conn->query($query);

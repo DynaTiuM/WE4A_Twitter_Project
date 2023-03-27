@@ -12,6 +12,14 @@ if (!function_exists('displayPetProfile')) {
             motificationProfile('animal');
         }
 
+        /* DUPLICATED!!!! */
+        if(isset($_POST['like']) && $loginStatus) likeMessage($_POST['like']);
+
+        if(isset($_POST["submit"])) {
+            include("./PageParts/sendingMessage.php");
+            sendMessage($_POST["submit"]);
+        }
+
         $query = "SELECT * FROM animal WHERE id = '$username'";
         $result = $conn->query($query);
 
@@ -53,7 +61,6 @@ if (!function_exists('displayPetProfile')) {
             }
             ?>
             <div style = "display: flex">
-                <h4 style = "color: #3a3a3a"><?php echo numFollowing($username)." abonnements" ?></h4>
                 <h4 style = "color: #3a3a3a"><?php echo numFollowers($username, "animal")." abonnés" ?></h4>
             </div>
 <?php

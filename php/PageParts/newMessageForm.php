@@ -50,7 +50,7 @@ include("adressSearch.php");
                 <img onclick="openWindow('display-pet')" src="./images/pet.png" class ="icon" alt = "Animaux">
             </label>
 
-            <?php if(!isset($_COOKIE['reply_to']) && !isset($_GET['answer'])) {
+            <?php if(!isset($_POST['reply_to']) && !isset($_GET['answer'])) {
             ?>
             <label>
                 <img onclick="openWindow('display-type', 'block')" src="./images/select.png" class ="icon" alt = "Type">

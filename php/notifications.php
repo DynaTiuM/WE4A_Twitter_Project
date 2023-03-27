@@ -32,7 +32,14 @@
                 $notifications = getNotifications();
                 if($notifications) {
                     while($row = $notifications->fetch_assoc()) {
-                        displayContentById($row['message_id']);
+                        $id = $row['message_id'];
+                        ?>
+                        <div <?php if($row['vue'] == 0) { ?> style = "background-color: #d3eae0" <?php } ?>>
+                            <?php
+                            displayContentById($id);
+                            ?>
+                        </div>
+                    <?php
                     }
                 }
                 else {

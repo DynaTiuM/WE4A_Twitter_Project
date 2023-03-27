@@ -46,8 +46,6 @@ function sendMessage($reply_id) {
           )
           WHERE message.id = $message_id";
 
-
-        echo $query;
         $conn->query($query);
 
         if(!empty($_POST['animaux'])) {
@@ -69,7 +67,13 @@ function sendMessage($reply_id) {
             $stmt->execute();
         }
 
-        header("Location: explorer.php?answer=$reply_id");
+        if(isset($_GET['answer']) || isset($_POST['reply_to'])){
+            header("Location: explorer.php?answer=$reply_id");
+        }else {
+            header("Location: explorer.php");
+        }
+
+        ob_flush();
 
         exit();
     }
