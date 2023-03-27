@@ -653,6 +653,14 @@ function findPets($id) {
     return $conn->query($query);
 }
 
+function changePassword($username, $new_password) {
+    $username = SecurizeString_ForSQL($username);
+    $new_password = md5($new_password);
+    $query = "UPDATE utilisateur SET mot_de_passe = '$new_password' WHERE username = '$username';";
+    global $conn;
+    $conn->query($query);
+}
+
 function getNotifications() {
     global $conn;
     $username = SecurizeString_ForSQL($_COOKIE['username']);
@@ -694,7 +702,7 @@ function CheckNewAccountForm(){
     $creationAttempted = false;
     $creationSuccessful = false;
     $error = NULL;
-    $completed = isset($_POST["username"]) && isset($_POST["password"]) && isset($_POST["confirm"])
+    $completed = isset($_POST["email"]) && isset($_POST["username"]) && isset($_POST["password"]) && isset($_POST["confirm"])
             && isset($_POST["prenom"]) && isset($_POST["nom"])
             && isset($_POST["date_de_naissance"]) &&  isset($_POST["organisation"]);
 
@@ -710,6 +718,7 @@ function CheckNewAccountForm(){
             $error = "Le mot de passe et sa confirmation sont différents";
         }
         else {
+            $email = SecurizeString_ForSQL($_POST["email"]);
             $username = SecurizeString_ForSQL($_POST["username"]);
             $nom = SecurizeString_ForSQL($_POST["nom"]);
             $prenom = SecurizeString_ForSQL($_POST["prenom"]);
@@ -719,7 +728,7 @@ function CheckNewAccountForm(){
             $avatarBLOB = mysqli_real_escape_string($conn, $avatar);
 		    $password = md5($_POST["password"]);
 
-            $query = "INSERT INTO `utilisateur` VALUES ('$username', '$nom', '$prenom', '$date_de_naissance', '$password', '$avatarBLOB', '$organisation', null )";
+            $query = "INSERT INTO `utilisateur` VALUES ('$email', '$username', '$nom', '$prenom', '$date_de_naissance', '$password', '$avatarBLOB', '$organisation', null )";
             $conn->query($query);
 
             if( mysqli_affected_rows($conn) == 0 )

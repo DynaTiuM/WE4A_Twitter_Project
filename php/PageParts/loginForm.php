@@ -10,8 +10,7 @@
 		<br>
 
         <button class = "form-button" type="submit">Se connecter</button>
-
 	</div>
 </form>
 
-<div><button onclick = "openWindow('lost-password')">Mot de passe oublié</button></div>
+<div><button onclick = "openWindow('lost-password')" style = "background: none; border: none; margin-top: 1vw; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1vw;">Mot de passe oublié</button></div>

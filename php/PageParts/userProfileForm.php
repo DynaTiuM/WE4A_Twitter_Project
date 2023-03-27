@@ -29,7 +29,7 @@ function displayUserProfile($conn, $username) {
         $organisation = $row['organisation'] ?>
         <img <?php if($organisation == 1) { ?> class = "profile-picture-organisation" <?php } else { ?> class = "profile-picture" <?php } ?> src="data:image/jpeg;base64,<?php echo base64_encode(loadAvatar($username)); ?>"  alt="Photo de profil">
 <?php
-        if($row['organisation']) echo "<h3 class = 'name-profile'>" . $prenom . " " . $nom . "<img title=\"Ce compte est certifié car il s'agit d'une organisation\" phpmailer = './images/organisation.png' style = 'margin-left: 0.8vw; width:1.4vw; height: 1.4vw;'></h3>";
+        if($row['organisation']) echo "<h3 class = 'name-profile'>" . $prenom . " " . $nom . "<img title=\"Ce compte est certifié car il s'agit d'une organisation\" src = './images/organisation.png' style = 'margin-left: 0.8vw; width:1.4vw; height: 1.4vw;'></h3>";
         else echo "<h3 class = 'name-profile'>" . $prenom . " " . $nom . "</h3>";
 
         echo "<h4>" ."@" . $username . "</h4>";

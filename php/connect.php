@@ -9,7 +9,31 @@ if(!$newLoginStatus[0]) {
 
 if(isset($_POST['submitEmail'])) {
     require_once("./PageParts/sendEmail.php");
-    sendEmail($_POST['username']);
+    $state = sendEmail($_POST['username']);
+    ?>
+    <script>
+        // Ouverture automatique de la fenêtre erreur-connexion
+        window.onload = function() {
+            openWindow('email-sent');
+        }
+    </script>
+    <div id="email-sent" class="window-background">
+        <div class="window-content">
+            <?php  if($state == null) {?>
+
+                <div><h2 class = "window-title">Utilisateur inconnu</h2></div>
+                <p style = "font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1vw">Cet utilisateur n'existe pas.</p><br>
+            <?php
+            }
+            else {?>
+            <div><h2 class = "window-title">E-mail envoyé</h2></div>
+            <p style = "font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1vw"><?php echo $state?></p><br>
+            <?php
+            } ?>
+            <button class = "form-button" onclick="closeWindow('email-sent')">D'accord</button>
+        </div>
+    </div>
+<?php
 }
 ?>
 

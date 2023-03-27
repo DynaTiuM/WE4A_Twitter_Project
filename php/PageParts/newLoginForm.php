@@ -1,6 +1,9 @@
 <form action="./connect.php" method="post" enctype="multipart/form-data">
     <div class = "form-style">
         <div>
+            <input class = "answer" autofocus type="text" id="username" name="email" placeholder="Adresse e-mail*" required>
+        </div>
+        <div>
             <input class = "answer" autofocus type="text" id="username" name="username" placeholder="Nom d'utilisateur" required>
         </div>
         <div>
@@ -34,5 +37,7 @@
 
         <button class = "form-button" type="submit">Créer le compte</button>
     </div>
+
+    <p>*Veuillez fournir une adresse e-mail valide. Cette adresse sera utilisée en cas d'oubli de votre mot de passe, afin de vous permettre de réinitialiser votre compte en toute sécurité.</p>
 
 </form>

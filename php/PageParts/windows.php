@@ -11,7 +11,6 @@
         else if(document.getElementById("display-pet")) document.getElementById("display-pet").style.display = "none";
         if(document.getElementById("map-container")) document.getElementById("map-container").style.display = "none";
 
-
     }
     // fonction pour fermer la fenêtre
     function closeWindow(window) {

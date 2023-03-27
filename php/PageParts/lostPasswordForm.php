@@ -4,5 +4,5 @@
     </label>
     <br>
     <br>
-    <input class = "form-button" type = "submit" name ="submitEmail">
+    <input class = "form-button" type = "submit" name ="submitEmail" value = "Envoyer l'e-mail de récupération">
 </form>
