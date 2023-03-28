@@ -1,14 +1,13 @@
 <?php
-require_once('./PageParts/databaseFunctions.php');
-
-ConnectDatabase();
-$loginStatus = isLogged();
+global $globalDb, $globalUser;
+$conn = $globalDb->getConnection();
+$loginStatus = $globalUser->isLoggedIn();
 ?>
 <!DOCTYPE html>
 <html lang = "fr">
 <head>
     <meta charset="UTF-8">
-    <link rel = "stylesheet" href = "./css/trends.css">
+    <link rel = "stylesheet" href = "../css/trends.css">
 </head>
 <body>
 

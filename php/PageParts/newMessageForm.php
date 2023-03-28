@@ -1,7 +1,11 @@
 <?php
 $filename = basename($_SERVER['SCRIPT_FILENAME']);
 
-$info = getUserInformation($_COOKIE['username']);
+global $globalDb, $globalUser;
+$conn = $globalDb->getConnection();
+$loginStatus = $globalUser->isLoggedIn();
+
+$info = $globalUser->getUserInformation($_COOKIE['username']);
 $avatar = $info['avatar'];
 include("adressSearch.php");
 

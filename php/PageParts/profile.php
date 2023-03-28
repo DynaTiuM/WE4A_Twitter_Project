@@ -8,15 +8,15 @@ ob_start();
 
 <head>
     <meta charset = "utf-8">
-    <link rel = "stylesheet" href = "./css/stylesheet.css">
-    <link rel = "stylesheet" href = "./css/profile.css">
-    <link rel = "stylesheet" href = "./css/newMessage.css">
+    <link rel = "stylesheet" href = "../css/stylesheet.css">
+    <link rel = "stylesheet" href = "../css/profile.css">
+    <link rel = "stylesheet" href = "../css/newMessage.css">
     <title>Profil</title>
-    <link rel="shortcut icon" href="./favicon.ico">
+    <link rel="shortcut icon" href="../favicon.ico">
 
     <?php
     include("./PageParts/windows.php");
-    include("./PageParts/popupnewMessage.php");
+    include("./PageParts/popupNewMessage.php");
     popUpNewMessage();
     ?>
 
@@ -24,7 +24,7 @@ ob_start();
 
 <body>
 <div class = "Container">
-    <?php include ("./PageParts/navigation.php")?>
+    <?php include("./PageParts/navigation.php") ?>
     <div class = "MainContainer">
         <div class = "h1-container">
             <h1 style = "margin-bottom: 0.2vw">Profil</h1>
@@ -110,7 +110,7 @@ ob_start();
             <?php include("./PageParts/addPetForm.php"); ?>
         </div>
     </div>
-    <?php include ("./PageParts/trends.php")?>
+    <?php include("./PageParts/trends.php") ?>
 </div>
 
 </body>

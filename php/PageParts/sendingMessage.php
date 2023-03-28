@@ -44,7 +44,7 @@ function sendMessage($reply_id) {
                 $stmt->execute();
             }
         }
-
+/*
         $query = "INSERT INTO notification (utilisateur_username, message_id, date, vue)
           SELECT DISTINCT suivre.utilisateur_username, message.id, NOW(), FALSE 
           FROM suivre
@@ -55,7 +55,7 @@ function sendMessage($reply_id) {
           WHERE message.id = '$message_id'";
 
         $conn->query($query);
-
+        */
         // We prevent the user to use the ' symbol to make a bugged hashtag
         $content = str_replace("\&#039", " ", $content);
         preg_match_all('/#([\p{L}0-9_]+)/u', $content, $matches);

@@ -14,7 +14,7 @@
             <h2 class = "window-title">Nouveau message</h2>
         <?php
         }
-        require_once("./PageParts/newMessageForm.php");  ?>
+        require_once("./newMessageForm.php");  ?>
     </div>
 </div>
 

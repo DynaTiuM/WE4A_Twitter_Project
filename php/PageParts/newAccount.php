@@ -4,15 +4,15 @@
 
 <head>
     <meta charset = "utf-8">
-    <link rel = "stylesheet" href = "./css/stylesheet.css">
+    <link rel = "stylesheet" href = "../css/stylesheet.css">
     <title>S'inscrire sur Twitturtle</title>
-    <link rel="shortcut icon" href="./favicon.ico">
+    <link rel="shortcut icon" href="../favicon.ico">
 </head>
 	
 
 <body>
 <div class = "Container">
-	<?php include ("PageParts/navigation.php")?>
+	<?php include("PageParts/navigation.php") ?>
 
 	<div class = "MainContainer">
 			<div class = "center">

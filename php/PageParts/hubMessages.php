@@ -1,11 +1,11 @@
 <?php
 
 function displayContainer($type) {
-    require_once("./PageParts/databaseFunctions.php");
-    ConnectDatabase();
-    $loginStatus = isLogged();
+    global $globalDb, $globalUser;
+    $conn = $globalDb->getConnection();
+    $loginStatus = $globalUser->isLoggedIn();
 
-    if(isset($_POST['like']) && $loginStatus) likeMessage($_POST['like']);
+    //if(isset($_POST['like']) && $loginStatus) likeMessage($_POST['like']);
 
     if(isset($_POST["submit"])) {
         include("./PageParts/sendingMessage.php");
@@ -18,14 +18,15 @@ function displayContainer($type) {
     <html lang = "fr">
     <head>
         <meta charset = "utf-8">
-        <link rel = "stylesheet" href = "./css/stylesheet.css">
-        <link rel="shortcut icon" href="./favicon.ico">
+        <link rel = "stylesheet" href = "../css/stylesheet.css">
+        <link rel = "stylesheet" href = "../css/newMessage.css">
+        <link rel="shortcut icon" href="../favicon.ico">
     </head>
     <body>
     <div class = "Container">
         <?php
-        include ("./PageParts/navigation.php");
-        include("./PageParts/popupnewMessage.php");
+        include ("./navigation.php");
+        include("./popupnewMessage.php");
         ?>
 
         <div class = "MainContainer">
@@ -60,9 +61,9 @@ function displayContainer($type) {
         </div>
 
         <?php
-        include("./PageParts/trends.php");
+        include("./trends.php");
 
-        include("./PageParts/popupNewMessageForm.php");
+        include("./popupNewMessageForm.php");
         ?>
     </div>
 

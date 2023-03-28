@@ -1,10 +1,17 @@
 <?php
-require_once("./PageParts/databaseFunctions.php");
-ConnectDatabase();
-$newLoginStatus = CheckLogin();
+require_once("../Classes/Database.php");
+require_once("../Classes/User.php");
+
+global $globalDb;
+global $globalUser;
+$globalDb = new Database();
+$conn = $globalDb->getConnection();
+$globalUser = new User($conn, $globalDb);
+$newLoginStatus = $globalUser->checkLogin();
+
 
 if(!$newLoginStatus[0]) {
-    $newAccountStatus = CheckNewAccountForm();
+    $newAccountStatus = $globalUser->checkNewAccountForm();
     if($newAccountStatus[1]){
         echo '<h1 class="successMessage">Nouveau compte créé avec succès!</h1>';
     }
@@ -12,9 +19,12 @@ if(!$newLoginStatus[0]) {
         echo '<h1 class="errorMessage">'.$newAccountStatus[2].'</h1>';
     }
 }
-
-if(isset($_POST['submitEmail'])) {
-    require_once("./PageParts/sendEmail.php");
+if ($newLoginStatus[2] != NULL) { ?>
+    <p class="errorMessage"><?php echo $newLoginStatus[2]; ?></p>
+<?php
+}
+    if(isset($_POST['submitEmail'])) {
+    require_once("./sendEmail.php");
     $state = sendEmail($_POST['username']);
     ?>
     <script>
@@ -50,17 +60,17 @@ if(isset($_POST['submitEmail'])) {
 
 <head>
     <meta charset = "utf-8">
-    <link rel = "stylesheet" href = "./css/stylesheet.css">
+    <link rel = "stylesheet" href = "../css/stylesheet.css">
     <title>Connexion</title>
-    <link rel="shortcut icon" href="./favicon.ico">
+    <link rel="shortcut icon" href="../favicon.ico">
 
-    <?php include("./PageParts/windows.php");?>
+    <?php include("./windows.php");?>
 
 </head>
 
 <body>
 <div class = "Container">
-	<?php include("./PageParts/navigation.php")?>
+	<?php include("./navigation.php") ?>
 
 	<div class = "MainContainer">
 
@@ -95,7 +105,7 @@ if(isset($_POST['submitEmail'])) {
         <div class="window-content">
             <span class="close" onclick="closeWindow('connexion')">&times;</span>
             <h2 class = "window-title">Connexion</h2>
-            <?php include("./PageParts/loginForm.php"); ?>
+            <?php include("./loginForm.php"); ?>
         </div>
     </div>
 
@@ -103,7 +113,7 @@ if(isset($_POST['submitEmail'])) {
         <div class="window-content">
             <span class="close" onclick="closeWindow('inscription')">&times;</span>
             <h2 class = "window-title">Inscription</h2>
-            <?php include("./PageParts/newLoginForm.php"); ?>
+            <?php include("./newLoginForm.php"); ?>
         </div>
     </div>
 
@@ -128,11 +138,11 @@ if(isset($_POST['submitEmail'])) {
         <div class="window-content">
             <span class="close" onclick="closeWindow('lost-password')">&times;</span>
             <h2 class = "window-title">Mot de passe oublié</h2>
-            <?php include("./PageParts/lostPasswordForm.php"); ?>
+            <?php include("./lostPasswordForm.php"); ?>
         </div>
     </div>
 
-    <?php include("./PageParts/trends.php"); ?>
+    <?php include("./trends.php"); ?>
 </div>
 </body>
 

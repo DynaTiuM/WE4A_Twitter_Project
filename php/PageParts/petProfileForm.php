@@ -1,7 +1,6 @@
 <?php
 require_once('./PageParts/databaseFunctions.php');
 
-
 if (!function_exists('displayPetProfile')) {
     function displayPetProfile($conn, $username) {
 
@@ -13,7 +12,11 @@ if (!function_exists('displayPetProfile')) {
         }
 
         if(isset($_POST['adopt'])) {
-            adoptAnimal($username, $_COOKIE['username'], $conn);
+            require_once("./PageParts/Adoption.php");
+            $adoption = new Adoption($conn);
+
+            // Appeler la méthode adopter() avec les paramètres appropriés
+            $resultat = $adoption->adoptAnimal($username, $_COOKIE['username']);
         }
 
         /* DUPLICATED!!!! */
@@ -71,7 +74,6 @@ if (!function_exists('displayPetProfile')) {
                     <?php
                 }
             }
-
 
             echo "<h4>" ."@" . $username . "</h4>";
             if($row["caracteristiques"] != ("Bio" && null)) {
