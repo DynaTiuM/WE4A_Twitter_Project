@@ -1,9 +1,12 @@
 <?php
 require_once('databaseFunctions.php');
 
-$information = getPetInformation($_GET['username']);
+$petUsername = SecurizeString_ForSQL($_GET['username']);
+$ownerUsername = SecurizeString_ForSQL($_COOKIE['username']);
+$information = getPetInformation($petUsername);
+$user = getUserInformation($ownerUsername);
 $nom = $information['nom'];
-$avatar = loadAvatar($_GET['username']);
+$avatar = loadAvatar($petUsername);
 $age = $information['age'];
 $sexe = $information['sexe'];
 $bio = $information['caracteristiques'];
@@ -48,6 +51,22 @@ $espece = $information['espece'];
     <div>
         <input name = "espece" class = "answer" value="<?php echo $espece; ?>" placeholder="Bio">
     </div>
+    <?php
+    if($user['organisation']) { ?>
+
+    <div class ="answer">
+        <p>Est à la recherche d'un propriétaire</p>
+        <label>
+            <input type="radio" name="adoption" value="1" required  <?php if($information['adopter'] == 1) {?> checked <?php }?>>
+            Oui
+        </label>
+        <label>
+            <input type="radio" name="adoption" value="0" <?php if($information['adopter'] == 0) {?> checked <?php }?>>
+            Non
+        </label>
+    </div>
+    <?php
+    }?>
     <br>
 
     <button class = "form-button" type="submit" name = "modification-pet-profile">Modifier le profil</button>

@@ -67,7 +67,7 @@ function sendMessage($reply_id) {
             $stmt->execute();
         }
 
-        if(isset($_GET['answer']) || isset($_POST['reply_to'])){
+        if(isset($_GET['answer']) || isset($_POST['submit'])){
             header("Location: explorer.php?answer=$reply_id");
         }else {
             header("Location: explorer.php");
@@ -77,6 +77,4 @@ function sendMessage($reply_id) {
 
         exit();
     }
-
-
 }

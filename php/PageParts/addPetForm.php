@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <html lang = "fr">
-<form  action="" method="post" enctype="multipart/form-data">
+<form  action ="" method="post" enctype="multipart/form-data">
 
     <div class="image-container">
         <label for="avatar_pet">
@@ -23,11 +23,27 @@
     <div>
         <input type ="text" name = "species" class = "answer" placeholder="Espèce">
     </div>
+    <?php
+    $user = getUserInformation($_COOKIE['username']);
+    if($user['organisation']) { ?>
+
+    <div class ="answer">
+        <p>Cet animal est à la recherche d'un propriétaire</p>
+        <label>
+            <input type="radio" name="adoption" value="1" required>
+            Oui
+        </label>
+        <label>
+            <input type="radio" name="adoption" value="0">
+            Non
+        </label>
+    </div>
+<?php
+    }?>
     <div>
         <input name = "bio" class = "answer" placeholder="Bio">
     </div>
     <div>
-        <label for="gender"></label>
         <label>
             <input type="radio" name="gender" value="masculin" required>
             Masculin

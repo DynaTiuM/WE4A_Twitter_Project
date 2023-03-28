@@ -5,6 +5,12 @@ $newLoginStatus = CheckLogin();
 
 if(!$newLoginStatus[0]) {
     $newAccountStatus = CheckNewAccountForm();
+    if($newAccountStatus[1]){
+        echo '<h1 class="successMessage">Nouveau compte créé avec succès!</h1>';
+    }
+    elseif ($newAccountStatus[0]){
+        echo '<h1 class="errorMessage">'.$newAccountStatus[2].'</h1>';
+    }
 }
 
 if(isset($_POST['submitEmail'])) {
@@ -55,7 +61,6 @@ if(isset($_POST['submitEmail'])) {
 <body>
 <div class = "Container">
 	<?php include("./PageParts/navigation.php")?>
-
 
 	<div class = "MainContainer">
 

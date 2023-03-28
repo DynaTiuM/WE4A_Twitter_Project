@@ -12,6 +12,10 @@ if (!function_exists('displayPetProfile')) {
             motificationProfile('animal');
         }
 
+        if(isset($_POST['adopt'])) {
+            adoptAnimal($username, $_COOKIE['username'], $conn);
+        }
+
         /* DUPLICATED!!!! */
         if(isset($_POST['like']) && $loginStatus) likeMessage($_POST['like']);
 
@@ -20,8 +24,12 @@ if (!function_exists('displayPetProfile')) {
             sendMessage($_POST["submit"]);
         }
 
-        $query = "SELECT * FROM animal WHERE id = '$username'";
-        $result = $conn->query($query);
+        $username = SecurizeString_ForSQL($username);
+        $query = "SELECT * FROM animal WHERE id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
         if($result && $result->num_rows > 0) {
             $row = $result->fetch_assoc();
@@ -46,12 +54,22 @@ if (!function_exists('displayPetProfile')) {
                     <form action="" method="post" class = "button-follow">
                         <button type = "submit" name="follow" class = "button-modify-profile">Suivre</button>
                     </form>
-                <?php }
+
+                <?php
+                }
                 else { ?>
                     <form action="" method="post" class = "button-follow">
                         <button type = "submit" name="follow" class = "button-following">Suivi</button>
                     </form>
                 <?php }
+                if($row['adopter'] == 1) {?>
+                        <div style = "align-self: flex-end;">
+                            <form action = "./profile.php?username=<?php echo $username?>" method = "post">
+                                <input type = "submit" class = "add-pet" name = "adopt" value = "Adopter">
+                            </form>
+                        </div>
+                    <?php
+                }
             }
 
 

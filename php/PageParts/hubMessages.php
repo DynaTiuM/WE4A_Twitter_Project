@@ -3,9 +3,9 @@
 function displayContainer($type) {
     require_once("./PageParts/databaseFunctions.php");
     ConnectDatabase();
-    $loginStatus = CheckLogin();
+    $loginStatus = isLogged();
 
-    if(isset($_POST['like']) && $loginStatus[0]) likeMessage($_POST['like']);
+    if(isset($_POST['like']) && $loginStatus) likeMessage($_POST['like']);
 
     if(isset($_POST["submit"])) {
         include("./PageParts/sendingMessage.php");

@@ -10,6 +10,7 @@ ob_start();
     <meta charset = "utf-8">
     <link rel = "stylesheet" href = "./css/stylesheet.css">
     <link rel = "stylesheet" href = "./css/profile.css">
+    <link rel = "stylesheet" href = "./css/newMessage.css">
     <title>Profil</title>
     <link rel="shortcut icon" href="./favicon.ico">
 
