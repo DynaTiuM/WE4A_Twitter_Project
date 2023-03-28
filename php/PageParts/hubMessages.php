@@ -1,14 +1,16 @@
 <?php
 
 function displayContainer($type) {
-    global $globalDb, $globalUser;
+    $globalDb = Database::getInstance();
     $conn = $globalDb->getConnection();
+    $globalUser = User::getInstance($conn, $globalDb);
     $loginStatus = $globalUser->isLoggedIn();
+
 
     //if(isset($_POST['like']) && $loginStatus) likeMessage($_POST['like']);
 
     if(isset($_POST["submit"])) {
-        include("./PageParts/sendingMessage.php");
+        include("./sendingMessage.php");
         sendMessage($_POST["submit"]);
     }
 
@@ -39,8 +41,7 @@ function displayContainer($type) {
                 <div class = "spacing"></div>
                 <?php
                 if ($loginStatus) {
-
-                    popUpNewMessage();
+                    //popUpNewMessage();
                     mainMessages($loginStatus);
                 }
                 else {
@@ -54,7 +55,7 @@ function displayContainer($type) {
                 </div>
                 <div class = "spacing"></div>
                 <?php
-                popUpNewMessage();
+                //popUpNewMessage();
                 explorerMessages($loginStatus);
             }
             ?>

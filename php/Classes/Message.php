@@ -16,9 +16,21 @@ class Message
     private $avatar;
 
     private $conn;
+    private $db;
 
-    public function __construct($conn) {
+    private static $instance;
+
+    public function __construct($conn, $db) {
         $this->conn = $conn;
+        $this->db = $db;
+    }
+
+    public static function getInstance($conn, $db) {
+        if (self::$instance === null) {
+            self::$instance = new Message($conn, $db);
+        }
+
+        return self::$instance;
     }
 
     public function getInformationMessage() {
@@ -102,7 +114,7 @@ class Message
     }
     public function displayContentByCategory($category)
     {
-        $category = $this->conn->securizeString_ForSQL($category);
+        $category = $this->db->securizeString_ForSQL($category);
 
         $query = "SELECT * FROM message WHERE categorie = ?";
         $stmt = $this->conn->prepare($query);
@@ -328,9 +340,12 @@ class Message
         }
     }
 
-    public function countAllMessages($username) {
-        $query = "SELECT COUNT(*) FROM message WHERE auteur_username = ?";
-
+    public function countAllMessages($username, $type) {
+        if ($type == "user") {
+            $query = "SELECT COUNT(*) FROM message WHERE auteur_username = ?";
+        } else {
+            $query = "SELECT COUNT(*) FROM message_animaux WHERE animal_id = ?";
+        }
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param("s", $username);
         $stmt->execute();

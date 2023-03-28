@@ -6,16 +6,14 @@ class Notification
     private $username_notification;
     private $read = false;
 
-    function __construct($username_notification, $read) {
-        $this->id = $id;
+    function __construct($username_notification) {
+        $this->username_notification = $username_notification;
     }
     function numNotifications() {
         global $conn;
-        $username = SecurizeString_ForSQL($_COOKIE['username']);
         $query = "SELECT COUNT(*) FROM notification WHERE utilisateur_username = ? AND vue = ?";
         $stmt = $conn->prepare($query);
-        $vue = 0;
-        $stmt->bind_param("si", $username, $vue);
+        $stmt->bind_param("si", $this->username_notification, $this->read);
         $stmt->execute();
         $result = $stmt->get_result();
 

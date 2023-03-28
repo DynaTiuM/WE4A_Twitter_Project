@@ -1,27 +1,27 @@
 <?php
 
-class Profile
+abstract class Profile
 {
-    public function loadAvatar($username) { /* ... */ }
-    public function updateAvatar($image) {
-        if (isset($image) && is_uploaded_file($image["tmp_name"])) {
-            $image_file = $image['tmp_name'];
-            $image_data = file_get_contents($image_file);
+    protected $username;
+    protected $conn;
+    protected int $numberOfMessages;
 
-            $conn = Database::getConnection();
-            $query = $conn->prepare("UPDATE " . $this->getTableName() . " SET avatar = ? WHERE username = ?");
-
-            $query->bind_param('ss', $image_data, $this->getUsername());
-
-            $query->execute();
-
-            $query->close();
-        }
+    public function __construct($conn, $username) {
+        $this->conn = $conn;
+        $this->username = $username;
     }
 
-    abstract protected function getTableName();
+    public function displayNumMessages() {
+        ?>
+        <div style = "margin-left: 1vw; font-family: 'Plus Jakarta Sans', sans-serif;">
+            <p style = "margin-top: 0; padding-top: 0; font-size: 0.9vw;"><?php echo $this->numberOfMessages?> Messages</p>
+        </div>
+        <?php
+    }
 
-    public function modificationProfile($type) { /* ... */ }
-    public function modificationAvatarProfile($type, $username) { /* ... */ }
-    public function numFollowers($username, $type) { /* ... */ }
+    public function setNumberOfMessages($number) {
+        $this->numberOfMessages = $number;
+    }
+
+    abstract public function displayProfile(); // Méthode abstraite à implémenter dans les classes filles
 }

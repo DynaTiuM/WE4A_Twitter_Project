@@ -15,13 +15,37 @@ class User
     private $conn;
     private $db;
 
+    private static $instance;
+
     public function __construct($conn, $db) {
         $this->conn = $conn;
         $this->db = $db;
     }
 
+    // Modèle singleton
+    public static function getInstance($conn, $db) {
+        if (self::$instance === null) {
+            self::$instance = new User($conn, $db);
+        }
+
+        return self::$instance;
+    }
+
     protected function getTableName() {
         return 'utilisateur';
+    }
+
+    public function verifyUnicity($parameter) {
+        $query = "(SELECT username FROM utilisateur WHERE username = ?) UNION (SELECT id FROM animal WHERE id = ?)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("ss", $parameter, $parameter);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if($result->num_rows > 0) {
+            return false;
+        }
+        return true;
     }
 
     public static function exists($conn, $username) {
@@ -65,12 +89,12 @@ class User
 
         if(isset($_POST["username"]) && isset($_POST["password"])){
             $this->username = $this->db->secureString_ForSQL($_POST["username"]);
-            $password = $_POST["password"];
+            $this->password = $_POST["password"];
             $loginAttempted = true;
         }
         elseif ( isset( $_COOKIE["username"] ) && isset( $_COOKIE["password"] ) ) {
             $this->username = $_COOKIE["username"];
-            $password = $_COOKIE["password"];
+            $this->password = $_COOKIE["password"];
             $loginAttempted = true;
         }
         else {
@@ -85,8 +109,8 @@ class User
                 $row = $result->fetch_assoc();
                 $hashed_password = $row['mot_de_passe'];
 
-                if (password_verify($password, $hashed_password)) {
-                    $this->createLoginCookie($this->username, $hashed_password);
+                if (password_verify($this->password, $hashed_password)) {
+                    $this->createLoginCookie($hashed_password);
                     $loginSuccessful = true;
                 } else {
                     $error = "Ce couple login/mot de passe n'existe pas. Créez un Compte";
@@ -120,13 +144,18 @@ class User
         }
         return false;
     }
+
+    public function getUsername() {
+        return $this->username;
+    }
+
     public function createLoginCookie($encryptedPasswd) {
         setcookie("username", $this->username, time() + 24*3600 );
         setcookie("password", $encryptedPasswd, time() + 24*3600);
     }
-    public function getUserInformation($conn) {
+    public function getUserInformation() {
         $query = "SELECT * FROM utilisateur WHERE username = ?";
-        $stmt = $conn->prepare($query);
+        $stmt = $this->conn->prepare($query);
         $stmt->bind_param("s", $this->username);
         $stmt->execute();
 
@@ -193,7 +222,7 @@ class User
             && isset($_POST["date_de_naissance"]) &&  isset($_POST["organisation"]);
 
         //Données reçues via formulaire?
-        if($completed && verifyUnicity($_POST['username'])){
+        if($completed && $this->verifyUnicity($_POST['username'])){
 
             $creationAttempted = true;
 
@@ -205,13 +234,13 @@ class User
                 $error = "Le mot de passe et sa confirmation sont différents";
             }
             else {
-                $this->email = $this->conn->secureString_ForSQL($_POST["email"]);
-                $this->username = $this->conn->secureString_ForSQL($_POST["username"]);
-                $this->lastname = $this->conn->secureString_ForSQL($_POST["nom"]);
-                $this->firstname = $this->conn->secureString_ForSQL($_POST["prenom"]);
+                $this->email = $this->db->secureString_ForSQL($_POST["email"]);
+                $this->username = $this->db->secureString_ForSQL($_POST["username"]);
+                $this->lastname = $this->db->secureString_ForSQL($_POST["nom"]);
+                $this->firstname = $this->db->secureString_ForSQL($_POST["prenom"]);
                 $this->date_of_birth = $_POST["date_de_naissance"];
                 $this->organisation = $_POST["organisation"];
-                $this->avatar = file_get_contents('images/default_avatar.png');
+                $this->avatar = file_get_contents('../images/default_avatar.png');
                 $avatarBLOB = mysqli_real_escape_string($this->conn, $this->avatar);
                 $this->password = password_hash($_POST["password"], PASSWORD_DEFAULT);
 

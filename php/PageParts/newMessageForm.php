@@ -5,7 +5,7 @@ global $globalDb, $globalUser;
 $conn = $globalDb->getConnection();
 $loginStatus = $globalUser->isLoggedIn();
 
-$info = $globalUser->getUserInformation($_COOKIE['username']);
+$info = $globalUser->getUserInformation();
 $avatar = $info['avatar'];
 include("adressSearch.php");
 
@@ -19,8 +19,8 @@ include("adressSearch.php");
     <meta charset = "utf-8">
     <script src="https://maps.googleapis.com/maps/api/js?key=KEY&libraries=places"></script>
 
-    <link rel = "stylesheet" href = "./css/stylesheet.css">
-    <link rel = "stylesheet" href = "./css/newMessage.css">
+    <link rel = "stylesheet" href = "../css/stylesheet.css">
+    <link rel = "stylesheet" href = "../css/newMessage.css">
 </head>
 
 <body>
@@ -41,23 +41,23 @@ include("adressSearch.php");
 
         <div class = "icons">
             <label for ="image">
-                <img src="./images/image.png" class = "icon" alt = "Image">
+                <img src="../images/image.png" class = "icon" alt = "Image">
             </label>
 
             <input type="file" id = "image" name = "image" class = "invisibleFile">
 
             <label>
-                <img onclick="showMap()" src="./images/localisation.png" class ="icon" alt = "Localisation">
+                <img onclick="showMap()" src="../images/localisation.png" class ="icon" alt = "Localisation">
             </label>
 
             <label>
-                <img onclick="openWindow('display-pet')" src="./images/pet.png" class ="icon" alt = "Animaux">
+                <img onclick="openWindow('display-pet')" src="../images/pet.png" class ="icon" alt = "Animaux">
             </label>
 
             <?php if(!isset($_POST['reply_to']) && !isset($_GET['answer'])) {
             ?>
             <label>
-                <img onclick="openWindow('display-type', 'block')" src="./images/select.png" class ="icon" alt = "Type">
+                <img onclick="openWindow('display-type', 'block')" src="../images/select.png" class ="icon" alt = "Type">
             </label>
             <?php
             }

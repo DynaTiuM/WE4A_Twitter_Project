@@ -1,6 +1,11 @@
 <?php
-global $globalDb, $globalUser;
+require_once("../Classes/Database.php");
+require_once("../Classes/User.php");
+require_once("../Classes/Message.php");
+
+$globalDb = Database::getInstance();
 $conn = $globalDb->getConnection();
+$globalUser = User::getInstance($conn, $globalDb);
 $loginStatus = $globalUser->isLoggedIn();
 ?>
 <!DOCTYPE html>
@@ -17,7 +22,6 @@ $loginStatus = $globalUser->isLoggedIn();
     <h1>Tendances pour vous</h1>
     <?php
     global $conn;
-
 
     $query = "SELECT tag, COUNT(*) AS count FROM hashtag GROUP BY tag ORDER BY count DESC LIMIT 10";
 

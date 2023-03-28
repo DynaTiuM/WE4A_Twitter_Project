@@ -19,6 +19,10 @@ if(!$newLoginStatus[0]) {
         echo '<h1 class="errorMessage">'.$newAccountStatus[2].'</h1>';
     }
 }
+else {
+    header("Location: index.php");
+    exit();
+}
 if ($newLoginStatus[2] != NULL) { ?>
     <p class="errorMessage"><?php echo $newLoginStatus[2]; ?></p>
 <?php
@@ -83,10 +87,6 @@ if ($newLoginStatus[2] != NULL) { ?>
         </div>
 
         <?php }
-        else {
-            header("Location: index.php");
-            exit();
-        }
         if($newLoginStatus[2] != NULL) {
             ?>
             <script>

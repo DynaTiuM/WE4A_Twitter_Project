@@ -12,23 +12,62 @@ class Animal extends Profile
     private $species;
     private $adopt;
 
-    public function __construct($id) {
-        global $conn;
-        $stmt = $conn->prepare("SELECT * FROM animal WHERE id = ?");
-        $stmt->bind_param("s", $id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $row = $result->fetch_assoc();
+    private $conn;
+    private $db;
 
-        $this->id = $row['id'];
-        $this->name = $row['nom'];
-        $this->owner_username = $row['proprietaire_username'];
-        $this->age = $row['age'];
-        $this->gender = $row['sexe'];
-        $this->avatar = $row['avatar'];
-        $this->characteristics = $row['caracteristiques'];
-        $this->species = $row['espece'];
-        $this->adopt = $row['adopter'];
+    public function __construct($conn, $db) {
+        $this->conn = $conn;
+        $this->db = $db;
+    }
+
+    public function updateAvatar($image) {
+        if (isset($image) && is_uploaded_file($image["tmp_name"])) {
+            $image_file = $image['tmp_name'];
+            $image_data = file_get_contents($image_file);
+
+            $conn = Database::getConnection();
+            $query = $conn->prepare("UPDATE animal SET avatar = ? WHERE username = ?");
+
+            $query->bind_param('ss', $image_data, $this->getUsername());
+
+            $query->execute();
+
+            $query->close();
+        }
+    }
+
+    public function addPet() {
+        global $globalUser;
+        if (!isset($_POST['adoption'])) {
+            $adoption = 0;
+        } else {
+            $adoption = $this->db->secureString_ForSQL($_POST['adoption']);
+        }
+
+        // Utilisation de la classe Utilisateur pour vérifier l'unicité de l'ID
+        if (!$globalUser->verifyUnicity($_POST['id'])) {
+            return "Identifiant déjà existant !";
+        }
+
+        if (isset($_FILES["avatar_pet"]) && is_uploaded_file($_FILES["avatar_pet"]["tmp_name"])) {
+            $image = file_get_contents($_FILES["avatar_pet"]["tmp_name"]);
+
+            $query = "INSERT INTO animal (id, nom, maitre_username, age, sexe, avatar, caracteristiques, espece, adopter) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bind_param("sssisssss", $_POST['id'], $_POST['nom'], $_COOKIE['username'], $_POST['age'], $_POST['gender'], $image, $_POST['bio'], $_POST['species'], $_POST['adoption']);
+            $stmt->execute();
+            $stmt->close();
+            return "Animal ajouté!";
+        }
+
+        $avatar = file_get_contents('../images/default_avatar_pet.png');
+        $avatarBLOB = mysqli_real_escape_string($this->conn, $avatar);
+        $query = "INSERT INTO animal (id, nom, maitre_username, age, sexe, avatar, caracteristiques, espece, adopter) 
+                  VALUES ('" . $_POST['id'] . "', '" . $_POST['nom'] . "', '" . $_COOKIE['username'] . "', " . $_POST['age'] . ", '" . $_POST['gender'] . "', '$avatarBLOB', '" . $_POST['bio'] . "', '" . $_POST['species'] . "', '$adoption')";
+        $this->conn->query($query);
+
+        return "Animal ajouté!";
     }
 
     function getPetInformation($conn) {

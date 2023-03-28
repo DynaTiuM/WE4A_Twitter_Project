@@ -1,9 +1,6 @@
 <?php
 
 date_default_timezone_set('CET');
-require_once("./Classes/Database.php");
-$db = new Database();
-$conn = $db->getConnection();
 
 // Utilisez $conn pour exécuter les requêtes SQL
 
@@ -110,52 +107,6 @@ function numFollowers($username, $type) {
 
 }
 
-
-function verifyUnicity($parameter) {
-    global $conn;
-    $query = "(SELECT username FROM utilisateur WHERE username = ?) UNION (SELECT id FROM animal WHERE id = ?)";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("ss", $parameter, $parameter);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if($result->num_rows > 0) {
-        return false;
-    }
-    return true;
-}
-
-function addPet() {
-    global $conn;
-
-    if(!isset($_POST['adoption'])) {
-        $adoption = 0;
-    }
-    else {
-        $adoption = SecurizeString_ForSQL($_POST['adoption']);
-    }
-    if(!verifyUnicity($_POST['id'])) return "Identifiant déjà existant !";
-
-    if (isset($_FILES["avatar_pet"]) && is_uploaded_file($_FILES["avatar_pet"]["tmp_name"])) {
-        $image = file_get_contents($_FILES["avatar_pet"]["tmp_name"]);
-
-        $query = "INSERT INTO animal (id, nom, maitre_username, age, sexe, avatar, caracteristiques, espece, adopter) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("sssisssss", $_POST['id'], $_POST['nom'], $_COOKIE['username'], $_POST['age'], $_POST['gender'], $image, $_POST['bio'], $_POST['species'], $_POST['adoption']);
-        $stmt->execute();
-        $stmt->close();
-        return "Animal ajouté!";
-    }
-
-    $avatar = file_get_contents('images/default_avatar_pet.png');
-    $avatarBLOB = mysqli_real_escape_string($conn, $avatar);
-    $query = "INSERT INTO animal (id, nom, maitre_username, age, sexe, avatar, caracteristiques, espece, adopter) 
-              VALUES ('" . $_POST['id'] . "', '" . $_POST['nom'] . "', '" . $_COOKIE['username'] . "', " . $_POST['age'] . ", '" . $_POST['gender'] . "', '$avatarBLOB', '" . $_POST['bio'] . "', '" . $_POST['species'] . "', '$adoption')";
-    $conn->query($query);
-
-    return "Animal ajouté!";
-}
 
 
 function getNotifications() {

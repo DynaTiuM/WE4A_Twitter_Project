@@ -1,15 +1,14 @@
 <?php
-global $globalDb, $globalUser;
+$globalDb = Database::getInstance();
 $conn = $globalDb->getConnection();
+$globalUser = User::getInstance($conn, $globalDb);
 $loginStatus = $globalUser->isLoggedIn();
 
-$loginStatus = $globalUser->isLoggedIn();
 
 if(isset($_POST["destroyCookies"])) {
-    $globalDb->destroyLoginCookie();
+    $globalUser->destroyLoginCookie();
     header("Location: ./connect.php");
 }
-
 include("windows.php");
 if(isset($_POST['reply_to'])) include('popupNewMessageForm.php');
 ?>
@@ -28,8 +27,10 @@ if(isset($_POST['reply_to'])) include('popupNewMessageForm.php');
             <li class="menu-item"><a href="explorer.php"><img src="../images/explorer.png">Explorer</a></li>
 
             <?php if($loginStatus) {
-                $numNotifs = numNotifications();
-                if($numNotifs == 0) {
+                require_once ("../Classes/Notification.php");
+                $notification = new Notification($globalUser->getUsername());
+                $numNotifications = $notification->numNotifications();
+                if($numNotifications == 0) {
                     ?>
                     <li class = "menu-item"><a href="./notifications.php"><img src="../images/notification.png">Notifications</a></li>
                     <?php

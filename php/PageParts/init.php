@@ -10,19 +10,3 @@ $globalDb = Database::getInstance();
 $conn = $globalDb->getConnection();
 $globalUser = User::getInstance($conn, $globalDb);
 $globalMessage = Message::getInstance($conn, $globalDb);
-?>
-<!DOCTYPE html>
-<html lang = "fr">
-<head>
-    <title>Explorer</title>
-</head>
-<body>
-<?php
-require_once('./hubMessages.php');
-require_once('./messageFunctions.php');
-displayContainer('explorer', $conn);
-
-
-?>
-</body>
-</html>

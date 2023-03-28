@@ -1,5 +1,21 @@
 <?php
 ob_start();
+
+require_once("./databaseFunctions.php");
+
+require_once("../Classes/Database.php");
+require_once("../Classes/User.php");
+require_once("../Classes/Message.php");
+require_once("../Classes/UserProfile.php");
+require_once("../Classes/AnimalProfile.php");
+
+global $globalDb;
+global $globalUser;
+global $globalMessage;
+$globalDb = Database::getInstance();
+$conn = $globalDb->getConnection();
+$globalUser = User::getInstance($conn, $globalDb);
+$globalMessage = Message::getInstance($conn, $globalDb);
 ?>
 
 <!DOCTYPE html>
@@ -15,8 +31,8 @@ ob_start();
     <link rel="shortcut icon" href="../favicon.ico">
 
     <?php
-    include("./PageParts/windows.php");
-    include("./PageParts/popupNewMessage.php");
+    include("./windows.php");
+    include("./popupNewMessage.php");
     popUpNewMessage();
     ?>
 
@@ -24,24 +40,26 @@ ob_start();
 
 <body>
 <div class = "Container">
-    <?php include("./PageParts/navigation.php") ?>
+    <?php include("./navigation.php") ?>
     <div class = "MainContainer">
         <div class = "h1-container">
             <h1 style = "margin-bottom: 0.2vw">Profil</h1>
             <?php
 
             $username =  $_GET["username"];
-            global $conn;
 
-            $type = determinePetOrUser($conn, $username);
+            $type = determinePetOrUser($globalDb->getConnection(), $username);
 
-            if($type == 'user'){
-                $numberOfMessages = countAllMessages($username, 'utilisateur');
+            if ($type == 'user') {
+                $profile = new UserProfile($conn, $username);
+            } else {
+                $profile = new AnimalProfile($conn, $username);
             }
-            else {
-                $numberOfMessages = countAllMessages($username, 'animal');
-            }
-            displayNumMessages($numberOfMessages);
+
+            $profile->setNumberOfMessages($globalMessage->countAllMessages($username, $type));
+
+            $profile->displayNumMessages();
+            $profile->displayProfile();
             ?>
         </div>
         <div class = "spacing"></div>
@@ -53,11 +71,11 @@ ob_start();
             }
 
             if($type == 'user') {
-                include("./PageParts/userProfileForm.php");
+                include("./userProfileForm.php");
                 $result = displayUserProfile($conn, $username);
             }
             else {
-                include("./PageParts/petProfileForm.php");
+                include("./petProfileForm.php");
                 displayPetProfile($conn, $username);
             }
             ?>
@@ -72,7 +90,7 @@ ob_start();
             }?>
             <div id="message-content">
                 <?php
-                include("./PageParts/messageForm.php");
+                include("./messageForm.php");
                 profilMessages();
                 ?>
             </div>
@@ -115,13 +133,6 @@ ob_start();
 
 </body>
 
-<?php
-function displayNumMessages($num) {?>
-    <div style = "margin-left: 1vw; font-family: 'Plus Jakarta Sans', sans-serif;">
-        <p style = "margin-top: 0; padding-top: 0; font-size: 0.9vw;"><?php echo $num?> Messages</p>
-    </div>
-    <?php
-}?>
 <script>
     // Récupération des boutons
     const messageBtn = document.getElementById("message-button");

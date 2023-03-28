@@ -1,12 +1,15 @@
 <?php
 require_once("../Classes/Database.php");
 require_once("../Classes/User.php");
+require_once("../Classes/Message.php");
 
 global $globalDb;
 global $globalUser;
-$globalDb = new Database();
+global $globalMessage;
+$globalDb = Database::getInstance();
 $conn = $globalDb->getConnection();
-$globalUser = new User($conn, $globalDb);
+$globalUser = User::getInstance($conn, $globalDb);
+$globalMessage = Message::getInstance($conn, $globalDb);
 ?>
 
 <!DOCTYPE html>
@@ -17,24 +20,11 @@ $globalUser = new User($conn, $globalDb);
 <body>
 <?php
 require_once('./hubMessages.php');
+require_once('./messageFunctions.php');
 displayContainer('subs');
-
 //displayContainer('subs');
 
-function mainMessages($loginStatus) {
-    ?>
-    <div class = "hub-messages">
-        <?php
-        include("./messageForm.php");
-        if(isset($_GET['answer']))
-            mainMessagesQuery($loginStatus, 'subs', $_GET['answer']);
-        else
-            mainMessagesQuery($loginStatus, 'subs', null);
-        ?>
 
-    </div>
-    <?php
-}
 ?>
 </body>
 </html>
