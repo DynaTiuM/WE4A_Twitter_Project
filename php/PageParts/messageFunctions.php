@@ -37,25 +37,37 @@ function explorerMessages($loginStatus) {
 
         if(isset($_GET['answer'])) {
             if($_GET['answer'] != '') {
-                $parent_message_id = getParentMessageId($_GET['answer']);
+                $message = new Message($conn, $globalDb);
+                $message->setId($_GET['answer']);
+                $message->setParentMessageId($_GET['answer']);
+                $parent_message_id = $message->getParentMessageId();
+
                 if($parent_message_id) {
                     ?>
-                    <div class ="parent-message">
-                        <?php //$globalMessage->displayContentbyId($parent_message_id);?>
-                        <span class = "container-parent-message"></span>
+                    <div class="parent-message">
+                        <?php
+                        $parent_message = new Message($conn, $globalDb);
+                        $parent_message->setId($parent_message_id);
+                        $parent_message->displayContentById();
+                        ?>
+                        <span class="container-parent-message"></span>
                     </div>
                     <?php
                 }
+
+                $message->displayContentbyId();
             }
 
-            //$globalMessage->displayContentById($_GET['answer']);
+
             include("./adressSearch.php");
             if(!isset($_POST['reply_to']) && !isset($_POST['new-message']) && $loginStatus) include("./newMessageForm.php");
             $messageIds = Message::mainMessagesQuery($conn, $globalDb, $loginStatus, 'explorer', $_GET['answer']);
             Message::displayMessages($conn, $globalDb, $messageIds);
         }
-        if (isset($_GET['category'])) {
-            Message::displayMessagesByCategory($conn, $globalDb, $_GET['category']);
+        elseif (isset($_GET['category'])) {
+            $messageIds = Message::displayMessagesByCategory($conn, $globalDb, $_GET['category']);
+            Message::displayMessages($conn, $globalDb, $messageIds);
+
         }
         else {
             if(!isset($_POST['reply_to']) && !isset($_POST['new-message']) && $loginStatus) include("./newMessageForm.php");

@@ -3,7 +3,6 @@
     function openWindow(window, type = 'inline-block') {
         document.getElementById(window).style.display = type;
 
-
         if(window === 'lost-password'){
             document.getElementById("connexion").style.display = "none";
         }

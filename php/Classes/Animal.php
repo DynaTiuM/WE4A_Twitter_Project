@@ -1,6 +1,7 @@
 <?php
 
-class Animal extends Profile
+require_once ("Entity.php");
+class Animal extends Entity
 {
     private $id;
     private $name;
@@ -13,12 +14,8 @@ class Animal extends Profile
     private $species;
     private $adopt;
 
-    protected $conn;
-    private $db;
-
     public function __construct($conn, $db) {
-        $this->conn = $conn;
-        $this->db = $db;
+        parent::__construct($conn, $db);
     }
 
     public function updateAvatar($image) {
@@ -37,7 +34,7 @@ class Animal extends Profile
         }
     }
 
-    public function addPet() {
+    public function setAttributes($id, $name, $owner_username, $age, $gender, $avatar, $characteristics, $species, $adoption) {
         global $globalUser;
         if (!isset($_POST['adoption'])) {
             $this->adoption = 0;

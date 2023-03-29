@@ -5,7 +5,7 @@
 
     <div class="image-container">
         <label for="avatar_pet">
-            <img class="image-modification" src="./images/default_avatar_pet.png" alt="Bouton parcourir">
+            <img class="image-modification" src="../images/default_avatar_pet.png" alt="Bouton parcourir">
             <div class="overlay"></div>
         </label>
     </div>
@@ -24,8 +24,10 @@
         <input type ="text" name = "species" class = "answer" placeholder="Espèce">
     </div>
     <?php
-    $user = getUserInformation($_COOKIE['username']);
-    if($user['organisation']) { ?>
+    global $globalUser;
+    echo 'Organisation: ' . $globalUser->getFirstName(); // Cette ligne est temporaire pour le débogage
+
+    if($globalUser->isOrganization()) {?>
 
     <div class ="answer">
         <p>Cet animal est à la recherche d'un propriétaire</p>
@@ -39,7 +41,7 @@
         </label>
     </div>
 <?php
-    }?>
+    } ?>
     <div>
         <input name = "bio" class = "answer" placeholder="Bio">
     </div>

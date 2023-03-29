@@ -1,5 +1,8 @@
 <?php
 
+require_once("../Classes/UserInterface.php");
+require_once("./functions.php");
+
 function displayContainer($type) {
     $globalDb = Database::getInstance();
     $conn = $globalDb->getConnection();
@@ -8,11 +11,11 @@ function displayContainer($type) {
     $loginStatus = $globalUser->isLoggedIn();
 
 
-    //if(isset($_POST['like']) && $loginStatus) likeMessage($_POST['like']);
+    if(isset($_POST['like']) && $loginStatus) $globalUser->likeMessage($_POST['like']);
 
     if(isset($_POST["submit"])) {
         include("./sendingMessage.php");
-        $globalMessage->sendMessage($_POST["submit"]);
+        Message::sendMessage($conn, $globalDb, $_POST["submit"]);
     }
 
     ?>
@@ -29,7 +32,10 @@ function displayContainer($type) {
     <div class = "Container">
         <?php
         include ("./navigation.php");
-        include("./popupnewMessage.php");
+        if(isset($_POST['reply_to'])) {
+            popUpNewMessage();
+            displayNewMessageForm($conn, $globalDb, $_POST['reply_to']);
+        }
         ?>
 
         <div class = "MainContainer">
@@ -42,7 +48,6 @@ function displayContainer($type) {
                 <div class = "spacing"></div>
                 <?php
                 if ($loginStatus) {
-                    //popUpNewMessage();
                     mainMessages($loginStatus);
                 }
                 else {
@@ -56,7 +61,6 @@ function displayContainer($type) {
                 </div>
                 <div class = "spacing"></div>
                 <?php
-                //popUpNewMessage();
                 explorerMessages($loginStatus);
             }
             ?>
@@ -64,8 +68,6 @@ function displayContainer($type) {
 
         <?php
         include("./trends.php");
-
-        include("./popupNewMessageForm.php");
         ?>
     </div>
 

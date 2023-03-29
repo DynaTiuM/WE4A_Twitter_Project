@@ -1,50 +1,40 @@
 <?php
-require_once('databaseFunctions.php');
+// Assurez-vous d'avoir une instance de UserProfile dans votre code.
 
-$information = getUserInformation($_GET['username']);
-$prenom = $information['prenom'];
-$avatar = loadAvatar($_GET['username']);
-$nom = $information['nom'];
-$date = $information['date_de_naissance'];
-$password = $information['mot_de_passe'];
-$bio = $information['bio'];
-
+global $profile;
 ?>
 
 <!DOCTYPE html>
-
-<html lang = "fr">
-<form  action="" method="post" enctype="multipart/form-data">
-
+<html lang="fr">
+<form action="" method="post" enctype="multipart/form-data">
     <div class="image-container">
         <label for="avatar">
-            <img class="image-modification" src="data:image/jpeg;base64,<?php echo base64_encode($avatar); ?>" alt="Bouton parcourir">
+            <img class="image-modification" src="data:image/jpeg;base64,<?php echo $profile->getUser()->getAvatarEncoded64(); ?>" alt="Bouton parcourir">
             <div class="overlay"></div>
         </label>
     </div>
 
-    <input id="avatar" class = "invisibleFile" type="file" name = "avatar">
+    <input id="avatar" class="invisibleFile" type="file" name="avatar">
     <div>
-        <input name = "prenom" class = "answer" value="<?php echo $prenom; ?>">
+        <input name="prenom" class="answer" value="<?php echo $profile->getUser()->getFirstName(); ?>">
     </div>
     <div>
-        <input name = "nom" class = "answer" value="<?php echo $nom; ?>">
+        <input name="nom" class="answer" value="<?php echo $profile->getUser()->getLastName();; ?>">
     </div>
     <div>
-        <input type ="date" name = "date" class = "answer" value="<?php echo $date; ?>">
+        <input type="date" name="date" class="answer" value="<?php echo $profile->getUser()->getDateOfBirth(); ?>">
     </div>
     <div>
-        <input name = "bio" class = "answer" value="<?php echo $bio; ?>" placeholder="Bio">
+        <input name="bio" class="answer" value="<?php echo $profile->getUser()->getBio(); ?>" placeholder="Bio">
     </div>
     <div>
-        <input class = "answer" type="password" id="password" name="password" value="<?php echo $password; ?>">
+        <input class="answer" type="password" id="password" name="password" value="<?php echo $profile->getUser()->getPassword(); ?>">
     </div>
     <div>
-        <input class = "answer" type="password" id="confirm" name="confirm" value="<?php echo $password; ?>">
+        <input class="answer" type="password" id="confirm" name="confirm" value="<?php echo $profile->getUser()->getPassword();; ?>">
     </div>
     <br>
 
-    <button class = "form-button" type="submit" name = "modification-profile">Modifier le profil</button>
-
+    <button class="form-button" type="submit" name="modification-profile">Modifier le profil</button>
 </form>
 </html>

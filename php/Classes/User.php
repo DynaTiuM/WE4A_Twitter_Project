@@ -34,6 +34,10 @@ class User extends Entity
         return self::$instance;
     }
 
+    public static function getInstanceById() {
+
+    }
+
     protected function getTableName() {
         return 'utilisateur';
     }
@@ -173,6 +177,30 @@ class User extends Entity
         }
     }
 
+    public function getFirstName() {
+        return $this->firstname;
+    }
+    public function getLastName() {
+        return $this->lastname;
+    }
+    public function getAvatarEncoded64() {
+        return base64_encode($this->loadAvatar());
+    }
+    public function getDateOfBirth() {
+        return $this->date_of_birth;
+    }
+    public function getPassword() {
+        return $this->password;
+    }
+    public function getBio() {
+        return $this->bio;
+    }
+
+    public function isOrganization() {
+        return $this->organisation == 1;
+    }
+
+
     public function getPets() {
         $query = "SELECT * FROM animal WHERE maitre_username = ?";
         $stmt = $this->conn->prepare($query);
@@ -182,12 +210,35 @@ class User extends Entity
         return $stmt->get_result();
     }
 
+    public function likeMessage($id_message) {
+        $id_message = $this->db->secureString_ForSQL($id_message);
+        $date = date('Y-m-d H:i:s');
+
+        // Créez une nouvelle instance de Message avec l'ID du message
+        $message = new Message($this->conn, $this->db);
+        $message->setId($id_message);
+
+        // Vérifiez si le message est déjà liké par l'utilisateur
+        if (!$message->isMessageLikedByUser($this->username)) {
+            $stmt = $this->conn->prepare("INSERT INTO like_message (message_id, utilisateur_username, date) VALUES (?, ?, ?)");
+            $stmt->bind_param("sss", $id_message, $this->username, $date);
+            $stmt->execute();
+            $stmt->close();
+        } else {
+            $stmt = $this->conn->prepare("DELETE FROM like_message WHERE message_id = ? AND utilisateur_username = ?");
+            $stmt->bind_param("ss", $id_message, $this->username);
+            $stmt->execute();
+            $stmt->close();
+        }
+    }
+
     public function changePassword($conn, $new_password) {
         $this->password = password_hash($new_password, PASSWORD_DEFAULT);
         $stmt = $conn->prepare("UPDATE utilisateur SET mot_de_passe = ? WHERE username = ?");
         $stmt->bind_param("ss", $this->password, $this->username);
         $stmt->execute();
     }
+
     public function numFollowing() {
         $query = "SELECT COUNT(*) FROM suivre WHERE utilisateur_username = ?";
         $stmt = $this->conn->prepare($query);
@@ -277,6 +328,23 @@ class User extends Entity
         }
 
         return array($creationAttempted, $creationSuccessful, $error);
+    }
+
+    function setUserInformation() {
+        $sql = "SELECT * FROM utilisateur WHERE username = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("s", $this->username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+
+        $this->email = $this->db->secureString_ForSQL($row["email"]);
+        $this->username = $this->db->secureString_ForSQL($row["username"]);
+        $this->lastname = $this->db->secureString_ForSQL($row["nom"]);
+        $this->firstname = $this->db->secureString_ForSQL($row["prenom"]);
+        $this->date_of_birth = $row["date_de_naissance"];
+        $this->organisation = $row["organisation"];
+        //$this->avatar =;
     }
 
     function displayPets() {

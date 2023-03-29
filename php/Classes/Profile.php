@@ -25,6 +25,27 @@ abstract class Profile
         <?php
     }
 
+    public function likedMessages() {
+        $query = "SELECT message.* FROM message
+              JOIN like_message ON message.id = like_message.message_id
+              WHERE like_message.utilisateur_username = ?";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("s", $this->username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $messageIds = [];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $messageIds[] = $row['id'];
+            }
+            return $messageIds;
+        } else {
+            echo '<br><h4>Ce profil n\'a aimé aucun message</h4>';
+        }
+    }
+
     public function setNumberOfMessages($number) {
         $this->numberOfMessages = $number;
     }
@@ -32,6 +53,8 @@ abstract class Profile
     public function getUser() {
         return $this->profileUser;
     }
+
+    abstract public function profilMessagesAndAnswers($isMessage);
 
     abstract public function displayProfile(); // Méthode abstraite à implémenter dans les classes filles
 }

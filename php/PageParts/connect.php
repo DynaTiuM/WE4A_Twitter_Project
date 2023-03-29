@@ -1,10 +1,11 @@
 <?php
+session_start();
 require_once("../Classes/Database.php");
 require_once("../Classes/User.php");
 
 global $globalDb;
 global $globalUser;
-$globalDb = new Database();
+$globalDb = Database::getInstance();
 $conn = $globalDb->getConnection();
 $globalUser = new User($conn, $globalDb);
 $newLoginStatus = $globalUser->checkLogin();
@@ -12,7 +13,15 @@ $newLoginStatus = $globalUser->checkLogin();
 
 if(!$newLoginStatus[0]) {
     $newAccountStatus = $globalUser->checkNewAccountForm();
+
     if($newAccountStatus[1]){
+        $_SESSION['username'] = $globalUser->getUsername();
+        $_SESSION['firstName'] = $globalUser->getFirstName();
+        $_SESSION['lastName'] = $globalUser->getLastName();
+        $_SESSION['organisation'] = $globalUser->isOrganization();
+        $_SESSION['date'] = $globalUser->getDateOfBirth();
+        $_SESSION['avatar'] = $globalUser->getAvatar();
+
         echo '<h1 class="successMessage">Nouveau compte créé avec succès!</h1>';
     }
     elseif ($newAccountStatus[0]){

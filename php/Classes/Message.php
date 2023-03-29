@@ -54,6 +54,20 @@ class Message
         }
     }
 
+    public static function createMessageFromRow($conn, $row) {
+        global $globalDb;
+        $message = new Message($conn, $globalDb);
+        $message->setId($row['id']);
+        $message->setAuthorUsername($row['auteur_username']);
+        $message->setContent($row['contenu']);
+        $message->setDate($row['date']);
+        // Mettez à jour les informations du message avant de l'afficher
+        $message->setInformationMessage();
+        $message->setParentMessageId($row['id']);
+
+        return $message;
+    }
+
     public function loadMessageById($id) {
         // Récupérez les données du message en utilisant l'ID du message et stockez-les dans les attributs de la classe
         $query = "SELECT * FROM message WHERE id = ?";
@@ -157,12 +171,13 @@ class Message
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
-            include("../messageForm.php");
-            $this->displayContent($result->fetch_assoc(), $parent);
+            $message = Message::createMessageFromRow($this->conn, $result->fetch_assoc());
+            $message->displayContent();
         }
     }
 
-    private function displayContent($parent = false) {
+
+    public function displayContent($parent = false) {
         $user = new User($this->conn, $this->db);
         $loginStatus = $user->isLoggedIn();
 
@@ -242,7 +257,8 @@ class Message
                         <button type="submit" class="comment" <?php if (!$loginStatus) { ?> disabled<?php } ?>>
                             <label style="display: flex;">
                                 <?php
-                                if ($this->isLiked()) { ?>
+                                global $globalUser;
+                                if ($this->isMessageLikedByUser($globalUser->getUsername())) { ?>
                                     <img style="width: 1.5vw; padding: 0.6vw;" src="../images/liked.png" alt="Aimer">
                                 <?php } else { ?>
                                     <img style="width: 1.5vw; padding: 0.6vw;" src="../images/like.png" alt="Ne plus aimer">
@@ -281,26 +297,14 @@ class Message
         $stmt->execute();
         $result = $stmt->get_result();
 
+        $messageIds = [];
         if ($result->num_rows > 0) {
-            include("messageForm.php");
-
             while ($row = $result->fetch_assoc()) {
-                $message = new Message($conn, $db);
-                $message->setId($row['id']);
-                $message->setContent($row['contenu']);
-                $message->setDate($row['date']);
-                $message->setAuthorUsername($row['auteur_username']);
-                $message->setCategory($row['categorie']);
-                $message->setImage($row['image']);
-                $message->setLocation($row['localisation']);
-
-                // Mettez à jour les informations du message avant de l'afficher
-                $message->setInformationMessage();
-
-                // Affichez le message
-                $message->displayContent();
+                $messageIds[] = $row['id'];
             }
         }
+
+        return $messageIds;
     }
 
 
@@ -309,7 +313,7 @@ class Message
         if ($level == null) {
             $level_ = 'IS NULL';
         } else {
-            $level_ = "= " . $conn->securizeString_ForSQL($level);
+            $level_ = "= " . $db->secureString_ForSQL($level);
         }
 
         if (isset($_GET['tag'])) {
@@ -329,7 +333,6 @@ class Message
                         JOIN utilisateur ON message.auteur_username = utilisateur.username
                         WHERE message.parent_message_id {$level_}
                         ORDER BY message.date DESC");
-
             } else {
                 if ($loginStatus) {
                     $stmt = $conn->prepare("SELECT DISTINCT message.*
@@ -356,7 +359,7 @@ class Message
         return $messageIds;
     }
 
-    public function sendMessage($reply_id = null) {
+    public static function sendMessage($conn, $db, $reply_id = null) {
         if (!isset($_POST["content"])) {
             return;
         }
@@ -369,7 +372,7 @@ class Message
             $reply_id = null;
         }
 
-        $content = $this->db->secureString_ForSQL($_POST["content"]);
+        $content = $db->secureString_ForSQL($_POST["content"]);
         $username = $_COOKIE["username"];
 
         require_once("Image.php");
@@ -383,7 +386,7 @@ class Message
 
         $category = (isset($_POST['category']) && $_POST['category'] && $_POST['category'] != 'classique') ? $_POST['category'] : null;
 
-        $stmt = $this->conn->prepare("INSERT INTO message (auteur_username, parent_message_id, date, contenu, localisation, image, categorie) VALUES (?, ?, NOW(), ?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO message (auteur_username, parent_message_id, date, contenu, localisation, image, categorie) VALUES (?, ?, NOW(), ?, ?, ?, ?)");
         $stmt->bind_param("ssssss", $username, $reply_id, $content, $localisation, $formatedImage, $category);
         $stmt->execute();
 
@@ -391,7 +394,7 @@ class Message
 
         if (!empty($_POST['animaux'])) {
             foreach ($_POST['animaux'] as $animal_id) {
-                $stmt = $this->conn->prepare("INSERT INTO message_animaux (message_id, animal_id) VALUES (?, ?)");
+                $stmt = $conn->prepare("INSERT INTO message_animaux (message_id, animal_id) VALUES (?, ?)");
                 $stmt->bind_param("is", $message_id, $animal_id);
                 $stmt->execute();
             }
@@ -402,7 +405,7 @@ class Message
         $hashtags = $matches[1];
 
         foreach ($hashtags as $hashtag) {
-            $stmt = $this->conn->prepare("INSERT INTO hashtag (tag, message_id) VALUES (?, ?)");
+            $stmt = $conn->prepare("INSERT INTO hashtag (tag, message_id) VALUES (?, ?)");
             $stmt->bind_param("si", $hashtag, $message_id);
             $stmt->execute();
         }
@@ -413,27 +416,8 @@ class Message
         exit();
     }
 
-    public function likeMessage()
-    {
-        $id_message = $this->id;
-        $id_user = $this->conn->securizeString_ForSQL($_COOKIE['username']);
-        $date = date('Y-m-d H:i:s');
-
-        if (!$this->isLiked($this->conn)) {
-            $stmt = $this->conn->prepare("INSERT INTO like_message (message_id, utilisateur_username, date) VALUES (?, ?, ?)");
-            $stmt->bind_param("sss", $id_message, $id_user, $date);
-            $stmt->execute();
-            $stmt->close();
-        } else {
-            $stmt = $this->conn->prepare("DELETE FROM like_message WHERE message_id = ? AND utilisateur_username = ?");
-            $stmt->bind_param("ss", $id_message, $id_user);
-            $stmt->execute();
-            $stmt->close();
-        }
-    }
-
     public function setParentMessageId($id_son) {
-        $id_son = $this->conn->securizeString_ForSQL($id_son);
+        $id_son = $this->db->secureString_ForSQL($id_son);
 
         $stmt = $this->conn->prepare("SELECT parent_message_id FROM message WHERE id = ?");
         $stmt->bind_param("i", $id_son);
@@ -450,18 +434,14 @@ class Message
         return $this->parentMessageId;
     }
 
-    public function isLiked()
-    {
-        $query = "SELECT * FROM like_message WHERE message_id = ? AND utilisateur_username = ?";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("ss", $this->id, $this->authorUsername);
+    public function isMessageLikedByUser($username) {
+        $stmt = $this->conn->prepare("SELECT * FROM like_message WHERE message_id = ? AND utilisateur_username = ?");
+        $stmt->bind_param("is", $this->id, $username);
         $stmt->execute();
         $result = $stmt->get_result();
+        $stmt->close();
 
-        if ($result && $result->num_rows > 0) {
-            return true;
-        }
-        return false;
+        return ($result->num_rows > 0);
     }
 
     public function isCommented()
@@ -478,41 +458,15 @@ class Message
         return false;
     }
 
-    public function numComments($conn, $id_message)
+    public function numComments()
     {
-        $stmt = $conn->prepare("SELECT COUNT(*) FROM message WHERE parent_message_id = ?");
-        $stmt->bind_param("s", $id_message);
+        $stmt = $this->conn->prepare("SELECT COUNT(*) FROM message WHERE parent_message_id = ?");
+        $stmt->bind_param("s", $this->id);
         $stmt->execute();
         $result = $stmt->get_result();
 
         if ($result && $result->num_rows > 0) {
             return $result->fetch_Column();
-        }
-    }
-
-    public function findLikedMessages($username) {
-        $query = "SELECT message_id FROM like_message WHERE utilisateur_username = ?";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("s", $username);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if($result->num_rows > 0) {
-            while($result->fetch_assoc()) {
-                $query = "SELECT * FROM message WHERE id = ?";
-                $stmt = $this->conn->prepare($query);
-                $stmt->bind_param("s", $this->id);
-                $stmt->execute();
-                $result2 = $stmt->get_result();
-
-                if($result2){
-                    $row2 = $result2->fetch_assoc();
-                    $this->displayContent($row2);
-                }
-            }
-        }
-        else {
-            echo '<br><h4>Ce profil n\'a aimé aucun message</h4>';
         }
     }
 
@@ -539,37 +493,7 @@ class Message
         return $stmt->get_result();
     }
 
-    public function profilMessagesAndAnswers($username, $isMessage) {
-        if ($isMessage) {
-            $query = "SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username
-            FROM message 
-            JOIN utilisateur ON message.auteur_username = utilisateur.username
-            WHERE (auteur_username = ? AND parent_message_id IS NULL) ORDER BY date DESC";
-        } else {
-            $query = "SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username
-            FROM message 
-            JOIN utilisateur ON message.auteur_username = utilisateur.username
-            WHERE (auteur_username = ? AND parent_message_id is not NULL) ORDER BY date DESC";
-        }
 
-        $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("s", $username);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if($result->num_rows > 0) {
-            while($row = $result->fetch_assoc()) {
-                $this->displayContent($row);
-            }
-        }
-        else {
-            if ($isMessage) {
-                echo '<br><h4>Ce profil ne contient aucun message</h4>';
-            } else {
-                echo '<br><h4>Ce profil n\'a répondu à aucun message</h4>';
-            }
-        }
-    }
 
     public function countAllMessages($username, $type) {
         if ($type == "user") {

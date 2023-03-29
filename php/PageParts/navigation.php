@@ -4,13 +4,19 @@ $conn = $globalDb->getConnection();
 $globalUser = User::getInstance($conn, $globalDb);
 $loginStatus = $globalUser->isLoggedIn();
 
-
 if(isset($_POST["destroyCookies"])) {
     $globalUser->destroyLoginCookie();
     header("Location: ./connect.php");
 }
 include("windows.php");
-if(isset($_POST['reply_to'])) include('popupNewMessageForm.php');
+
+if($loginStatus) {
+    if(isset($_POST['new-message'])) {
+        displayNewMessageForm($conn, null);
+        popUpNewMessage(true);
+    }
+}
+
 ?>
 <!DOCTYPE html>
 <html lang = "fr">
@@ -63,11 +69,6 @@ if(isset($_POST['reply_to'])) include('popupNewMessageForm.php');
                 <button type = "submit" name ="destroyCookies" class = "deconnexion">Déconnexion</button>
             </form>
             <?php
-
-            if(isset($_POST['new-message'])) {
-                require_once("./popupnewMessage.php");
-                popUpNewMessage(true);
-            }
         }
         ?>
     </div>
