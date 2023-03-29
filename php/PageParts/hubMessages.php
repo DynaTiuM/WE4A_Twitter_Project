@@ -4,6 +4,7 @@ function displayContainer($type) {
     $globalDb = Database::getInstance();
     $conn = $globalDb->getConnection();
     $globalUser = User::getInstance($conn, $globalDb);
+    $globalMessage = new Message($conn, $globalDb);
     $loginStatus = $globalUser->isLoggedIn();
 
 
@@ -11,7 +12,7 @@ function displayContainer($type) {
 
     if(isset($_POST["submit"])) {
         include("./sendingMessage.php");
-        sendMessage($_POST["submit"]);
+        $globalMessage->sendMessage($_POST["submit"]);
     }
 
     ?>

@@ -15,7 +15,7 @@ global $globalMessage;
 $globalDb = Database::getInstance();
 $conn = $globalDb->getConnection();
 $globalUser = User::getInstance($conn, $globalDb);
-$globalMessage = Message::getInstance($conn, $globalDb);
+$globalMessage = new Message($conn, $globalDb);
 ?>
 
 <!DOCTYPE html>
@@ -46,14 +46,14 @@ $globalMessage = Message::getInstance($conn, $globalDb);
             <h1 style = "margin-bottom: 0.2vw">Profil</h1>
             <?php
 
-            $username =  $_GET["username"];
+            $username = $_GET['username'];
 
             $type = determinePetOrUser($globalDb->getConnection(), $username);
 
             if ($type == 'user') {
-                $profile = new UserProfile($conn, $username);
+                $profile = new UserProfile($conn, $username, $globalDb);
             } else {
-                $profile = new AnimalProfile($conn, $username);
+                $profile = new AnimalProfile($conn, $username, $globalDb);
             }
 
             $profile->setNumberOfMessages($globalMessage->countAllMessages($username, $type));
@@ -67,7 +67,7 @@ $globalMessage = Message::getInstance($conn, $globalDb);
         <div class = "profile">
             <?php
             if(isset($_POST['follow'])) {
-                follow_unfollow($username, $type);
+                //follow_unfollow($username, $type);
             }
 
             if($type == 'user') {
@@ -90,16 +90,16 @@ $globalMessage = Message::getInstance($conn, $globalDb);
             }?>
             <div id="message-content">
                 <?php
-                include("./messageForm.php");
-                profilMessages();
+                //include("./messageForm.php");
+                //$globalMessage->profilMessagesAndAnswers($username, true);
                 ?>
             </div>
             <?php if($type == 'user') {?>
                 <div id="answer-content" style="display:none;">
-                    <?php profilAnswers();?>
+                    <?php //profilAnswers();?>
                 </div>
                 <div id="like-content" style="display:none;">
-                <?php findLikedMessages();?>
+                <?php //findLikedMessages();?>
                 </div>
                 <?php
                 }?>
@@ -128,7 +128,8 @@ $globalMessage = Message::getInstance($conn, $globalDb);
             <?php include("./PageParts/addPetForm.php"); ?>
         </div>
     </div>
-    <?php include("./PageParts/trends.php") ?>
+    <?php
+    include("./PageParts/trends.php") ?>
 </div>
 
 </body>

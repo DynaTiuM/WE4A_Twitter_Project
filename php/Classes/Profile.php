@@ -4,11 +4,17 @@ abstract class Profile
 {
     protected $username;
     protected $conn;
+    protected $db;
     protected int $numberOfMessages;
+    protected $profileUser;
 
-    public function __construct($conn, $username) {
+    public function __construct($conn, $username, $db) {
         $this->conn = $conn;
         $this->username = $username;
+        $this->db = $db;
+
+        $this->profileUser = new User($this->conn, $this->db);
+        $this->profileUser->setUsername($username);
     }
 
     public function displayNumMessages() {
@@ -21,6 +27,10 @@ abstract class Profile
 
     public function setNumberOfMessages($number) {
         $this->numberOfMessages = $number;
+    }
+
+    public function getUser() {
+        return $this->profileUser;
     }
 
     abstract public function displayProfile(); // Méthode abstraite à implémenter dans les classes filles

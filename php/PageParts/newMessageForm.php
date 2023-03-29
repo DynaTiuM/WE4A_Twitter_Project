@@ -1,12 +1,18 @@
 <?php
 $filename = basename($_SERVER['SCRIPT_FILENAME']);
 
-global $globalDb, $globalUser;
-$conn = $globalDb->getConnection();
-$loginStatus = $globalUser->isLoggedIn();
 
-$info = $globalUser->getUserInformation();
-$avatar = $info['avatar'];
+require_once("../Classes/Database.php");
+require_once("../Classes/User.php");
+require_once("../Classes/Message.php");
+
+global $globalDb;
+global $globalUser;
+global $globalMessage;
+$globalDb = Database::getInstance();
+$conn = $globalDb->getConnection();
+$globalUser = User::getInstance($conn, $globalDb);
+$globalMessage = new Message($conn, $globalDb);
 include("adressSearch.php");
 
 
@@ -28,8 +34,8 @@ include("adressSearch.php");
 <div class = "new-message">
 
     <form action="" method="post" enctype="multipart/form-data">
-        <a href="profile.php?username=<?php echo $_COOKIE['username']; ?>">
-            <img class = "avatar-new-message"  src="data:image/jpeg;base64,<?php echo base64_encode($avatar); ?> " />
+        <a href="profile.php?username=<?php echo $globalUser->getUsername(); ?>">
+                <img class = "avatar-new-message"  src="data:image/jpeg;base64,<?php echo base64_encode($globalUser->getAvatar()); ?> " />
         </a>
         <label>
             <textarea name = "content" class = "message-content" placeholder="Nouveau message" rows="2" maxlength="240" required></textarea>
@@ -79,7 +85,7 @@ include("adressSearch.php");
             <h2 class = "window-title">Sélectionner animaux</h2>
 
             <?php
-            $result = displayPets($_COOKIE['username']);
+            $result = $globalUser->getPets();
             if($result->num_rows == 0) {
                 echo '<h4>Vous n\'avez ajouté aucun animal</h4>';
             }

@@ -37,7 +37,7 @@ if(isset($_POST['reply_to'])) include('popupNewMessageForm.php');
                 }
                 else {
                     ?>
-                    <li class = "menu-item"><a href="./notifications.php"><img src="../images/notifications_not_read.png">Notifications (<?php echo $numNotifs?>)</a></li>
+                    <li class = "menu-item"><a href="./notifications.php"><img src="../images/notifications_not_read.png">Notifications (<?php echo $numNotifications?>)</a></li>
                     <?php
                 }
                 ?>

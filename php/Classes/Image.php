@@ -3,6 +3,7 @@
 class Image
 {
     private $gdImage;
+    private $formatedImage;
 
     public function __construct($image) {
         $this->gdImage = $this->createImage($image);
@@ -23,7 +24,7 @@ class Image
         ob_start();
         imagejpeg($new_image);
 
-        return ob_get_clean();
+        $this->formatedImage = ob_get_clean();
     }
     private function createImage($image) {
         if (isset($image) && is_uploaded_file($image["tmp_name"])) {
@@ -35,5 +36,13 @@ class Image
             }
         }
         return null;
+    }
+
+    public function getGD() {
+        return $this->gdImage;
+    }
+
+    public function getFormatedImage() {
+        return $this->formatedImage;
     }
 }

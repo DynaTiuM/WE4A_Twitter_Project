@@ -4,6 +4,7 @@ class Animal extends Profile
 {
     private $id;
     private $name;
+    private $adoption;
     private $owner_username;
     private $age;
     private $gender;
@@ -12,7 +13,7 @@ class Animal extends Profile
     private $species;
     private $adopt;
 
-    private $conn;
+    protected $conn;
     private $db;
 
     public function __construct($conn, $db) {
@@ -39,9 +40,9 @@ class Animal extends Profile
     public function addPet() {
         global $globalUser;
         if (!isset($_POST['adoption'])) {
-            $adoption = 0;
+            $this->adoption = 0;
         } else {
-            $adoption = $this->db->secureString_ForSQL($_POST['adoption']);
+            $this->adoption = $this->db->secureString_ForSQL($_POST['adoption']);
         }
 
         // Utilisation de la classe Utilisateur pour vérifier l'unicité de l'ID
@@ -55,7 +56,7 @@ class Animal extends Profile
             $query = "INSERT INTO animal (id, nom, maitre_username, age, sexe, avatar, caracteristiques, espece, adopter) 
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $this->conn->prepare($query);
-            $stmt->bind_param("sssisssss", $_POST['id'], $_POST['nom'], $_COOKIE['username'], $_POST['age'], $_POST['gender'], $image, $_POST['bio'], $_POST['species'], $_POST['adoption']);
+            $stmt->bind_param("sssisssss", $_POST['id'], $_POST['nom'], $_COOKIE['username'], $_POST['age'], $_POST['gender'], $image, $_POST['bio'], $_POST['species'], $this->adoption);
             $stmt->execute();
             $stmt->close();
             return "Animal ajouté!";
@@ -64,7 +65,7 @@ class Animal extends Profile
         $avatar = file_get_contents('../images/default_avatar_pet.png');
         $avatarBLOB = mysqli_real_escape_string($this->conn, $avatar);
         $query = "INSERT INTO animal (id, nom, maitre_username, age, sexe, avatar, caracteristiques, espece, adopter) 
-                  VALUES ('" . $_POST['id'] . "', '" . $_POST['nom'] . "', '" . $_COOKIE['username'] . "', " . $_POST['age'] . ", '" . $_POST['gender'] . "', '$avatarBLOB', '" . $_POST['bio'] . "', '" . $_POST['species'] . "', '$adoption')";
+                  VALUES ('" . $_POST['id'] . "', '" . $_POST['nom'] . "', '" . $_COOKIE['username'] . "', " . $_POST['age'] . ", '" . $_POST['gender'] . "', '$avatarBLOB', '" . $_POST['bio'] . "', '" . $_POST['species'] . "', '$this->adoption')";
         $this->conn->query($query);
 
         return "Animal ajouté!";
@@ -149,5 +150,10 @@ class Animal extends Profile
         else {
             echo '<br><h4>Ce profil ne contient aucun message</h4>';
         }
+    }
+
+    public function displayProfile()
+    {
+        // TODO: Implement displayProfile() method.
     }
 }

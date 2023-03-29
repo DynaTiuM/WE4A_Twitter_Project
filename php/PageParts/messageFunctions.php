@@ -1,14 +1,18 @@
 <?php
 function mainMessages($loginStatus) {
-    global $globalMessage;
+    global $conn, $globalDb; // Ajoutez cette ligne
     ?>
     <div class = "hub-messages">
         <?php
         include("./messageForm.php");
-        if(isset($_GET['answer']))
-            $globalMessage->mainMessagesQuery($loginStatus, 'subs', $_GET['answer']);
-        else
-            $globalMessage->mainMessagesQuery($loginStatus, 'subs', null);
+        if(isset($_GET['answer'])) {
+            $messageIds = Message::mainMessagesQuery($conn, $globalDb, $loginStatus, 'sub', $_GET['answer']);
+            Message::displayMessages($conn, $globalDb, $messageIds);
+        }
+        else {
+            $messageIds = Message::mainMessagesQuery($conn, $globalDb, $loginStatus, 'sub', null);
+            Message::displayMessages($conn, $globalDb, $messageIds);
+        }
         ?>
 
     </div>
@@ -17,6 +21,7 @@ function mainMessages($loginStatus) {
 
 function explorerMessages($loginStatus) {
     global $globalMessage;
+    global $conn, $globalDb;
     ?>
     <div class = "hub-messages">
         <div class = "center">
@@ -36,24 +41,26 @@ function explorerMessages($loginStatus) {
                 if($parent_message_id) {
                     ?>
                     <div class ="parent-message">
-                        <?php $globalMessage->displayContentbyId($parent_message_id);?>
+                        <?php //$globalMessage->displayContentbyId($parent_message_id);?>
                         <span class = "container-parent-message"></span>
                     </div>
                     <?php
                 }
             }
 
-            $globalMessage->displayContentById($_GET['answer']);
+            //$globalMessage->displayContentById($_GET['answer']);
             include("./adressSearch.php");
             if(!isset($_POST['reply_to']) && !isset($_POST['new-message']) && $loginStatus) include("./newMessageForm.php");
-            $globalMessage->mainMessagesQuery($loginStatus, 'explorer', $_GET['answer']);
+            $messageIds = Message::mainMessagesQuery($conn, $globalDb, $loginStatus, 'explorer', $_GET['answer']);
+            Message::displayMessages($conn, $globalDb, $messageIds);
         }
-        elseif(isset($_GET['category'])) {
-            $globalMessage->displayContentByCategory($_GET['category']);
+        if (isset($_GET['category'])) {
+            Message::displayMessagesByCategory($conn, $globalDb, $_GET['category']);
         }
         else {
             if(!isset($_POST['reply_to']) && !isset($_POST['new-message']) && $loginStatus) include("./newMessageForm.php");
-            $globalMessage->mainMessagesQuery($loginStatus, 'explorer', null);
+            $messageIds = Message::mainMessagesQuery($conn, $globalDb, $loginStatus, 'explorer', null);
+            Message::displayMessages($conn, $globalDb, $messageIds);
         }
 
         ?>
