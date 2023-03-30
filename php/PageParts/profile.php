@@ -120,15 +120,15 @@ if(isset($_POST['reply_to'])) {
         global $profile;
         if ($type == 'utilisateur') {
             $profile = new UserProfile($conn, $username, $globalDb);
-            $profile->setNumberOfMessages($globalMessage->countAllMessages($username, $type));
         }
         elseif($type == 'animal') {
             $profile = new AnimalProfile($conn, $username, $globalDb);
-            $profile->setNumberOfMessages($globalMessage->countAllMessages($username, $type));
         }
         else {
             echo 'Utilisateur non trouvé';
         }
+
+        $profile->setNumberOfMessages(Message::countAllMessages($conn, $username, $type));
 
         ?>
         <div class = "MainContainer">
@@ -139,18 +139,11 @@ if(isset($_POST['reply_to'])) {
             }
 
             global $profile;
-            if ($type == 'utilisateur') {
-                ?><div class = "h1-container">
-                    <h1 style = "margin-bottom: 0.2vw">Profil</h1>
-                    <?php
-                    $profile->displayNumMessages();
-            }
-            else {
-                ?><div class = "h1-container">
-                    <h1 style = "margin-bottom: 0.2vw">Profil</h1>
-                    <?php
-                    $profile->displayNumMessages();
-            }
+            ?>
+            <div class = "h1-container">
+                <h1 style = "margin-bottom: 0.2vw">Profil</h1>
+                <?php
+                $profile->displayNumMessages();
             ?>
                 </div>
                 <div class = "spacing"></div>
@@ -172,7 +165,6 @@ if(isset($_POST['reply_to'])) {
 
             </div>
             <?php
-
             if ($type == 'utilisateur') {
                 displayModificationProfile();
                 displayAddPet();

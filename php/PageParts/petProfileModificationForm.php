@@ -56,7 +56,7 @@ $profile = Animal::getInstanceById($conn, $globalDb, $userId);
 
     if($globalUser->isOrganization()) { ?>
 
-        <div class ="answer">
+        <div class = "answer">
             <p>Est à la recherche d'un propriétaire</p>
             <label>
                 <input type="radio" name="adoption" value="1" required  <?php if($globalUser->isOrganization()) {?> checked <?php }?>>

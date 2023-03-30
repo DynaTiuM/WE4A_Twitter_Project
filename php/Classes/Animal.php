@@ -143,13 +143,30 @@ class Animal extends Entity
         return $result->num_rows > 0;
     }
 
-    public function updateProfile($nom, $age, $sexe, $bio, $espece, $adoption = null) {
-        global $conn;
+    public function updateProfile($name, $age, $gender, $bio, $species, $adoption = null) {
         if($adoption == null) {
-            $query = "UPDATE animal SET nom = '$nom', age = '$age', sexe = '$sexe', caracteristiques = '$bio', espece = '$espece' WHERE id = '" . $this->username . "'";
+            $query = "UPDATE animal SET nom = '$name', age = '$age', sexe = '$gender', caracteristiques = '$bio', espece = '$species' WHERE id = '" . $this->username . "'";
         }
-        $query = "UPDATE animal SET nom = '$nom', age = '$age', sexe = '$sexe', caracteristiques = '$bio', espece = '$espece', adopter = '$adoption' WHERE id = '" . $this->username . "'";
-        $conn->query($query);
+        else {
+            $query = "UPDATE animal SET nom = '$name', age = '$age', sexe = '$gender', caracteristiques = '$bio', espece = '$species', adopter = '$adoption' WHERE id = '" . $this->username . "'";
+
+        }
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+
+        // Mettre à jour les attributs de l'objet User après la mise à jour réussie
+        if ($stmt->affected_rows > 0) {
+            $this->name = $name;
+            $this->age = $age;
+            $this->gender = $gender;
+            $this->bio = $bio;
+            $this->species = $species;
+            if($this->adoption != null) $this->adoption = $adoption;
+
+            return "Profil modifié avec succès !";
+        }
+
     }
 
     public function loadAvatar() {

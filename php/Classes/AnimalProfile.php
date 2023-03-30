@@ -10,24 +10,23 @@ class AnimalProfile extends Profile {
     {
         parent::__construct($conn, $username, $db);
         $this->profileUser = Animal::getInstanceById($this->conn, $this->db, $this->username);
+
     }
     public function displayProfile() {
-
+        if (isset($_POST['modification-pet-profile'])) {
+            if(isset($_POST['adoption'])) {
+                echo $this->getUser()->updateProfile($_POST['nom'], $_POST['age'], $_POST['sexe'], $_POST['bio'], $_POST['espece'], $_POST['adoption']);
+            }
+            else {
+                echo $this->getUser()->updateProfile($_POST['nom'], $_POST['age'], $_POST['sexe'], $_POST['bio'], $_POST['espece']);
+            }
+        }
         $userId = $_SESSION['username'];
         $globalUser = User::getInstanceById($this->conn, $this->db, $userId);
         $loginStatus = $globalUser->isLoggedIn();
 
         $masterUsername = $this->profileUser->getMasterUsername(); // Remplacez cette ligne par la méthode appropriée pour obtenir le username du maître
         $masterUser = User::getInstanceById($this->conn, $this->db, $masterUsername);
-
-        if (isset($_POST['modification-pet-profile'])) {
-            if(isset($_POST['adoption'])) {
-                $this->getUser()->updateProfile($_POST['nom'], $_POST['age'], $_POST['sexe'], $_POST['bio'], $_POST['espece'], $_POST['adoption']);
-            }
-            else {
-                $this->getUser()->updateProfile($_POST['nom'], $_POST['age'], $_POST['sexe'], $_POST['bio'], $_POST['espece']);
-            }
-        }
 
         if(isset($_POST['adopt'])) {
             require_once("./PageParts/Adoption.php");

@@ -493,14 +493,13 @@ class Message
     }
 
 
-
-    public function countAllMessages($username, $type) {
-        if ($type == "user") {
+    public static function countAllMessages($conn, $username, $type) {
+        if ($type == "utilisateur") {
             $query = "SELECT COUNT(*) FROM message WHERE auteur_username = ?";
         } else {
             $query = "SELECT COUNT(*) FROM message_animaux WHERE animal_id = ?";
         }
-        $stmt = $this->conn->prepare($query);
+        $stmt = $conn->prepare($query);
         $stmt->bind_param("s", $username);
         $stmt->execute();
         $result = $stmt->get_result();
