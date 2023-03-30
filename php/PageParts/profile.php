@@ -5,7 +5,6 @@ session_start();
 ob_start();
 
 require_once("./functions.php");
-include("windows.php");
 
 require_once("./databaseFunctions.php");
 
@@ -14,6 +13,7 @@ require_once("../Classes/User.php");
 require_once("../Classes/Message.php");
 require_once("../Classes/UserProfile.php");
 require_once("../Classes/AnimalProfile.php");
+require_once("windowsProfile.php");
 
 global $globalDb;
 global $globalUser;
@@ -47,6 +47,7 @@ if(isset($_POST['reply_to'])) {
     <title>Profil</title>
     <link rel="shortcut icon" href="../favicon.ico">
 
+    <script src="../js/windows.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             // Récupération des boutons
@@ -63,8 +64,8 @@ if(isset($_POST['reply_to'])) {
             function switchContent(btn, content) {
                 // On désactive tous les boutons
                 messageBtn.disabled = false;
-                answerBtn.disabled = false;
-                likeBtn.disabled = false;
+                if (answerBtn) answerBtn.disabled = false;
+                if (likeBtn) likeBtn.disabled = false;
 
                 // On cache tous les contenus
                 messageContent.style.display = "none";
@@ -81,14 +82,19 @@ if(isset($_POST['reply_to'])) {
                 switchContent(this, messageContent);
             });
 
-            answerBtn.addEventListener("click", function() {
-                switchContent(this, answerContent);
-            });
+            if (answerBtn) {
+                answerBtn.addEventListener("click", function() {
+                    switchContent(this, answerContent);
+                });
+            }
 
-            likeBtn.addEventListener("click", function() {
-                switchContent(this, likeContent);
-            });
+            if (likeBtn) {
+                likeBtn.addEventListener("click", function() {
+                    switchContent(this, likeContent);
+                });
+            }
         });
+
     </script>
 
     <?php
@@ -102,30 +108,44 @@ if(isset($_POST['reply_to'])) {
 
     <div class = "Container">
 
-        <?php include("./navigation.php") ?>
+        <?php include("./navigation.php");
+        $username = $_GET['username'];
+        require_once ("../Classes/Profile.php");
+        $type = Profile::determineProfileType($conn, $username);
+
+        if(isset($_POST['follow'])) {
+            $globalUser->follow_unfollow($conn, $username, $type);
+        }
+
+        global $profile;
+        if ($type == 'utilisateur') {
+            $profile = new UserProfile($conn, $username, $globalDb);
+            $profile->setNumberOfMessages($globalMessage->countAllMessages($username, $type));
+        }
+        elseif($type == 'animal') {
+            $profile = new AnimalProfile($conn, $username, $globalDb);
+            $profile->setNumberOfMessages($globalMessage->countAllMessages($username, $type));
+        }
+        else {
+            echo 'Utilisateur non trouvé';
+        }
+
+        ?>
         <div class = "MainContainer">
             <?php
-            $username = $_GET['username'];
-
-            $type = determinePetOrUser($globalDb->getConnection(), $username);
-
 
             if(isset($_POST['follow'])) {
                 $globalUser->follow_unfollow($conn, $username, $type);
             }
 
             global $profile;
-            if ($type == 'user') {
-                $profile = new UserProfile($conn, $username, $globalDb);
-                $profile->setNumberOfMessages($globalMessage->countAllMessages($username, $type));
+            if ($type == 'utilisateur') {
                 ?><div class = "h1-container">
                     <h1 style = "margin-bottom: 0.2vw">Profil</h1>
                     <?php
                     $profile->displayNumMessages();
             }
             else {
-                $profile = new AnimalProfile($conn, $username, $globalDb);
-                $profile->setNumberOfMessages($globalMessage->countAllMessages($username, $type));
                 ?><div class = "h1-container">
                     <h1 style = "margin-bottom: 0.2vw">Profil</h1>
                     <?php
@@ -140,7 +160,7 @@ if(isset($_POST['reply_to'])) {
                         ?>
                     <div id="message-like-section">
                         <button id="message-button" class="message-section" disabled>Messages</button>
-                        <?php if($type == 'user') {?>
+                        <?php if($type == 'utilisateur') {?>
                             <button id="answer-button" class="answer-section">Réponses</button>
                             <button id="like-button" class="like-section" >J'aime</button>
                             <?php
@@ -149,25 +169,21 @@ if(isset($_POST['reply_to'])) {
                         ?>
                     </div>
                 </div>
-                    <?php
-                    include("./trends.php")
-                    ?>
 
             </div>
-            <div id="modification-profile" class="window-background">
-                <div class="window-content">
-                    <span class="close" onclick="closeWindow('modification-profile')">&times;</span>
-                    <h2 class = "window-title">Modification du profil</h2>
-                    <?php include("./profileModificationForm.php"); ?>
-                </div>
-            </div>
-            <div id="add-pet" class="window-background">
-                <div class="window-content">
-                    <span class="close" onclick="closeWindow('add-pet')">&times;</span>
-                    <h2 class = "window-title">Ajout d'un animal</h2>
-                    <?php include("./addPetForm.php"); ?>
-                </div>
-            </div>
+            <?php
+
+            if ($type == 'utilisateur') {
+                displayModificationProfile();
+                displayAddPet();
+            }
+            elseif($type == 'animal') {
+                displayModificationPetProfile();
+            }
+
+            include("./trends.php");
+
+            ?>
     </div>
 
 

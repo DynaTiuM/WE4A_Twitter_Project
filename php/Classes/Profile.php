@@ -22,6 +22,24 @@ abstract class Profile
         <?php
     }
 
+    public static function determineProfileType($conn, $username) {
+        $count = 0;
+        // Vérifie si le nom d'utilisateur appartient à un utilisateur
+        $query = "SELECT COUNT(*) FROM utilisateur WHERE username = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $count = $stmt->bind_result($count);
+        $stmt->fetch();
+        $stmt->close();
+
+        if ($count > 0) {
+            return 'utilisateur';
+        } else {
+            return 'animal';
+        }
+    }
+
 
     public function likedMessages() {
         $query = "SELECT message.* FROM message

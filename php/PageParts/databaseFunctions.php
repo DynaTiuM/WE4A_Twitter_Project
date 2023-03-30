@@ -7,9 +7,9 @@ date_default_timezone_set('CET');
 
 function determinePetOrUser($conn, $identifier) {
     if (User::exists($conn, $identifier)) {
-        return 'user';
+        return 'utilisateur';
     } elseif (Animal::exists($conn, $identifier)) {
-        return 'pet';
+        return 'animal';
     }
     return null;
 }

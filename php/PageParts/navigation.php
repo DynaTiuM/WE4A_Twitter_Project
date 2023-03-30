@@ -8,8 +8,6 @@ if(isset($_POST["destroyCookies"])) {
     $globalUser->destroyLoginCookie();
     header("Location: ./connect.php");
 }
-include("windows.php");
-
 if($loginStatus) {
     if(isset($_POST['new-message'])) {
         displayNewMessageForm($conn, null);
@@ -23,6 +21,7 @@ if($loginStatus) {
 <head>
     <meta charset="UTF-8">
     <link rel = "stylesheet" href="../css/navigation.css">
+    <script src = "../js/windows.js"></script>
 </head>
 <body>
 

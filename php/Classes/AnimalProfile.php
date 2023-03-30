@@ -1,5 +1,8 @@
 <?php
 
+require_once("../Classes/UserInterface.php");
+require_once("../Classes/Image.php");
+require_once("../Classes/Animal.php");
 require_once("../Classes/Profile.php");
 class AnimalProfile extends Profile {
 
@@ -65,13 +68,7 @@ class AnimalProfile extends Profile {
         if ($globalUser->getUsername() == $masterUsername) {
             ?>
             <button class="button-modify-profile" onclick = "openWindow('modification-pet-profile')">Editer le profil</button>
-            <div id="modification-pet-profile" class="window-background">
-                <div class="window-content">
-                    <span class="close" onclick="closeWindow('modification-pet-profile')">&times;</span>
-                    <h2 class = "window-title">Modification du profil de l'animal</h2>
-                    <?php include("./petProfileModificationForm.php"); ?>
-                </div>
-            </div>
+
             <?php
         } else {
             if (!$globalUser->checkFollow($this->getUser()->getUsername(), 'animal')) { ?>
