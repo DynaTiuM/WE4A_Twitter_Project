@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 
 <?php
-ob_start();
-
 session_start();
+ob_start();
 
 require_once("./functions.php");
 include("windows.php");
@@ -21,24 +20,21 @@ global $globalUser;
 global $globalMessage;
 $globalDb = Database::getInstance();
 $conn = $globalDb->getConnection();
+$globalMessage = new Message($conn, $globalDb);
 
-if (isset($_SESSION['user_id'])) {
-    $userId = $_SESSION['user_id'];
-    $organisation = $_SESSION['organisation'];
+if (isset($_SESSION['username'])) {
+    $userId = $_SESSION['username'];
 
     // Ici, vous pouvez utiliser les informations stockées dans la session pour créer l'instance de l'utilisateur.
     // Vous devrez peut-être ajuster la méthode getInstance() ou créer une nouvelle méthode pour créer une instance avec les données de session.
-    $globalUser = User::getInstanceByIdAndOrganisation($conn, $globalDb, $userId, $organisation);
-}
-else {
-
-    echo' NON';
+    $globalUser = User::getInstanceById($conn, $globalDb, $userId);
 }
 
 if(isset($_POST['reply_to'])) {
     popUpNewMessage();
     displayNewMessageForm($conn, $globalDb, $_POST['reply_to']);
 }
+
 ?>
 
 <html lang = "fr">
@@ -106,77 +102,64 @@ if(isset($_POST['reply_to'])) {
     <div class = "Container">
         <?php include("./navigation.php") ?>
         <div class = "MainContainer">
+            <?php
+            $username = $_GET['username'];
+
+            $type = determinePetOrUser($globalDb->getConnection(), $username);
+
+
+            if(isset($_POST['follow'])) {
+                $globalUser->follow_unfollow($conn, $username, $type);
+            }
+
+            global $profile;
+            if ($type == 'user') {
+                $profile = new UserProfile($conn, $username, $globalDb);
+                $profile->setNumberOfMessages($globalMessage->countAllMessages($username, $type));
+                ?><div class = "h1-container">
+                    <h1 style = "margin-bottom: 0.2vw">Profil</h1>
                     <?php
-                    if(isset($_POST['follow'])) {
-                        //follow_unfollow($username, $type);
-                    }
-                    $username = $_GET['username'];
-
-                    $type = determinePetOrUser($globalDb->getConnection(), $username);
-
-                    global $profile;
-                    if ($type == 'user') {
-                        $profile = new UserProfile($conn, $username, $globalDb);
-                        $profile->getUser()->setUserInformation();
-                        $profile->setNumberOfMessages($globalMessage->countAllMessages($username, $type));
-                        ?><div class = "h1-container">
-                            <h1 style = "margin-bottom: 0.2vw">Profil</h1>
-                            <?php
-                        $profile->displayNumMessages();
-                        ?>
-                        </div>
-
+                    $profile->displayNumMessages();
+            }
+            else {
+                $profile = new AnimalProfile($conn, $username, $globalDb);
+                $profile->setNumberOfMessages($globalMessage->countAllMessages($username, $type));
+                ?><div class = "h1-container">
+                    <h1 style = "margin-bottom: 0.2vw">Profil</h1>
                     <?php
-                    } else {
-                        $profile = new AnimalProfile($conn, $username, $globalDb);
-                        //$profile->getUser()->setPetInformation();
-                         $profile->setNumberOfMessages($globalMessage->countAllMessages($username, $type));
-                        ?><div class = "h1-container">
-                            <h1 style = "margin-bottom: 0.2vw">Profil</h1>
-                            <?php
-                        $profile->displayNumMessages();
-                            }
-                        ?>
-
-
-            <div class = "spacing"></div>
-            <div class = "profile">
-                    <?php
-                    $profile->displayProfile();
-                    ?>
+                    $profile->displayNumMessages();
+            }
+            ?>
                 </div>
 
-                <div id="message-like-section">
-                    <button id="message-button" class="message-section" disabled>Messages</button>
-                    <?php if($type == 'user') {?>
-                    <button id="answer-button" class="answer-section">Réponses</button>
-                    <button id="like-button" class="like-section" >J'aime</button>
+                <div class = "spacing"></div>
+                    <div class = "profile">
                         <?php
-                    }?>
-                    <div id="message-content">
-                        <?php
-                        $messageIds = $profile->profilMessagesAndAnswers(true);
-                        if($messageIds) Message::displayMessages($conn, $globalDb, $messageIds);
+                        $profile->displayProfile();
+                        ?>
+                    <div id="message-like-section">
+                        <button id="message-button" class="message-section" disabled>Messages</button>
+                        <?php if($type == 'user') {?>
+                            <button id="answer-button" class="answer-section">Réponses</button>
+                            <button id="like-button" class="like-section" >J'aime</button>
+                            <?php
+                        }
+                        $profile->displayBoxes();
                         ?>
                     </div>
-                    <?php if($type == 'user') {?>
-                        <div id="answer-content" style="display:none;">
-                            <?php
-                            $messageIds = $profile->profilMessagesAndAnswers(false);
-                            if($messageIds) Message::displayMessages($conn, $globalDb, $messageIds);
-                            ?>
-                        </div>
-                        <div id="like-content" style="display:none;">
-                        <?php
-                        $messageIds = $profile->likedMessages();
-                        if($messageIds) Message::displayMessages($conn, $globalDb, $messageIds);
-                        ?>
-                        </div>
-                        <?php
-                        }?>
+                </div>
+                    <?php
+                    include("./trends.php")
+                    ?>
+
+            </div>
+            <div id="modification-pet-profile" class="window-background">
+                <div class="window-content">
+                    <span class="close" onclick="closeWindow('modification-pet-profile')">&times;</span>
+                    <h2 class = "window-title">Modification du profil de l'animal</h2>
+                    <?php include("./petProfileModificationForm.php"); ?>
                 </div>
             </div>
-
             <div id="add-pet" class="window-background">
                 <div class="window-content">
                     <span class="close" onclick="closeWindow('add-pet')">&times;</span>
@@ -192,16 +175,6 @@ if(isset($_POST['reply_to'])) {
                 </div>
             </div>
 
-            <div id="modification-pet-profile" class="window-background">
-                <div class="window-content">
-                    <span class="close" onclick="closeWindow('modification-pet-profile')">&times;</span>
-                    <h2 class = "window-title">Modification du profil de l'animal</h2>
-                    <?php include("./petProfileModificationForm.php"); ?>
-                </div>
-            </div>
-        </div>
-        <?php
-        include("./trends.php") ?>
     </div>
 </body>
 </html>

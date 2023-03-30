@@ -3,19 +3,68 @@
 require_once ("Entity.php");
 class Animal extends Entity
 {
-    private $id;
     private $name;
     private $adoption;
-    private $owner_username;
+    private $masterUsername;
     private $age;
     private $gender;
-    private $avatar;
     private $characteristics;
     private $species;
     private $adopt;
 
     public function __construct($conn, $db) {
         parent::__construct($conn, $db);
+    }
+
+    public function getAdoption() {
+        return $this->adopt;
+    }
+
+    public function getMasterUsername() {
+        return $this->masterUsername;
+    }
+    public function getCharacteristics() {
+        return $this->characteristics;
+    }
+    public function getSpecies() {
+        return $this->species;
+    }
+
+    public function getGender() {
+        return $this->gender;
+    }
+    public function getAge() {
+        return $this->age;
+    }
+    public function getName() {
+        return $this->name;
+    }
+
+    public static function getInstanceById($conn, $db, $username) {
+        $animal = new Animal($conn, $db);
+
+        $query = "SELECT * FROM animal WHERE id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param('s', $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+
+            $animal->username = $row['id'];
+            $animal->masterUsername = $row['maitre_username'];
+            $animal->characteristics = $row['caracteristiques'];
+            $animal->name = $row['nom'];
+            $animal->age = $row['age'];
+            $animal->gender = $row['sexe'];
+            $animal->species = $row['espece'];
+            $animal->adopt = $row['adopter'];
+
+            return $animal;
+        } else {
+            return null; // Aucun utilisateur trouvé avec cet ID
+        }
     }
 
     public function updateAvatar($image) {
@@ -26,7 +75,8 @@ class Animal extends Entity
             $conn = Database::getConnection();
             $query = $conn->prepare("UPDATE animal SET avatar = ? WHERE username = ?");
 
-            $query->bind_param('ss', $image_data, $this->getUsername());
+            $username = $this->getUsername();
+            $query->bind_param('ss', $image_data, $username);
 
             $query->execute();
 
@@ -34,7 +84,7 @@ class Animal extends Entity
         }
     }
 
-    public function setAttributes($id, $name, $owner_username, $age, $gender, $avatar, $characteristics, $species, $adoption) {
+    public function setAttributes($id, $name, $masterUsername, $age, $gender, $avatar, $characteristics, $species, $adoption) {
         global $globalUser;
         if (!isset($_POST['adoption'])) {
             $this->adoption = 0;
@@ -99,19 +149,9 @@ class Animal extends Entity
         $conn->query($query);
     }
 
-    public function loadAvatar($conn) {
+    public function loadAvatar() {
         $sql = "SELECT avatar FROM animal WHERE id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s", $this->id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows > 0) {
-            $row = $result->fetch_assoc();
-            return $row["avatar"];
-        }
-
-        return "Aucune image trouvée.";
+        return $this->selectSQLAvatar($sql);
     }
 
     public function countAllMessages($conn) {
@@ -147,10 +187,5 @@ class Animal extends Entity
         else {
             echo '<br><h4>Ce profil ne contient aucun message</h4>';
         }
-    }
-
-    public function displayProfile()
-    {
-        // TODO: Implement displayProfile() method.
     }
 }

@@ -42,14 +42,14 @@ function motificationProfile($type) {
         $prenom = $conn->secureString_ForSQL($_POST['prenom']);
         $date = $conn->secureString_ForSQL($_POST['date']);
         $password = $conn->secureString_ForSQL($_POST['password']);
-        $user->updateProfile($prenom, $nom, $date, $password, $bio);
+        //$user->updateProfile($prenom, $nom, $date, $password, $bio);
     } else {
         $animal = new Animal($username);
         $sexe = $conn->secureString_ForSQL($_POST['sexe']);
         $age = $conn->secureString_ForSQL($_POST['age']);
         $espece = $conn->secureString_ForSQL($_POST['espece']);
         $adoption = $conn->secureString_ForSQL($_POST['adoption']);
-        $animal->updateProfile($nom, $age, $sexe, $bio, $espece, $adoption);
+        //$animal->updateProfile($nom, $age, $sexe, $bio, $espece, $adoption);
     }
 }
 

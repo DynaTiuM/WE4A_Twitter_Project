@@ -5,11 +5,9 @@ require_once ("Entity.php");
 class User extends Entity
 {
     private $email;
-    private $lastname;
-    private $firstname;
-    private $date_of_birth;
-    private $password;
-    private $avatar;
+    private $lastName;
+    private $firstName;
+    private $dateOfBirth;
     private $organisation;
     private $bio;
 
@@ -34,25 +32,34 @@ class User extends Entity
         return self::$instance;
     }
 
-    public static function getInstanceById() {
+    public static function getInstanceById($conn, $db, $username) {
+        $user = new User($conn, $db);
 
+        $query = "SELECT * FROM utilisateur WHERE username = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param('s', $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+
+            $user->username = $row['username'];
+            $user->email = $row['email'];
+            $user->organisation = $row['organisation'];
+            $user->bio = $row['bio'];
+            $user->dateOfBirth = $row['date_de_naissance'];
+            $user->lastName = $row['nom'];
+            $user->firstName = $row['prenom'];
+
+            return $user;
+        } else {
+            return null; // Aucun utilisateur trouvé avec cet ID
+        }
     }
 
     protected function getTableName() {
         return 'utilisateur';
-    }
-
-    public function verifyUnicity($parameter) {
-        $query = "(SELECT username FROM utilisateur WHERE username = ?) UNION (SELECT id FROM animal WHERE id = ?)";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("ss", $parameter, $parameter);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if($result->num_rows > 0) {
-            return false;
-        }
-        return true;
     }
 
     public static function exists($conn, $username) {
@@ -62,15 +69,6 @@ class User extends Entity
         $result = $stmt->get_result();
 
         return $result->num_rows > 0;
-    }
-
-    public function getAvatar() {
-        return $this->loadAvatar();
-    }
-
-    public function updateProfile($prenom, $nom, $date, $password, $bio) {
-        $query = "UPDATE utilisateur SET prenom = '$prenom', nom = '$nom', date_de_naissance = '$date', mot_de_passe = '$password', bio = '$bio' WHERE username = '" . $this->username . "'";
-        $this->conn->query($query);
     }
 
     public function isFollowing($auteur_username) {
@@ -178,19 +176,13 @@ class User extends Entity
     }
 
     public function getFirstName() {
-        return $this->firstname;
+        return $this->firstName;
     }
     public function getLastName() {
-        return $this->lastname;
-    }
-    public function getAvatarEncoded64() {
-        return base64_encode($this->loadAvatar());
+        return $this->lastName;
     }
     public function getDateOfBirth() {
-        return $this->date_of_birth;
-    }
-    public function getPassword() {
-        return $this->password;
+        return $this->dateOfBirth;
     }
     public function getBio() {
         return $this->bio;
@@ -239,6 +231,43 @@ class User extends Entity
         $stmt->execute();
     }
 
+    public function updateProfile($firstName, $lastName, $dateOfBirth, $bio, $newPassword, $confirmationNewPassword) {
+        $query = "UPDATE utilisateur SET prenom = ?, nom = ?, date_de_naissance = ?, bio = ?";
+
+        $params = array($firstName, $lastName, $dateOfBirth, $bio);
+        $types = "ssss";
+
+        if (!empty($newPassword)) {
+            if(!$this->comparePasswords($newPassword, $confirmationNewPassword)) {
+                return "Le nouveau mot de passe et sa confirmation ne sont pas identiques !";
+            }
+            $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+            $query .= ", mot_de_passe = ?";
+            $params[] = $hashedPassword;
+            $types .= "s";
+        }
+
+        $query .= " WHERE username = ?";
+
+        $stmt = $this->conn->prepare($query);
+        $params[] = $this->username;
+        $types .= "s";
+
+        $stmt->bind_param($types, ...$params);
+        $stmt->execute();
+
+        // Mettre à jour les attributs de l'objet User après la mise à jour réussie
+        if ($stmt->affected_rows > 0) {
+            $this->firstName = $firstName;
+            $this->lastName = $lastName;
+            $this->dateOfBirth = $dateOfBirth;
+            $this->bio = $bio;
+        }
+
+        return "Profil modifié avec succès !";
+    }
+
+
     public function numFollowing() {
         $query = "SELECT COUNT(*) FROM suivre WHERE utilisateur_username = ?";
         $stmt = $this->conn->prepare($query);
@@ -268,18 +297,7 @@ class User extends Entity
         $stmt->bind_param("sss", $this->username, $type, $to_follow);
         $stmt->execute();
     }
-    public function checkFollow($to_follow, $type): bool {
-        $stmt = $this->conn->prepare("SELECT * FROM suivre WHERE utilisateur_username = ? AND suivi_type = ? AND suivi_id_$type = ?");
-        $stmt->bind_param("sss", $this->username, $type, $to_follow);
-        $stmt->execute();
-        $result = $stmt->get_result();
 
-        if ($result && $result->num_rows > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
     public function checkNewAccountForm(): array {
         $creationAttempted = false;
         $creationSuccessful = false;
@@ -297,7 +315,7 @@ class User extends Entity
             if ( strlen($_POST["username"]) < 4 ){
                 $error = "Un nom utilisateur doit avoir une longueur d'au moins 4 lettres";
             }
-            elseif ( $_POST["password"] != $_POST["confirm"] ){
+            elseif (!$this->comparePasswords($_POST["password"], $_POST["confirm"])){
                 $error = "Le mot de passe et sa confirmation sont différents";
             }
             else {
@@ -305,13 +323,13 @@ class User extends Entity
                 $this->username = $this->db->secureString_ForSQL($_POST["username"]);
                 $this->lastname = $this->db->secureString_ForSQL($_POST["nom"]);
                 $this->firstname = $this->db->secureString_ForSQL($_POST["prenom"]);
-                $this->date_of_birth = $_POST["date_de_naissance"];
+                $this->dateOfBirth = $_POST["date_de_naissance"];
                 $this->organisation = $_POST["organisation"];
                 $this->avatar = file_get_contents('../images/default_avatar.png');
                 $avatarBLOB = mysqli_real_escape_string($this->conn, $this->avatar);
                 $this->password = password_hash($_POST["password"], PASSWORD_DEFAULT);
 
-                $query = "INSERT INTO `utilisateur` VALUES ('$this->email', '$this->username', '$this->lastname', '$this->firstname', '$this->date_of_birth', '$this->password', '$avatarBLOB', '$this->organisation', null )";
+                $query = "INSERT INTO `utilisateur` VALUES ('$this->email', '$this->username', '$this->lastname', '$this->firstname', '$this->dateOfBirth', '$this->password', '$avatarBLOB', '$this->organisation', null )";
                 $this->conn->query($query);
 
                 if( mysqli_affected_rows($this->conn) == 0 )
@@ -330,6 +348,10 @@ class User extends Entity
         return array($creationAttempted, $creationSuccessful, $error);
     }
 
+    private function comparePasswords($password, $confirmPassword): bool {
+        return $password == $confirmPassword;
+    }
+
     function setUserInformation() {
         $sql = "SELECT * FROM utilisateur WHERE username = ?";
         $stmt = $this->conn->prepare($sql);
@@ -342,9 +364,8 @@ class User extends Entity
         $this->username = $this->db->secureString_ForSQL($row["username"]);
         $this->lastname = $this->db->secureString_ForSQL($row["nom"]);
         $this->firstname = $this->db->secureString_ForSQL($row["prenom"]);
-        $this->date_of_birth = $row["date_de_naissance"];
+        $this->dateOfBirth = $row["date_de_naissance"];
         $this->organisation = $row["organisation"];
-        //$this->avatar =;
     }
 
     function displayPets() {
@@ -358,16 +379,6 @@ class User extends Entity
 
     public function loadAvatar() {
         $sql = "SELECT avatar FROM utilisateur WHERE username = ?";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("s", $this->username);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows > 0) {
-            $row = $result->fetch_assoc();
-            return $row["avatar"];
-        }
-
-        return "Aucune image trouvée.";
+        return $this->selectSQLAvatar($sql);
     }
 }

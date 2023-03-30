@@ -3,7 +3,7 @@
 function displayUserProfile($conn, $username) {
 
     if (isset($_POST['modification-profile'])) {
-        motificationProfile('utilisateur');
+        //motificationProfile('utilisateur');
     }
 
     if (isset($_POST['add-pet'])) {

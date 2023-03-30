@@ -25,7 +25,12 @@
     </div>
     <?php
     global $globalUser;
-    echo 'Organisation: ' . $globalUser->getFirstName(); // Cette ligne est temporaire pour le débogage
+    global $globalDb;
+    $globalDb = Database::getInstance();
+    $conn = $globalDb->getConnection();
+
+    $userId = $_SESSION['username'];
+    $globalUser = User::getInstanceById($conn, $globalDb, $userId);
 
     if($globalUser->isOrganization()) {?>
 

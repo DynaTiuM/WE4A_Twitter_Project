@@ -16,11 +16,6 @@ if(!$newLoginStatus[0]) {
 
     if($newAccountStatus[1]){
         $_SESSION['username'] = $globalUser->getUsername();
-        $_SESSION['firstName'] = $globalUser->getFirstName();
-        $_SESSION['lastName'] = $globalUser->getLastName();
-        $_SESSION['organisation'] = $globalUser->isOrganization();
-        $_SESSION['date'] = $globalUser->getDateOfBirth();
-        $_SESSION['avatar'] = $globalUser->getAvatar();
 
         echo '<h1 class="successMessage">Nouveau compte créé avec succès!</h1>';
     }
@@ -29,6 +24,8 @@ if(!$newLoginStatus[0]) {
     }
 }
 else {
+    $_SESSION['username'] = $globalUser->getUsername();
+
     header("Location: index.php");
     exit();
 }

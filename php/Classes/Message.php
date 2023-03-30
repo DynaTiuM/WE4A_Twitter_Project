@@ -80,6 +80,7 @@ class Message
             $data = $result->fetch_assoc();
             $this->id = $data['id'];
             $this->authorUsername = $data['auteur_username'];
+            $this->parentMessageId = $data['parent_message_id'];
             $this->content = $data['contenu'];
             $this->image = $data['image'];
             $this->category = $data['categorie'];
@@ -308,14 +309,12 @@ class Message
     }
 
 
-    public static function mainMessagesQuery($conn, $db, $loginStatus, $search, $level)
-    {
+    public static function mainMessagesQuery($conn, $db, $loginStatus, $search, $level) {
         if ($level == null) {
             $level_ = 'IS NULL';
         } else {
             $level_ = "= " . $db->secureString_ForSQL($level);
         }
-
         if (isset($_GET['tag'])) {
             $tag = $db->secureString_ForSQL($_GET['tag']);
             $stmt = $conn->prepare("SELECT DISTINCT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username
@@ -342,7 +341,7 @@ class Message
                             LEFT JOIN suivre ON suivre.suivi_id_utilisateur = message.auteur_username OR (suivre.suivi_type = 'animal' AND suivre.suivi_id_animal = animal.id)
                             WHERE suivre.utilisateur_username = ?
                             ORDER BY message.date DESC");
-                    $stmt->bind_param("s", $_COOKIE['username']);
+                    $stmt->bind_param("s", $_SESSION['username']);
                 }
             }
         }

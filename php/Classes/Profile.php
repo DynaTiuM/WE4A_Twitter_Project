@@ -12,9 +12,6 @@ abstract class Profile
         $this->conn = $conn;
         $this->username = $username;
         $this->db = $db;
-
-        $this->profileUser = new User($this->conn, $this->db);
-        $this->profileUser->setUsername($username);
     }
 
     public function displayNumMessages() {
@@ -24,6 +21,7 @@ abstract class Profile
         </div>
         <?php
     }
+
 
     public function likedMessages() {
         $query = "SELECT message.* FROM message
@@ -45,7 +43,6 @@ abstract class Profile
             echo '<br><h4>Ce profil n\'a aimé aucun message</h4>';
         }
     }
-
     public function setNumberOfMessages($number) {
         $this->numberOfMessages = $number;
     }
@@ -54,7 +51,29 @@ abstract class Profile
         return $this->profileUser;
     }
 
-    abstract public function profilMessagesAndAnswers($isMessage);
+    public function profileMessagesAndAnswers($isMessage) {
+        $query = $this->queryMessagesAndAnswers($isMessage);
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("s", $this->username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $messageIds = [];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $messageIds[] = $row['id'];
+            }
+            return $messageIds;
+        }
+        else {
+            if ($isMessage) {
+                echo '<br><h4>Ce profil ne contient aucun message</h4>';
+            } else {
+                echo '<br><h4>Ce profil n\'a répondu à aucun message</h4>';
+            }
+        }
+    }
 
     abstract public function displayProfile(); // Méthode abstraite à implémenter dans les classes filles
+    abstract protected function displayButton($loginStatus, $globalUser); // Méthode abstraite à implémenter dans les classes filles
 }

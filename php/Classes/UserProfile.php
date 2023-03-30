@@ -3,23 +3,23 @@ require_once("../Classes/Profile.php");
 require_once("../Classes/UserInterface.php");
 require_once("../Classes/Image.php");
 require_once("../Classes/Animal.php");
-class UserProfile extends Profile
-{
+class UserProfile extends Profile {
 
     public function __construct($conn, $username, $db)
     {
         parent::__construct($conn, $username, $db);
+        $this->profileUser = User::getInstanceById($this->conn, $this->db, $this->username);
     }
 
     public function displayProfile() {
         if (isset($_POST['modification-profile'])) {
-            motificationProfile('utilisateur');
+            echo $this->getUser()->updateProfile($_POST['prenom'], $_POST['nom'], $_POST['date'],  $_POST['bio'],  $_POST['password'], $_POST['confirm']);
         }
 
-        global $globalUser;
+        $userId = $_SESSION['username'];
+        $globalUser = User::getInstanceById($this->conn, $this->db, $userId);
         $loginStatus = $globalUser->isLoggedIn();
 
-        $row = $this->profileUser->getUserInformation();
 
         if (isset($_POST['add-pet'])) {
             // Récupérer les données du formulaire
@@ -72,86 +72,75 @@ class UserProfile extends Profile
         }
 
         ?>
-            <img <?php if($row['organisation'] == 1) { ?> class = "profile-picture-organisation" <?php } else { ?> class = "profile-picture" <?php } ?> src="data:image/jpeg;base64,<?php echo base64_encode($this->profileUser->loadAvatar()); ?>"  alt="Photo de profil">
+            <img <?php if($this->profileUser->isOrganization()) { ?> class = "profile-picture-organisation" <?php } else { ?> class = "profile-picture" <?php } ?> src="data:image/jpeg;base64,<?php echo base64_encode($this->profileUser->loadAvatar()); ?>"  alt="Photo de profil">
             <?php
-            if ($row['organisation']) {
-                echo "<h3 class = 'name-profile'>" . $row['prenom'] . " " . $row['nom'] . "<img title=\"Ce compte est certifié car il s'agit d'une organisation\" src = '../images/organisation.png' style = 'margin-left: 0.8vw; width:1.4vw; height: 1.4vw;'></h3>";
+            if ($this->profileUser->isOrganization()) {
+                echo "<h3 class = 'name-profile'>" . $this->profileUser->getFirstName() . " " . $this->profileUser->getLastName() . "<img title=\"Ce compte est certifié car il s'agit d'une organisation\" src = '../images/organisation.png' style = 'margin-left: 0.8vw; width:1.4vw; height: 1.4vw;'></h3>";
             } else {
-                echo "<h3 class = 'name-profile'>" . $row['prenom'] . " " . $row['nom'] . "</h3>";
+                echo "<h3 class = 'name-profile'>" . $this->profileUser->getFirstName() . " " . $this->profileUser->getLastName() . "</h3>";
             }
 
             echo "<h4>" . "@" . $this->getUsername() . "</h4>";
-            if($row["bio"] != ("Bio" && null)) {
-                echo'<div class = "bio"><p>' . $row["bio"].'</p></div>';
+            if($this->profileUser->getBio() != ("Bio" && null)) {
+                echo'<div class = "bio"><p>' . $this->profileUser->getBio().'</p></div>';
             }
+        ?>
+        <div style = "display: flex; padding-top: 1.4vw">
+            <h4 style = "color: #3a3a3a"><?php echo $this->getUser()->numFollowing()." abonnements" ?></h4>
+            <h4 style = "color: #3a3a3a"><?php echo $this->getUser()->numFollowers("utilisateur")." abonnés" ?></h4>
+        </div>
+        <?php
+        $this->displayButton($loginStatus, $globalUser);
+        ?>
 
-            if($loginStatus) {
-                if($this->profileUser->getUsername() == $this->username) {?>
-                    <button class = "button-modify-profile" onclick="openWindow('modification-profile')">Editer le profil</button>
-                    <button class = "add-pet" onclick="openWindow('add-pet')">Ajouter un animal</button>
-                    <?php
-                }
-                elseif (!$this->profileUser->checkFollow($this->username, 'utilisateur')) { ?>
-                    <form action="" method="post" class = "button-follow">
-                        <button type = "submit" name="follow" class = "button-modify-profile">Suivre</button>
-                    </form>
-                <?php }
-                else { ?>
-                    <form action="" method="post" class = "button-follow">
-                        <button type = "submit" name="follow" class = "button-following">Suivi</button>
-                    </form>
-                <?php }
+        <div style = "margin-top: 1vw; display: inline-block">
+            <?php
+            $result = $this->getUser()->displayPets();
+            if($result->num_rows > 0) echo'<h3>Animaux</h3> <br>';
+            while ($row = $result->fetch_assoc()) {
+                ?>
+                <a href="./profile.php?username=<?php echo $row['id']; ?>"><img style = "border-radius: 50%; width: 4vw; height: 4vw; margin-left: 1vw;" src="data:image/jpeg;base64,<?php echo base64_encode($row['avatar']); ?>" alt="Bouton parcourir"></a>
+                <?php
             }
             ?>
-            <div style = "display: flex; padding-top: 1.4vw">
-                <h4 style = "color: #3a3a3a"><?php echo $this->getUser()->numFollowing()." abonnements" ?></h4>
-                <h4 style = "color: #3a3a3a"><?php echo $this->getUser()->numFollowers("utilisateur")." abonnés" ?></h4>
-            </div>
-            <div style = "margin-top: 1vw; display: inline-block">
-                <?php
-                $result = $this->getUser()->displayPets();
-                if($result->num_rows > 0) echo'<h3>Animaux</h3> <br>';
-                while ($row = $result->fetch_assoc()) {
-                    ?>
-                    <a href="./profile.php?username=<?php echo $row['id']; ?>"><img style = "border-radius: 50%; width: 4vw; height: 4vw; margin-left: 1vw;" src="data:image/jpeg;base64,<?php echo base64_encode($row['avatar']); ?>" alt="Bouton parcourir"></a>
-                    <?php
-                }
-                ?>
-            </div>
-            <?php
+        </div>
+        <?php
     }
 
-    public function profilMessagesAndAnswers($isMessage) {
+    protected function displayButton($loginStatus, $globalUser) {
+
+        if(!$loginStatus)
+            return;
+
+        if ($globalUser->getUsername() == $this->getUser()->getUsername()) {
+            ?>
+            <button class="button-modify-profile" onclick="openWindow('modification-profile')">Editer le profil</button>
+            <button class="add-pet" onclick="openWindow('add-pet')">Ajouter un animal</button>
+            <?php
+        } else {
+            if (!$globalUser->checkFollow($this->getUser()->getUsername(), 'utilisateur')) { ?>
+                <form action="" method="post" class="button-follow">
+                    <button type="submit" name="follow" class="button-modify-profile">Suivre</button>
+                </form>
+            <?php } else { ?>
+                <form action="" method="post" class="button-follow">
+                    <button type="submit" name="follow" class="button-following">Suivi</button>
+                </form>
+            <?php }
+        }
+    }
+
+    protected function queryMessagesAndAnswers($isMessage): string {
         if ($isMessage) {
-            $query = "SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username
+            return "SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username
             FROM message 
             JOIN utilisateur ON message.auteur_username = utilisateur.username
             WHERE (auteur_username = ? AND parent_message_id IS NULL) ORDER BY date DESC";
         } else {
-            $query = "SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username
+            return "SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username
             FROM message 
             JOIN utilisateur ON message.auteur_username = utilisateur.username
             WHERE (auteur_username = ? AND parent_message_id is not NULL) ORDER BY date DESC";
-        }
-
-        $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("s", $this->username);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        $messageIds = [];
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $messageIds[] = $row['id'];
-            }
-            return $messageIds;
-        }
-        else {
-            if ($isMessage) {
-                echo '<br><h4>Ce profil ne contient aucun message</h4>';
-            } else {
-                echo '<br><h4>Ce profil n\'a répondu à aucun message</h4>';
-            }
         }
     }
 
@@ -167,5 +156,28 @@ class UserProfile extends Profile
     public function getUsername()
     {
         return $this->username;
+    }
+
+    public function displayBoxes() {
+        ?>
+        <div id="message-content">
+            <?php
+            $messageIds = $this->profileMessagesAndAnswers(true);
+            if($messageIds) Message::displayMessages($this->conn, $this->db, $messageIds);
+            ?>
+        </div>
+        <div id="answer-content" style="display:none;">
+            <?php
+                $messageIds = $this->profileMessagesAndAnswers(false);
+                if($messageIds) Message::displayMessages($this->conn, $this->db, $messageIds);
+                ?>
+        </div>
+        <div id="like-content" style="display:none;">
+            <?php
+            $messageIds = $this->likedMessages();
+            if($messageIds) Message::displayMessages($this->conn, $this->db, $messageIds);
+            ?>
+        </div>
+<?php
     }
 }

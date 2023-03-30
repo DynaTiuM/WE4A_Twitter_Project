@@ -8,7 +8,7 @@ if (!function_exists('displayPetProfile')) {
         $loginStatus = isLogged();
 
         if (isset($_POST['modification-pet-profile'])) {
-            motificationProfile('animal');
+            //motificationProfile('animal');
         }
 
         if(isset($_POST['adopt'])) {

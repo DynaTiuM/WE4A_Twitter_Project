@@ -6,12 +6,18 @@ function mainMessages($loginStatus) {
         <?php
         include("./messageForm.php");
         if(isset($_GET['answer'])) {
-            $messageIds = Message::mainMessagesQuery($conn, $globalDb, $loginStatus, 'sub', $_GET['answer']);
-            Message::displayMessages($conn, $globalDb, $messageIds);
+            $messageIds = Message::mainMessagesQuery($conn, $globalDb, $loginStatus, 'subs', $_GET['answer']);
+            if($messageIds)
+                Message::displayMessages($conn, $globalDb, $messageIds);
+            else
+                echo '<h4><br>Aucune réponse disponible</h4>';
         }
         else {
-            $messageIds = Message::mainMessagesQuery($conn, $globalDb, $loginStatus, 'sub', null);
-            Message::displayMessages($conn, $globalDb, $messageIds);
+            $messageIds = Message::mainMessagesQuery($conn, $globalDb, $loginStatus, 'subs', null);
+            if($messageIds)
+                Message::displayMessages($conn, $globalDb, $messageIds);
+            else
+                echo '<h4><br>Aucun message disponible</h4>';
         }
         ?>
 
@@ -20,7 +26,6 @@ function mainMessages($loginStatus) {
 }
 
 function explorerMessages($loginStatus) {
-    global $globalMessage;
     global $conn, $globalDb;
     ?>
     <div class = "hub-messages">
@@ -36,43 +41,54 @@ function explorerMessages($loginStatus) {
         include("./messageForm.php");
 
         if(isset($_GET['answer'])) {
-            if($_GET['answer'] != '') {
-                $message = new Message($conn, $globalDb);
-                $message->setId($_GET['answer']);
-                $message->setParentMessageId($_GET['answer']);
-                $parent_message_id = $message->getParentMessageId();
+            if (isset($_GET['answer'])) {
+                if ($_GET['answer'] != '') {
+                    $message = new Message($conn, $globalDb);
+                    $message->loadMessageById($_GET['answer']);
+                    $parent_message_id = $message->getParentMessageId();
 
-                if($parent_message_id) {
-                    ?>
-                    <div class="parent-message">
-                        <?php
-                        $parent_message = new Message($conn, $globalDb);
-                        $parent_message->setId($parent_message_id);
-                        $parent_message->displayContentById();
+                    if ($parent_message_id) {
                         ?>
-                        <span class="container-parent-message"></span>
-                    </div>
-                    <?php
-                }
+                        <div class="parent-message">
+                            <?php
+                            $parent_message = new Message($conn, $globalDb);
+                            $parent_message->loadMessageById($parent_message_id);
+                            $parent_message->displayContent();
+                            ?>
+                            <span class="container-parent-message"></span>
+                        </div>
+                        <?php
+                    }
 
-                $message->displayContentbyId();
+                    $message->displayContent();
+                }
             }
+
 
 
             include("./adressSearch.php");
             if(!isset($_POST['reply_to']) && !isset($_POST['new-message']) && $loginStatus) include("./newMessageForm.php");
             $messageIds = Message::mainMessagesQuery($conn, $globalDb, $loginStatus, 'explorer', $_GET['answer']);
-            Message::displayMessages($conn, $globalDb, $messageIds);
+            if($messageIds)
+                Message::displayMessages($conn, $globalDb, $messageIds);
+            else
+                echo '<h4><br>Aucune réponse disponible</h4>';
         }
         elseif (isset($_GET['category'])) {
             $messageIds = Message::displayMessagesByCategory($conn, $globalDb, $_GET['category']);
-            Message::displayMessages($conn, $globalDb, $messageIds);
+            if($messageIds)
+                Message::displayMessages($conn, $globalDb, $messageIds);
+            else
+                echo '<h4><br>Aucun message disponible dans cette catégorie</h4>';
 
         }
         else {
             if(!isset($_POST['reply_to']) && !isset($_POST['new-message']) && $loginStatus) include("./newMessageForm.php");
             $messageIds = Message::mainMessagesQuery($conn, $globalDb, $loginStatus, 'explorer', null);
-            Message::displayMessages($conn, $globalDb, $messageIds);
+            if($messageIds)
+                Message::displayMessages($conn, $globalDb, $messageIds);
+            else
+                echo '<h4><br>Aucun message disponible</h4>';
         }
 
         ?>

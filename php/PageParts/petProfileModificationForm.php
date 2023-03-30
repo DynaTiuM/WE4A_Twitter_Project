@@ -1,74 +1,77 @@
 <?php
-require_once('databaseFunctions.php');
 
-$petUsername = SecurizeString_ForSQL($_GET['username']);
-$ownerUsername = SecurizeString_ForSQL($_COOKIE['username']);
-$information = getPetInformation($petUsername);
-$user = getUserInformation($ownerUsername);
-$nom = $information['nom'];
-$avatar = loadAvatar($petUsername);
-$age = $information['age'];
-$sexe = $information['sexe'];
-$bio = $information['caracteristiques'];
-$espece = $information['espece'];
+global $profile;
+
+
+global $globalUser;
+global $globalDb;
+$globalDb = Database::getInstance();
+$conn = $globalDb->getConnection();
+
+$userId = $_GET['username'];
+$profile = Animal::getInstanceById($conn, $globalDb, $userId);
 
 ?>
 
 <!DOCTYPE html>
 
 <html lang = "fr">
+<body>
 <form  action="" method="post" enctype="multipart/form-data">
-
     <div class="image-container">
         <label for="avatar">
-            <img class="image-modification" src="data:image/jpeg;base64,<?php echo base64_encode($avatar); ?>" alt="Bouton parcourir">
-            <div class="overlay"></div>
+            <img class="image-modification" src="data:image/jpeg;base64,<?php echo $profile->getAvatarEncoded64(); ?>" alt="Bouton parcourir">
         </label>
     </div>
 
     <input id="avatar" class = "invisibleFile" type="file" name = "avatar">
 
     <div>
-        <input name = "nom" class = "answer" value="<?php echo $nom; ?>">
+        <input name = "nom" class = "answer" value="<?php echo $profile->getUsername() ?>">
     </div>
     <div>
-        <input type = "number" min = "0" max = "100" name = "age" class = "answer" value="<?php echo $age; ?>">
+        <input type = "number" min = "0" max = "100" name = "age" class = "answer" value="<?php echo $profile->getAge(); ?>">
     </div>
     <div>
         <label for="gender"></label>
         <label>
-            <input type="radio" name="sexe" value="masculin" required <?php if($sexe == 'masculin') {?> checked <?php }?>>
+            <input type="radio" name="sexe" value="masculin" required <?php if($profile->getGender() == 'masculin') {?> checked <?php }?>>
             Masculin
         </label>
         <label>
-            <input type="radio" name="sexe" value="feminin" <?php if($sexe == 'féminin') {?> checked <?php }?>>
+            <input type="radio" name="sexe" value="feminin" <?php if($profile->getGender() == 'féminin') {?> checked <?php }?>>
             Féminin
         </label>
     </div>
     <div>
-        <input name = "bio" class = "answer" value="<?php echo $bio; ?>" placeholder="Bio">
+        <input name = "bio" class = "answer" value="<?php echo $profile->getCharacteristics(); ?>" placeholder="Bio">
     </div>
     <div>
-        <input name = "espece" class = "answer" value="<?php echo $espece; ?>" placeholder="Bio">
+        <input name = "espece" class = "answer" value="<?php echo $profile->getSpecies(); ?>" placeholder="Espece">
     </div>
     <?php
-    if($user['organisation']) { ?>
 
-    <div class ="answer">
-        <p>Est à la recherche d'un propriétaire</p>
-        <label>
-            <input type="radio" name="adoption" value="1" required  <?php if($information['adopter'] == 1) {?> checked <?php }?>>
-            Oui
-        </label>
-        <label>
-            <input type="radio" name="adoption" value="0" <?php if($information['adopter'] == 0) {?> checked <?php }?>>
-            Non
-        </label>
-    </div>
-    <?php
+    $userId = $_SESSION['username'];
+    $globalUser = User::getInstanceById($conn, $globalDb, $userId);
+
+    if($globalUser->isOrganization()) { ?>
+
+        <div class ="answer">
+            <p>Est à la recherche d'un propriétaire</p>
+            <label>
+                <input type="radio" name="adoption" value="1" required  <?php if($globalUser->isOrganization()) {?> checked <?php }?>>
+                Oui
+            </label>
+            <label>
+                <input type="radio" name="adoption" value="0" <?php if($globalUser->isOrganization()) {?> checked <?php }?>>
+                Non
+            </label>
+        </div>
+        <?php
     }?>
     <br>
 
     <button class = "form-button" type="submit" name = "modification-pet-profile">Modifier le profil</button>
 </form>
+</body>
 </html>

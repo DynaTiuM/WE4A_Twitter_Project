@@ -28,10 +28,10 @@ global $profile;
         <input name="bio" class="answer" value="<?php echo $profile->getUser()->getBio(); ?>" placeholder="Bio">
     </div>
     <div>
-        <input class="answer" type="password" id="password" name="password" value="<?php echo $profile->getUser()->getPassword(); ?>">
+        <input class="answer" type="password" id="password" name="password" placeholder="Nouveau mot de passe">
     </div>
     <div>
-        <input class="answer" type="password" id="confirm" name="confirm" value="<?php echo $profile->getUser()->getPassword();; ?>">
+        <input class="answer" type="password" id="confirm" name="confirm" placeholder="Confirmer le nouveau mot de passe">
     </div>
     <br>
 
