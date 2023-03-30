@@ -1,5 +1,6 @@
 <script>
     // fonction pour ouvrir la fenêtre
+
     function openWindow(window, type = 'inline-block') {
         document.getElementById(window).style.display = type;
 

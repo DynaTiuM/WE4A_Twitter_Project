@@ -9,6 +9,7 @@ class AnimalProfile extends Profile {
         $this->profileUser = Animal::getInstanceById($this->conn, $this->db, $this->username);
     }
     public function displayProfile() {
+
         $userId = $_SESSION['username'];
         $globalUser = User::getInstanceById($this->conn, $this->db, $userId);
         $loginStatus = $globalUser->isLoggedIn();
@@ -17,7 +18,12 @@ class AnimalProfile extends Profile {
         $masterUser = User::getInstanceById($this->conn, $this->db, $masterUsername);
 
         if (isset($_POST['modification-pet-profile'])) {
-            $this->getUser()->updateProfile('animal');
+            if(isset($_POST['adoption'])) {
+                $this->getUser()->updateProfile($_POST['nom'], $_POST['age'], $_POST['sexe'], $_POST['bio'], $_POST['espece'], $_POST['adoption']);
+            }
+            else {
+                $this->getUser()->updateProfile($_POST['nom'], $_POST['age'], $_POST['sexe'], $_POST['bio'], $_POST['espece']);
+            }
         }
 
         if(isset($_POST['adopt'])) {
@@ -58,7 +64,14 @@ class AnimalProfile extends Profile {
         $masterUsername = $this->profileUser->getMasterUsername();
         if ($globalUser->getUsername() == $masterUsername) {
             ?>
-            <button class="button-modify-profile" onclick="openWindow('modification-pet-profile')">Editer le profil</button>
+            <button class="button-modify-profile" onclick = "openWindow('modification-pet-profile')">Editer le profil</button>
+            <div id="modification-pet-profile" class="window-background">
+                <div class="window-content">
+                    <span class="close" onclick="closeWindow('modification-pet-profile')">&times;</span>
+                    <h2 class = "window-title">Modification du profil de l'animal</h2>
+                    <?php include("./petProfileModificationForm.php"); ?>
+                </div>
+            </div>
             <?php
         } else {
             if (!$globalUser->checkFollow($this->getUser()->getUsername(), 'animal')) { ?>

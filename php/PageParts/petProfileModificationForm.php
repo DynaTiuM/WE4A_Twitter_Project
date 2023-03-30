@@ -27,7 +27,7 @@ $profile = Animal::getInstanceById($conn, $globalDb, $userId);
     <input id="avatar" class = "invisibleFile" type="file" name = "avatar">
 
     <div>
-        <input name = "nom" class = "answer" value="<?php echo $profile->getUsername() ?>">
+        <input name = "nom" class = "answer" value="<?php echo $profile->getName() ?>">
     </div>
     <div>
         <input type = "number" min = "0" max = "100" name = "age" class = "answer" value="<?php echo $profile->getAge(); ?>">

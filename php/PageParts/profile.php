@@ -99,7 +99,9 @@ if(isset($_POST['reply_to'])) {
 </head>
 
 <body>
+
     <div class = "Container">
+
         <?php include("./navigation.php") ?>
         <div class = "MainContainer">
             <?php
@@ -131,7 +133,6 @@ if(isset($_POST['reply_to'])) {
             }
             ?>
                 </div>
-
                 <div class = "spacing"></div>
                     <div class = "profile">
                         <?php
@@ -153,11 +154,11 @@ if(isset($_POST['reply_to'])) {
                     ?>
 
             </div>
-            <div id="modification-pet-profile" class="window-background">
+            <div id="modification-profile" class="window-background">
                 <div class="window-content">
-                    <span class="close" onclick="closeWindow('modification-pet-profile')">&times;</span>
-                    <h2 class = "window-title">Modification du profil de l'animal</h2>
-                    <?php include("./petProfileModificationForm.php"); ?>
+                    <span class="close" onclick="closeWindow('modification-profile')">&times;</span>
+                    <h2 class = "window-title">Modification du profil</h2>
+                    <?php include("./profileModificationForm.php"); ?>
                 </div>
             </div>
             <div id="add-pet" class="window-background">
@@ -167,15 +168,9 @@ if(isset($_POST['reply_to'])) {
                     <?php include("./addPetForm.php"); ?>
                 </div>
             </div>
-            <div id="modification-profile" class="window-background">
-                <div class="window-content">
-                    <span class="close" onclick="closeWindow('modification-profile')">&times;</span>
-                    <h2 class = "window-title">Modification du profil</h2>
-                    <?php include("./profileModificationForm.php"); ?>
-                </div>
-            </div>
-
     </div>
+
+
 </body>
 </html>
 

@@ -143,9 +143,12 @@ class Animal extends Entity
         return $result->num_rows > 0;
     }
 
-    public function updateProfile($nom, $age, $sexe, $bio, $espece, $adoption) {
+    public function updateProfile($nom, $age, $sexe, $bio, $espece, $adoption = null) {
         global $conn;
-        $query = "UPDATE animal SET nom = '$nom', age = '$age', sexe = '$sexe', caracteristiques = '$bio', espece = '$espece', adopter = '$adoption' WHERE id = '" . $this->id . "'";
+        if($adoption == null) {
+            $query = "UPDATE animal SET nom = '$nom', age = '$age', sexe = '$sexe', caracteristiques = '$bio', espece = '$espece' WHERE id = '" . $this->username . "'";
+        }
+        $query = "UPDATE animal SET nom = '$nom', age = '$age', sexe = '$sexe', caracteristiques = '$bio', espece = '$espece', adopter = '$adoption' WHERE id = '" . $this->username . "'";
         $conn->query($query);
     }
 
