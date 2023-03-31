@@ -149,7 +149,6 @@ class Animal extends Entity
         }
         else {
             $query = "UPDATE animal SET nom = '$name', age = '$age', sexe = '$gender', caracteristiques = '$bio', espece = '$species', adopter = '$adoption' WHERE id = '" . $this->username . "'";
-
         }
 
         $stmt = $this->conn->prepare($query);

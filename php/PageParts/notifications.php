@@ -1,4 +1,19 @@
 <!DOCTYPE html>
+
+<?php
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+require_once("../Classes/Database.php");
+require_once("../Classes/User.php");
+
+$globalDb = Database::getInstance();
+$conn = $globalDb->getConnection();
+$globalUser = User::getInstance($conn, $globalDb);
+?>
+
 <html lang = "fr">
 <head>
     <meta charset = "utf-8">
@@ -9,16 +24,8 @@
 <div class = "Container">
     <?php
     global $loginStatus;
-    include("./PageParts/navigation.php");
-    include("./PageParts/hubMessages.php");
-
-    /* DUPLICATED!!!! */
-    if(isset($_POST['like']) && $loginStatus) likeMessage($_POST['like']);
-
-    if(isset($_POST["submit"])) {
-        include("./PageParts/sendingMessage.php");
-        sendMessage($_POST["submit"]);
-    }
+    include("./navigation.php");
+    include("./hubMessages.php");
 
     ?>
 
@@ -29,20 +36,21 @@
         <div class = "spacing"></div>
             <?php
 
-            include("./PageParts/popupNewMessage.php");
+            include("./popupNewMessage.php");
             popUpNewMessage();
             if ($loginStatus) {
-                $notifications = getNotifications();
-                if($notifications) {
-                    while($row = $notifications->fetch_assoc()) {
-                        $id = $row['message_id'];
+                $notification = new Notification($conn, $globalDb);
+                $notificationList = $notification->getNotifications($globalUser->getUsername());
+
+                if($notificationList) {
+                    foreach($notificationList as $row) {
                         ?>
                         <div <?php if($row['vue'] == 0) { ?> style = "background-color: #d3eae0" <?php } ?>>
                             <?php
-                            displayContentById($id);
+                            echo $notification->displayNotification($row);
                             ?>
                         </div>
-                    <?php
+                        <?php
                     }
                 }
                 else {
@@ -57,9 +65,9 @@
     </div>
 
     <?php
-    include("./PageParts/trends.php");
+    include("./trends.php");
 
-    include("./PageParts/popupNewMessageForm.php");
+    include("./popupNewMessageForm.php");
     ?>
 </div>
 

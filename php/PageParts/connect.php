@@ -74,7 +74,7 @@ if ($newLoginStatus[2] != NULL) { ?>
     <title>Connexion</title>
     <link rel="shortcut icon" href="../favicon.ico">
 
-    <?php include("./windows.php");?>
+    <script src = "../js/windows.js"></script>
 
 </head>
 

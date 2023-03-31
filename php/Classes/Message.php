@@ -391,6 +391,10 @@ class Message
 
         $message_id = $stmt->insert_id;
 
+        require_once ("../Classes/Notification.php");
+        $notification = new Notification($conn, $db);
+        $notification->createNotificationsForFollowers($username, $message_id);
+
         if (!empty($_POST['animaux'])) {
             foreach ($_POST['animaux'] as $animal_id) {
                 $stmt = $conn->prepare("INSERT INTO message_animaux (message_id, animal_id) VALUES (?, ?)");

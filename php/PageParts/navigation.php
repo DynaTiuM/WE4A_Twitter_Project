@@ -1,7 +1,15 @@
 <?php
+
 $globalDb = Database::getInstance();
 $conn = $globalDb->getConnection();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+    $userId = $_SESSION['username'];
+    $globalUser = User::getInstanceById($conn, $globalDb, $userId);
+}
+
 $globalUser = User::getInstance($conn, $globalDb);
+
 $loginStatus = $globalUser->isLoggedIn();
 
 if(isset($_POST["destroyCookies"])) {
@@ -33,16 +41,16 @@ if($loginStatus) {
 
             <?php if($loginStatus) {
                 require_once ("../Classes/Notification.php");
-                $notification = new Notification($globalUser->getUsername());
-                $numNotifications = $notification->numNotifications();
+                $notification = new Notification($conn, $globalDb);
+                $numNotifications = $notification->numNotifications($globalUser->getUsername());
                 if($numNotifications == 0) {
                     ?>
-                    <li class = "menu-item"><a href="./notifications.php"><img src="../images/notification.png">Notifications</a></li>
+                    <li class = "menu-item"><a href="notifications.php"><img src="../images/notification.png">Notifications</a></li>
                     <?php
                 }
                 else {
                     ?>
-                    <li class = "menu-item"><a href="./notifications.php"><img src="../images/notifications_not_read.png">Notifications (<?php echo $numNotifications?>)</a></li>
+                    <li class = "menu-item"><a href="notifications.php"><img src="../images/notifications_not_read.png">Notifications (<?php echo $numNotifications?>)</a></li>
                     <?php
                 }
                 ?>
