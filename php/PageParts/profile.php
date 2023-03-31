@@ -39,14 +39,8 @@ if(isset($_POST['follow'])) {
 if (isset($_POST['notification_id'])) {
     $notificationId = $_POST['notification_id'];
 
-        // Mettre à jour la notification
-    $query = "UPDATE notification SET vue = 1 WHERE id = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("i", $notificationId);
-    $stmt->execute();
-}
-else {
-    echo 'rrrrrrrrrrrrrrrrrrrrrrrr';
+    require_once ("../Classes/Notification.php");
+    Notification::setVued($conn, $notificationId);
 }
 
 if (isset($_SESSION['username'])) {

@@ -26,7 +26,7 @@ if(!$newLoginStatus[0]) {
 else {
     $_SESSION['username'] = $globalUser->getUsername();
 
-    header("Location: index.php");
+    header("Location: subscriptions.php");
     exit();
 }
 if ($newLoginStatus[2] != NULL) { ?>

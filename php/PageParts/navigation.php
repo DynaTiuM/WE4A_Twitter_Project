@@ -36,7 +36,7 @@ if($loginStatus) {
     <div class = "navigation">
         <a href = "explorer.php"><img src = "../images/logo.png" alt = "Logo" style = "width:3vw; height: 3vw; margin-left: 0.6vw; padding: 0.5vw 0.5vw 0 1.2vw;"></a>
         <ul>
-            <li class="menu-item" style = "font-weight: 900;"><a href="index.php"><img src="../images/follow.png">Abonnements</a></li>
+            <li class="menu-item" style = "font-weight: 900;"><a href="subscriptions.php"><img src="../images/follow.png">Abonnements</a></li>
             <li class="menu-item"><a href="explorer.php"><img src="../images/explorer.png">Explorer</a></li>
 
             <?php if($loginStatus) {

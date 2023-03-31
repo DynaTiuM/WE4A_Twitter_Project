@@ -1,0 +1,185 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1F7C62;
+    color: #fff;
+}
+
+.image {
+    z-index: -1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../images/cat.png');
+    background-size: 35% 100%;
+    background-repeat: no-repeat;
+    background-position: left bottom;
+    clip-path: polygon(35% 100%, -10% 100%, 0% 0%, 12% 0%);
+}
+
+
+h1 {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 4.15vw;
+}
+
+h1, .under_title {
+    animation-name: titleAnimation;
+    animation-duration: 0.7s;
+    animation-fill-mode: both;
+}
+
+.under_title {
+    color: #d3eae0;
+    font-size: 1.9vw;
+    animation-delay: 0.8s;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+header {
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+}
+
+.logo {
+    max-width: 5vw;
+    animation: logoAnimation 1s ease-in-out;
+}
+
+.hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1vw;
+}
+
+.join-btn {background-color: #F0EAD6;
+    color: #1F7C62;
+    border: none;
+    border-radius: 3vw;
+    padding: 0.6vw 3vw;
+    font-size: 2.4vw;
+    cursor: pointer;
+    margin-top: 5vw;
+    transition: 0.3s;
+    opacity: 0;
+    animation: scaling 1s ease-in-out;
+    animation-delay: 0.4s;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+}
+
+.join-btn:hover {
+    background-color: #165e4a;
+    color: #fff;
+}
+
+.why-join {
+    width: 100%;
+    padding: 50px;
+    text-align: center;
+}
+
+.flashcards {
+    z-index: 3;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+h3 {
+    font-size: 1.2vw;
+    margin-bottom: 0.5vw;
+}
+
+.flashcard {
+    background-color: #fff;
+    color: #1F7C62;
+    border-radius: 5px;
+    padding: 20px;
+    margin: 10px;
+    width: 250px;
+    height: 12vw;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: 0.3s;
+
+}
+
+.hidden {
+    opacity: 0;
+    transition: opacity 1s, transform 1s;
+    transform: translateY(-3vw);
+}
+
+.title-container {
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+}
+
+.text-container {
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+}
+
+@keyframes scaling {
+    0% {
+        opacity: 0;
+        transform: scale(0.8) translateY(2vw);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+
+@keyframes titleAnimation {
+    0% {
+        opacity: 1;
+        transform: translateY(100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+@keyframes flashcardAnimation {
+    0% {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes logoAnimation {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

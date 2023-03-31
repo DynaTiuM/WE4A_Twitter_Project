@@ -76,6 +76,14 @@ class Notification
         <?php
     }
 
+    public static function setVued($conn, $notificationId) {
+        // Mettre à jour la notification
+        $query = "UPDATE notification SET vue = 1 WHERE id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("i", $notificationId);
+        $stmt->execute();
+    }
+
     private function displayAdoptionNotification($notificationData) {
     }
 
