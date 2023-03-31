@@ -14,7 +14,7 @@ class Notification
     public function displayNotification($table) {
         $notificationType = $table["notif_type"];
         switch ($notificationType) {
-            case 'new_follower':
+            case 'follow':
                 return $this->displayNewFollowerNotification($table);
             case 'like':
                 return $this->displayLikeNotification($table);
@@ -27,9 +27,7 @@ class Notification
         }
     }
 
-    private function displayNewFollowerNotification($notificationData) {
 
-    }
 
     private function displayLikeNotification($notificationData) {
     }
@@ -40,6 +38,42 @@ class Notification
         $message = new Message($this->conn, $this->db);
         $message->loadMessageById($messageId);
         $message->displayContent();
+    }
+    private function displayNewFollowerNotification($notificationData) {
+        $userId = $notificationData['username'];
+
+        $followerUser = User::getInstanceById($this->conn, $this->db, $userId);
+        $avatar = $followerUser->getAvatarEncoded64();
+        ?>
+        <form method="post" id="profileRedirectionForm">
+            <input type="hidden" name="notification_id" value="<?php echo $notificationData['id']; ?>">
+            <input type="submit" class="invisibleFile">
+            <div style="display: flex;" id="profileRedirection" data-username="<?php echo $userId; ?>" onclick="submitProfileRedirectionForm();">
+                <label>
+                    <img class="image-modification" style="width: 4vw; height: 4vw; margin: 1vw;" src="data:image/jpeg;base64,<?php echo $avatar; ?>" alt="Image de profil">
+                </label>
+                <p style="margin-top: 2vw; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.2vw"> <?php echo $userId ?> vous suit dorénavant</p>
+            </div>
+        </form>
+        <script>
+            function submitProfileRedirectionForm() {
+                const profileRedirection = document.getElementById('profileRedirection');
+                const username = profileRedirection.dataset.username;
+
+                // Construire la chaîne de requête GET
+                const queryString = `?username=${username}`;
+
+                // Soumettre le formulaire avec la chaîne de requête GET
+                const profileRedirectionForm = document.getElementById('profileRedirectionForm');
+                profileRedirectionForm.action = '../PageParts/profile.php' + queryString;
+                profileRedirectionForm.submit();
+            }
+        </script>
+
+
+
+
+        <?php
     }
 
     private function displayAdoptionNotification($notificationData) {
@@ -101,16 +135,32 @@ class Notification
         }
 
         // Check for adoption notification
-        // Add your adoption notification query here
 
         // Check for like notification
-        // Add your like notification query here
 
         // Check for follow notification
-        // Add your follow notification query here
+        $queryFollow = "SELECT 'follow' AS notif_type, notification.vue, notification.id, utilisateur_suiveur.*, utilisateur_suivi.*,
+                GROUP_CONCAT(animal.nom SEPARATOR ', ') AS animal_names
+                FROM notification_suivre
+                INNER JOIN utilisateur AS utilisateur_suiveur ON notification_suivre.suiveur_username = utilisateur_suiveur.username
+                INNER JOIN suivre ON notification_suivre.suivre_id = suivre.id
+                INNER JOIN utilisateur AS utilisateur_suivi ON suivre.utilisateur_username = utilisateur_suivi.username
+                LEFT JOIN animal ON suivre.suivi_id_animal = animal.id
+                INNER JOIN notification ON notification_suivre.notification_id = notification.id
+                WHERE notification_suivre.notification_id = ?
+                GROUP BY suivre.id;";
+        $stmtFollow = $this->conn->prepare($queryFollow);
+        $stmtFollow->bind_param("i", $notifId);
+        $stmtFollow->execute();
+        $resultFollow = $stmtFollow->get_result();
+
+        if ($resultFollow->num_rows > 0) {
+            return $resultFollow;
+        }
 
         return null;
     }
+
 
     public function createNotificationsForFollowers($author_username, $message_id) {
         $followersQuery = "SELECT utilisateur_username FROM suivre WHERE suivi_id_utilisateur = ?;";
@@ -142,16 +192,36 @@ class Notification
     }
 
 
-    public function createFollowNotification($followerUsername, $followedUsername) {
+    public function createNotificationForFollow($followerUsername, $followedUsername, $followId) {
         $query = "INSERT INTO notification (utilisateur_username, date) VALUES (?, NOW())";
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param("s", $followedUsername);
         $stmt->execute();
         $notificationId = $stmt->insert_id;
 
-        $query = "INSERT INTO notification_suivre (notification_id, suiveur_username) VALUES (?, ?)";
+        $date = date("d M Y H:i:s");
+        $query = "INSERT INTO notification_suivre (notification_id, suiveur_username, suivre_id, date) VALUES (?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("is", $notificationId, $followerUsername);
+        $stmt->bind_param("isis", $notificationId, $followerUsername, $followId, $date);
+        $stmt->execute();
+    }
+
+    public function deleteFollowNotifications($followId) {
+        $query = "SELECT notification_id FROM notification_suivre WHERE suivre_id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("i", $followId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $notificationId = $result->fetch_assoc()['notification_id'];
+
+        $query = "DELETE FROM notification_suivre WHERE suivre_id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("i", $followId);
+        $stmt->execute();
+
+        $query = "DELETE FROM notification WHERE id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("i", $notificationId);
         $stmt->execute();
     }
 

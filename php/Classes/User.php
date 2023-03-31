@@ -277,26 +277,6 @@ class User extends Entity
 
         return $result->fetch_Column();
     }
-    public function follow_unfollow($conn, $to_follow, $type) {
-        if($type == 'user') $type = 'utilisateur';
-        else $type = 'animal';
-
-        $stmt = $conn->prepare("SELECT * FROM suivre WHERE utilisateur_username = ? AND suivi_id_$type = ?");
-        $stmt->bind_param("ss", $this->username, $to_follow);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result && $result->num_rows > 0) {
-            $stmt = $conn->prepare("DELETE FROM suivre WHERE utilisateur_username = ? AND suivi_id_$type = ?");
-            $stmt->bind_param("ss", $this->username, $to_follow);
-            $stmt->execute();
-            return;
-        }
-
-        $stmt = $conn->prepare("INSERT INTO suivre (utilisateur_username, suivi_type, suivi_id_$type) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $this->username, $type, $to_follow);
-        $stmt->execute();
-    }
 
     public function checkNewAccountForm(): array {
         $creationAttempted = false;

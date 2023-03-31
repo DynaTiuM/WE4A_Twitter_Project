@@ -51,6 +51,33 @@ class Entity {
         return $this->loadAvatar();
     }
 
+    public function follow_unfollow($to_follow, $type) {
+        if ($type != 'utilisateur') $type = 'animal';
+
+        $stmt = $this->conn->prepare("SELECT * FROM suivre WHERE utilisateur_username = ? AND suivi_id_$type = ?");
+        $stmt->bind_param("ss", $this->username, $to_follow);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            require_once ("../Classes/Notification.php");
+            $followId = $result->fetch_assoc()['id'];
+            $notification = new Notification($this->conn, $this->db);
+            $notification->deleteFollowNotifications($followId);
+
+            $stmt = $this->conn->prepare("DELETE FROM suivre WHERE utilisateur_username = ? AND suivi_id_$type = ?");
+            $stmt->bind_param("ss", $this->username, $to_follow);
+            $stmt->execute();
+            return null;
+        }
+
+        $stmt = $this->conn->prepare("INSERT INTO suivre (utilisateur_username, suivi_type, suivi_id_$type) VALUES (?, ?, ?)");
+        $stmt->bind_param("sss", $this->username, $type, $to_follow);
+        $stmt->execute();
+        return $stmt->insert_id;
+    }
+
+
     public function checkFollow($to_follow, $type): bool {
         $stmt = $this->conn->prepare("SELECT * FROM suivre WHERE utilisateur_username = ? AND suivi_type = ? AND suivi_id_$type = ?");
         $stmt->bind_param("sss", $this->username, $type, $to_follow);

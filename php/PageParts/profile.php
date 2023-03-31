@@ -16,17 +16,41 @@ require_once("../Classes/AnimalProfile.php");
 require_once("windowsProfile.php");
 
 global $globalDb;
-global $globalUser;
 global $globalMessage;
 $globalDb = Database::getInstance();
 $conn = $globalDb->getConnection();
 $globalMessage = new Message($conn, $globalDb);
+$userId = $_SESSION['username'];
+$globalUser = User::getInstanceById($conn, $globalDb, $userId);
+
+$username = $_GET['username'];
+require_once ("../Classes/Profile.php");
+$type = Profile::determineProfileType($conn, $username);
+
+if(isset($_POST['follow'])) {
+    $followId = $globalUser->follow_unfollow($username, $type);
+    if ($followId) {
+        require_once ("../Classes/Notification.php");
+        $notification = new Notification($conn, $globalDb);
+        $notification->createNotificationForFollow($userId, $username, $followId);
+    }
+}
+
+if (isset($_POST['notification_id'])) {
+    $notificationId = $_POST['notification_id'];
+
+        // Mettre à jour la notification
+    $query = "UPDATE notification SET vue = 1 WHERE id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $notificationId);
+    $stmt->execute();
+}
+else {
+    echo 'rrrrrrrrrrrrrrrrrrrrrrrr';
+}
 
 if (isset($_SESSION['username'])) {
     $userId = $_SESSION['username'];
-
-    // Ici, vous pouvez utiliser les informations stockées dans la session pour créer l'instance de l'utilisateur.
-    // Vous devrez peut-être ajuster la méthode getInstance() ou créer une nouvelle méthode pour créer une instance avec les données de session.
     $globalUser = User::getInstanceById($conn, $globalDb, $userId);
 }
 
@@ -52,7 +76,6 @@ if(isset($_POST['reply_to'])) {
 
     <?php
     include("./popupNewMessage.php");
-    //popUpNewMessage();
     ?>
 
 </head>
@@ -62,13 +85,6 @@ if(isset($_POST['reply_to'])) {
     <div class = "Container">
 
         <?php include("./navigation.php");
-        $username = $_GET['username'];
-        require_once ("../Classes/Profile.php");
-        $type = Profile::determineProfileType($conn, $username);
-
-        if(isset($_POST['follow'])) {
-            $globalUser->follow_unfollow($conn, $username, $type);
-        }
 
         global $profile;
         if ($type == 'utilisateur') {
@@ -86,10 +102,6 @@ if(isset($_POST['reply_to'])) {
         ?>
         <div class = "MainContainer">
             <?php
-
-            if(isset($_POST['follow'])) {
-                $globalUser->follow_unfollow($conn, $username, $type);
-            }
 
             global $profile;
             ?>
