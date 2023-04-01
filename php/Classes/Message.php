@@ -317,14 +317,13 @@ class Message
         }
         if (isset($_GET['tag'])) {
             $tag = $db->secureString_ForSQL($_GET['tag']);
-            $stmt = $conn->prepare("SELECT DISTINCT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username
-                FROM message
-                    JOIN hashtag ON message.id = hashtag.message_id
-                    JOIN utilisateur ON message.auteur_username = utilisateur.username
-                WHERE message.contenu like ? OR hashtag.tag = ?
-                ORDER BY message.date DESC");
-            $like_tag = "%$tag%";
-            $stmt->bind_param("ss", $like_tag, $tag);
+            $stmt = $conn->prepare("SELECT DISTINCT message.*, utilisateur.*
+                                        FROM message
+                                            JOIN hashtag ON message.id = hashtag.message_id
+                                            JOIN utilisateur ON message.auteur_username = utilisateur.username
+                                        WHERE hashtag.tag = ?
+                                        ORDER BY message.date DESC");
+            $stmt->bind_param("s", $tag);
         } else {
             if ($search != 'subs') {
                 $stmt = $conn->prepare("SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username
@@ -372,7 +371,8 @@ class Message
         }
 
         $content = $db->secureString_ForSQL($_POST["content"]);
-        $username = $_COOKIE["username"];
+
+        $username = $_SESSION["username"];
 
         require_once("Image.php");
         $image = new Image($_FILES["image"]);

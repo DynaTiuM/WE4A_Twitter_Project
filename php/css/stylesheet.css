@@ -46,15 +46,32 @@ body {
     font-size: 1.3vw;
 }
 
-.answer {
+.answer, .adoption-container {
+    font-family: "Plus Jakarta Sans", sans-serif;
     font-size: 1.13vw;
-    border-radius: 0.3vw;
-    margin: 0.5vw;
     border: 0.1vw solid gray;
-    padding: 0.95vw;
+    border-radius: 0.3vw;
     width: 22vw;
+    padding: 0.95vw;
+    margin: 0.5vw;
+}
+.answer {
     outline: none;
 }
+
+.adoption-center {
+    display: flex;
+    justify-content: center;
+}
+
+.adoption-container {
+    padding-top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
 
 .answer:focus {
     border: 0.15vw solid #1F7C62;
@@ -234,8 +251,9 @@ h1 {
     }
 }
 
-label {
-    font-family: Arial, sans-serif;
+label, .window-text {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 1.1vw;
 }
 
 /* Contenu de la fenêtre flottante */
@@ -347,13 +365,14 @@ h4 {
 
 
 .overlay {
-    position: absolute;
+    position: relative;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateY(-50%);
     width: 10vw;
     height: 10vw;
     border-radius: 100%;
+    margin: -5vw;
     background-color: rgba(0, 0, 0, 0.3);
     transition: opacity 0.3s ease;
 }
