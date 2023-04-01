@@ -37,26 +37,20 @@ function sendEmail($username, $secretCode) {
 // Configuration du message
     $mail->isHTML(true);
     $mail->Subject = 'Réinitialisation mot de passe Twitturtle';
+
+    // Utilisation de CSS inline, car certaines messageries ne prennent pas en charge les balises <style>, conversion réalisée à l'aide Juice CSS Inliner
     $mail->Body =
-        '<html lang = "fr">
-        <head>
-            <meta charset="UTF-8">
-        </head>
-        <body>
-            <h1>Réinitialisation de votre mot de passe</h1>
-            <p>Bonjour '.$find_user['prenom'].' '.$find_user['nom'].' ! <br>
-            <br>
-            Nous avons bien reçu votre demande de réinitialisation de mot de passe. Pour procéder à cette réinitialisation, voici le code à entrer sur notre site :
-            <br>
-            <p><b>'.$secretCode.'</p>
-            <br>      
-            Si vous n\'avez pas demandé de réinitialisation de mot de passe, veuillez nous contacter immédiatement.
-            <br><br>
-            Cordialement,
-            <br>
-            L\'équipe de support technique de Twitturtle. 
-        </body>  
-        </html>';
+        '<div style="font-family: Arial, sans-serif; color: #333; background-color: #f5f5f5; padding: 1rem; max-width: 600px; margin: 0 auto;">
+        <div style="background-color: #ffffff; border-radius: 5px; padding: 2rem;">
+            <h1 style="font-size: 1.5rem; margin-bottom: 1rem;">Réinitialisation de votre mot de passe</h1>
+            <p style="font-size: 1rem; line-height: 1.5; margin-bottom: 1rem;">Bonjour aa a,</p>
+            <p style="font-size: 1rem; line-height: 1.5; margin-bottom: 1rem;">Nous avons reçu une demande de réinitialisation de votre mot de passe sur Twitturtle. Pour procéder à cette réinitialisation, veuillez entrer le code suivant sur notre site :</p>
+            <div style="font-size: 1.2rem; font-weight: bold; text-align: center; padding: 1rem; border: 1px solid #333; border-radius: 5px; margin-bottom: 1rem;">' . $secretCode . '</div>
+            <p style="font-size: 1rem; line-height: 1.5; margin-bottom: 1rem;">Si vous n\'êtes pas à l\'origine de cette demande, nous vous prions de bien vouloir contacter notre équipe d\'assistance dès que possible.</p>
+            <p style="font-size: 1rem; line-height: 1.5; margin-bottom: 1rem;">Cordialement,</p>
+            <p style="font-weight: bold;">L\'équipe de support technique de Twitturtle</p>
+        </div>
+    </div>';
 
 // Envoi de l'email
     if(!$mail->send()) {
