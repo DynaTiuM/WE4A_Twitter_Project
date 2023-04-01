@@ -4,7 +4,6 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-require_once("../Classes/UserInterface.php");
 require_once("./functions.php");
 
 function displayContainer($type) {

@@ -32,3 +32,106 @@ function displayNewMessageForm($conn, $db, $messageId = null) {
     require_once("./newMessageForm.php");
     echo '</div></div>';
 }
+
+function displayErrorConnection() { ?>
+    <div id="erreur-connexion" class="window-background">
+        <div class="window-content">
+            <div><h2 class = "window-title">Erreur de connexion</h2></div>
+            <div>
+                <label>Nom d'utilisateur ou mot de passe incorrect</label>
+            </div>
+            <br>
+            <div>
+                <label>Veuillez réessayer</label>
+            </div>
+            <br>
+            <br>
+            <button class = "form-button" onclick="closeWindow('error-connection')">D'accord</button>
+        </div>
+    </div>
+    <?php
+}
+
+function displayConnection() { ?>
+    <div id="connection" class="window-background">
+        <div class="window-content">
+            <span class="close" onclick="closeWindow('connection')">&times;</span>
+            <h2 class = "window-title">Connexion</h2>
+            <?php include("./loginForm.php"); ?>
+        </div>
+    </div>
+    <?php
+}
+
+function displayRegister() { ?>
+    <div id="register" class="window-background">
+        <div class="window-content">
+            <span class="close" onclick="closeWindow('register')">&times;</span>
+            <h2 class = "window-title">Inscription</h2>
+            <?php include("./newLoginForm.php"); ?>
+        </div>
+    </div>
+    <?php
+}
+
+function displayEmailSent($state) { ?>
+    <div id="email-not-sent" class="window-background">
+        <div class="window-content">
+            <div><h2 class = "window-title">Erreur d'envoi de l'E-mail</h2></div>
+            <p style = "font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1vw"><?php echo $state. "<br>Il se peut que l'adresse e-mail ne soit pas enregistrée sur notre site."?></p><br>
+
+            <button class = "form-button" onclick="closeWindow('email-not-sent')">D'accord</button>
+        </div>
+    </div>
+<?php
+}
+
+function displayLostPassword() {?>
+    <div id="lost-password" class="window-background">
+        <div class="window-content">
+            <span class="close" onclick="closeWindow('lost-password')">&times;</span>
+            <h2 class = "window-title">Mot de passe oublié</h2>
+            <?php include("./lostPasswordForm.php"); ?>
+        </div>
+    </div>
+<?php
+}
+
+function displayCode() {?>
+    <div id="code" class="window-background">
+        <div class="window-content">
+            <span class="close" onclick="closeWindow('code')">&times;</span>
+            <h2 class = "window-title">Code de réinitialisation</h2>
+            <?php include("./codeForm.php"); ?>
+        </div>
+    </div>
+
+    <div id="code-too-late" class="window-background">
+        <div class="window-content">
+            <span class="close" onclick="closeWindow('code-too-late')">&times;</span>
+            <h2 class = "window-title">Erreur</h2>
+            <p>Le code que vous avez saisi n'est plus valide.</p>
+        </div>
+    </div>
+
+    <div id="code-wrong" class="window-background">
+        <div class="window-content">
+            <span class="close" onclick="closeWindow('code-wrong')">&times;</span>
+            <h2 class = "window-title">Erreur</h2>
+            <p>Le code que vous avez saisi n'est pas correct.</p>
+        </div>
+    </div>
+    <?php
+}
+
+function passwordModified() {?>
+    <div id="password-modified" class="window-background">
+        <div class="window-content">
+            <h2 class = "window-title" style = "color:black;">Succès</h2>
+            <p style = "color: black">Mot de passe modifié avec succès</p>
+            <br>
+            <button class = "form-button" onclick="window.location = '../PageParts/connect.php'">D'accord</button>
+        </div>
+    </div>
+<?php
+}

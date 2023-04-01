@@ -25,11 +25,11 @@
         <div>
             <label for="organisation">Etes-vous une organisation ? :</label>
             <label>
-                <input type="radio" name="organisation" value="1" required>
+                <input class ="check-radio" type="radio" name="organisation" value="1" required>
                 Oui
             </label>
             <label>
-                <input type="radio" name="organisation" value="0">
+                <input class ="check-radio" type="radio" name="organisation" value="0">
                 Non
             </label>
         </div>
@@ -38,6 +38,6 @@
         <button class = "form-button" type="submit">Créer le compte</button>
     </div>
 
-    <p>*Veuillez fournir une adresse e-mail valide. Cette adresse sera utilisée en cas d'oubli de votre mot de passe, afin de vous permettre de réinitialiser votre compte en toute sécurité.</p>
+    <p class = "window-information">*Veuillez fournir une adresse e-mail valide. Cette adresse sera utilisée en cas d'oubli de votre mot de passe, afin de vous permettre de réinitialiser votre compte en toute sécurité.</p>
 
 </form>

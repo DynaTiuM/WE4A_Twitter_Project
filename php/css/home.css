@@ -9,6 +9,7 @@ body {
     font-family: Arial, sans-serif;
     background-color: #1F7C62;
     color: #fff;
+    margin-left: 0;
 }
 
 .image {
@@ -18,11 +19,14 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('../images/cat.png');
+    background-image: url('../images/dahlia.jpg');
     background-size: 35% 100%;
+    object-fit: cover;
     background-repeat: no-repeat;
     background-position: left bottom;
     clip-path: polygon(35% 100%, -10% 100%, 0% 0%, 12% 0%);
+    animation-name: imageAnimation;
+    animation-duration: 1s;
 }
 
 
@@ -43,13 +47,6 @@ h1, .under_title {
     animation-delay: 0.8s;
 }
 
-.container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-}
 
 header {
     width: 100%;
@@ -70,7 +67,8 @@ header {
     padding: 1vw;
 }
 
-.join-btn {background-color: #F0EAD6;
+.button {
+    background-color: #F0EAD6;
     color: #1F7C62;
     border: none;
     border-radius: 3vw;
@@ -86,7 +84,7 @@ header {
     animation-fill-mode: forwards;
 }
 
-.join-btn:hover {
+.button:hover {
     background-color: #165e4a;
     color: #fff;
 }
@@ -163,6 +161,18 @@ h3 {
     }
 }
 
+@keyframes imageAnimation {
+    from {
+        opacity: 0;
+        clip-path: polygon(12% 100%, 0% 100%, 0% 0%, 12% 0%);
+        transform: translateX(-10%);
+    }
+    to {
+        opacity: 1;
+        clip-path: polygon(35% 100%, 0% 100%, 0% 0%, 12% 0%);
+        transform: translateX(0);
+    }
+}
 
 @keyframes flashcardAnimation {
     0% {

@@ -1,6 +1,5 @@
 <?php
 require_once("../Classes/Profile.php");
-require_once("../Classes/UserInterface.php");
 require_once("../Classes/Image.php");
 require_once("../Classes/Animal.php");
 class UserProfile extends Profile {
@@ -12,10 +11,6 @@ class UserProfile extends Profile {
     }
 
     public function displayProfile() {
-        if (isset($_POST['modification-profile'])) {
-            echo $this->getUser()->updateProfile($_POST['prenom'], $_POST['nom'], $_POST['date'],  $_POST['bio'],  $_POST['password'], $_POST['confirm']);
-        }
-
         $userId = $_SESSION['username'];
         $globalUser = User::getInstanceById($this->conn, $this->db, $userId);
         $loginStatus = $globalUser->isLoggedIn();

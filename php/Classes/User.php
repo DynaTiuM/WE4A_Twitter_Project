@@ -98,12 +98,11 @@ class User extends Entity
 
         if(isset($_POST["username"]) && isset($_POST["password"])){
             $this->username = $this->db->secureString_ForSQL($_POST["username"]);
-            $this->password = $_POST["password"];
+            $password = $_POST["password"];
             $loginAttempted = true;
         }
-        elseif ( isset( $_COOKIE["username"] ) && isset( $_COOKIE["password"] ) ) {
-            $this->username = $_COOKIE["username"];
-            $this->password = $_COOKIE["password"];
+        elseif (isset($_SESSION["username"] )) {
+            $this->username = $_SESSION["username"];
             $loginAttempted = true;
         }
         else {
@@ -116,10 +115,14 @@ class User extends Entity
 
             if ($result->num_rows > 0){
                 $row = $result->fetch_assoc();
+                if(!isset($password)) {
+                    $password = password_hash($row['mot_de_passe'], PASSWORD_DEFAULT);
+                }
                 $hashed_password = $row['mot_de_passe'];
 
-                if (password_verify($this->password, $hashed_password)) {
-                    $this->createLoginCookie($hashed_password);
+                if (password_verify($password, $hashed_password)) {
+                    session_start();
+                    $_SESSION['username'] = $this->username;
                     $loginSuccessful = true;
                 } else {
                     $error = "Ce couple login/mot de passe n'existe pas. Créez un Compte";
@@ -134,15 +137,23 @@ class User extends Entity
     }
     public function isLoggedIn(): bool {
         $loginAttempted = false;
-        if (isset($_COOKIE["username"]) && isset($_COOKIE["password"])) {
-            $this->username = $_COOKIE["username"];
-            $this->password = $_COOKIE["password"];
+        if (isset($_SESSION["username"])) {
+            $this->username = $_SESSION["username"];
             $loginAttempted = true;
         }
         if ($loginAttempted) {
+            $query = "SELECT mot_de_passe FROM utilisateur WHERE username = ?";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bind_param("s", $this->username);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if(!$result) {
+                return false;
+            }
+            $password = $result->fetch_assoc()['mot_de_passe'];
             $query = "SELECT * FROM `utilisateur` WHERE username = ? AND mot_de_passe = ?";
             $stmt = $this->conn->prepare($query);
-            $stmt->bind_param("ss", $this->username, $this->password);
+            $stmt->bind_param("ss", $this->username, $password);
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result->num_rows > 0) {
@@ -158,10 +169,6 @@ class User extends Entity
         return $this->username;
     }
 
-    public function createLoginCookie($encryptedPasswd) {
-        setcookie("username", $this->username, time() + 24*3600 );
-        setcookie("password", $encryptedPasswd, time() + 24*3600);
-    }
     public function getUserInformation() {
         $query = "SELECT * FROM utilisateur WHERE username = ?";
         $stmt = $this->conn->prepare($query);
@@ -225,17 +232,26 @@ class User extends Entity
     }
 
     public function changePassword($conn, $new_password) {
-        $this->password = password_hash($new_password, PASSWORD_DEFAULT);
+        $password = password_hash($new_password, PASSWORD_DEFAULT);
         $stmt = $conn->prepare("UPDATE utilisateur SET mot_de_passe = ? WHERE username = ?");
-        $stmt->bind_param("ss", $this->password, $this->username);
+        $stmt->bind_param("ss", $password, $this->username);
         $stmt->execute();
     }
 
-    public function updateProfile($firstName, $lastName, $dateOfBirth, $bio, $newPassword, $confirmationNewPassword) {
+    public function updateProfile($avatar, $firstName, $lastName, $dateOfBirth, $bio, $newPassword, $confirmationNewPassword) {
         $query = "UPDATE utilisateur SET prenom = ?, nom = ?, date_de_naissance = ?, bio = ?";
 
         $params = array($firstName, $lastName, $dateOfBirth, $bio);
         $types = "ssss";
+
+        if(!empty($avatar)) {
+            require_once ("../Classes/Image.php");
+            $avatar = new Image($avatar);
+            $avatar->formatImage();
+            $query .= ", avatar = ?";
+            $params[] = $avatar->getFormatedImage();
+            $types .= "s";
+        }
 
         if (!empty($newPassword)) {
             if(!$this->comparePasswords($newPassword, $confirmationNewPassword)) {

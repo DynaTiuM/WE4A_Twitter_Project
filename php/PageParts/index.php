@@ -27,8 +27,8 @@
             flashcards.forEach((flashcard, index) => {
                 setTimeout(() => {
                     flashcard.classList.remove('hidden');
-                    flashcard.style.transition = "opacity 1s, transform 1s";
-                }, 1400 + index * 350);
+                    flashcard.style.transition = "opacity 0.6s, transform 0.6s";
+                }, 1400 + index * 200);
             });
         }
 
@@ -52,11 +52,11 @@
             titleElement.innerHTML = wrappedText;
             const headerText = document.querySelector('.why-join h2');
             const letters = headerText.querySelectorAll('span');
-            const duration = 30; // Durée en ms entre chaque lettre
-            const delay = 2000;
+            const duration = 15; // Durée en ms entre chaque lettre
+            const delay = 1650;
 
             letters.forEach((letter, index) => {
-                letter.style.animation = `titleAnimation 0.2s ${delay + duration * index}ms forwards`;
+                letter.style.animation = `titleAnimation 0.16s ${delay + duration * index}ms forwards`;
                 letter.style.display = 'inline-block';
                 letter.style.opacity = '0';
             });
@@ -82,8 +82,8 @@
             <p class = "under_title">Rejoignez notre communauté d'amoureux des animaux !</p>
         </div>
 
-        <form action = "./subscriptions.php">
-            <button class="join-btn" type = "submit">Rejoindre</button>
+        <form action = "./connect.php">
+            <button class="button" type = "submit">Rejoindre</button>
         </form>
     </section>
 
@@ -93,15 +93,15 @@
         </div>
         <div class="flashcards">
             <div class="flashcard flashcard hidden" style="--delay: 0" onmouseover="scaleUp(this)" onmouseout="scaleDown(this)">
-                <h3>Échanges et conseils</h3>
+                <h3 style = " color : #9381FF">Échanges et conseils</h3>
                 <p>Partagez vos expériences avec d'autres amoureux des animaux, demandez conseils sur la santé et l'éducation de vos compagnons.</p>
             </div>
             <div class="flashcard flashcard hidden" style="--delay: 1" onmouseover="scaleUp(this)" onmouseout="scaleDown(this)">
-                <h3>Adoption responsable</h3>
+                <h3 style = "color : #FF5733">Adoption responsable</h3>
                 <p>Découvrez des animaux à adopter et soutenez les organisations de protection des animaux en offrant un foyer aimant.</p>
             </div>
             <div class="flashcard flashcard hidden" style="--delay: 2" onmouseover="scaleUp(this)" onmouseout="scaleDown(this)">
-                <h3>Réseau animalier</h3>
+                <h3 style = "color : #F9CB40 ">Réseau animalier</h3>
                 <p>Connectez-vous avec d'autres passionnés, échangez idées et expériences pour enrichir votre vie et celle de vos animaux.</p>
             </div>
 

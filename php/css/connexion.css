@@ -1,0 +1,32 @@
+
+.lostPassword {
+    background: none;
+    border: none;
+    margin-top: 1vw;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1vw;
+}
+
+.lostPassword:hover {
+    color: #888888;
+}
+
+.connexion-button, .inscription-button {
+    margin: 1vw;
+    font-size: 1.4vw;
+    width: 40%;
+}
+
+.connexion-button:hover {
+    background-color: #e7e7e7;
+}
+
+.inscription-button {
+    color: white;
+    background-color: #1F7C62;
+    border:none;
+}
+
+.inscription-button:hover {
+    background-color: #348f75;
+}

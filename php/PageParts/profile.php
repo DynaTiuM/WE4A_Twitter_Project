@@ -27,6 +27,17 @@ $username = $_GET['username'];
 require_once ("../Classes/Profile.php");
 $type = Profile::determineProfileType($conn, $username);
 
+global $profile;
+if ($type == 'utilisateur') {
+    $profile = new UserProfile($conn, $username, $globalDb);
+}
+elseif($type == 'animal') {
+    $profile = new AnimalProfile($conn, $username, $globalDb);
+}
+else {
+    echo 'Utilisateur non trouvé';
+}
+
 if(isset($_POST['follow'])) {
     $followId = $globalUser->follow_unfollow($username, $type);
     if ($followId) {
@@ -52,7 +63,21 @@ if(isset($_POST['reply_to'])) {
     popUpNewMessage();
     displayNewMessageForm($conn, $globalDb, $_POST['reply_to']);
 }
+if (isset($_POST['modification-profile'])) {
+    $result = $profile->getUser()->updateProfile($_FILES['avatar'], $_POST['prenom'], $_POST['nom'], $_POST['date'],  $_POST['bio'],  $_POST['password'], $_POST['confirm']);
+    displayConfirmationModificationProfile($result);
+}
 
+function displayConfirmationModificationProfile($result) {
+    ?>
+    <div id="display-confirmation-profile" class="window-background" style = "display: block; z-index: 300; position:fixed">
+        <div class="window-content">
+            <span class="close" onclick="closeWindow('display-confirmation-profile')">&times;</span>
+            <?php echo '<h1>'. $result . '</h1>'?>
+        </div>
+    </div>
+<?php
+}
 ?>
 
 <html lang = "fr">
@@ -79,17 +104,6 @@ if(isset($_POST['reply_to'])) {
     <div class = "Container">
 
         <?php include("./navigation.php");
-
-        global $profile;
-        if ($type == 'utilisateur') {
-            $profile = new UserProfile($conn, $username, $globalDb);
-        }
-        elseif($type == 'animal') {
-            $profile = new AnimalProfile($conn, $username, $globalDb);
-        }
-        else {
-            echo 'Utilisateur non trouvé';
-        }
 
         $profile->setNumberOfMessages(Message::countAllMessages($conn, $username, $type));
 

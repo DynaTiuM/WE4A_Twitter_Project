@@ -1,6 +1,5 @@
 <?php
 
-require_once("../Classes/UserInterface.php");
 require_once("../Classes/Image.php");
 require_once("../Classes/Animal.php");
 require_once("../Classes/Profile.php");

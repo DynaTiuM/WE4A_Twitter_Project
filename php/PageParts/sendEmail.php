@@ -1,13 +1,20 @@
 <?php
 
-function sendEmail($username) {
+function sendEmail($username, $secretCode) {
+    global $globalDb;
 
-    $find_user = getUserInformation($username);
+    $globalDb = Database::getInstance();
+    $conn = $globalDb->getConnection();
+    $globalUser = User::getInstanceById($conn, $globalDb, $username);
+    if(!$globalUser) return false;
+    $newLoginStatus = $globalUser->checkLogin();
+
+    $find_user = $globalUser->getUserInformation();
     if($find_user == null) return null;
     $email_dest = $find_user['email'];
-    require_once './phpmailer/PHPMailer.php';
-    require_once './phpmailer/SMTP.php';
-    require_once './phpmailer/Exception.php';
+    require_once '../phpmailer/PHPMailer.php';
+    require_once '../phpmailer/SMTP.php';
+    require_once '../phpmailer/Exception.php';
 
 // Création d'une instance de PHPMailer
     $mail = new PHPMailer\PHPMailer\PHPMailer();
@@ -39,11 +46,11 @@ function sendEmail($username) {
             <h1>Réinitialisation de votre mot de passe</h1>
             <p>Bonjour '.$find_user['prenom'].' '.$find_user['nom'].' ! <br>
             <br>
-            Nous avons bien reçu votre demande de réinitialisation de mot de passe. Pour procéder à cette réinitialisation, veuillez cliquer sur le lien ci-dessous :
+            Nous avons bien reçu votre demande de réinitialisation de mot de passe. Pour procéder à cette réinitialisation, voici le code à entrer sur notre site :
             <br>
-            <a href = "http://localhost/Project/WE4A_Twitter_Project/php/PageParts/newPassword.php?username='.$find_user['username'].'">Réinitialiser le mot de passe</a></p>
+            <p><b>'.$secretCode.'</p>
             <br>      
-            Si vous n\'avez pas demandé de réinitialisation de mot de passe, veuillez ne pas cliquer sur le lien et nous contacter immédiatement.
+            Si vous n\'avez pas demandé de réinitialisation de mot de passe, veuillez nous contacter immédiatement.
             <br><br>
             Cordialement,
             <br>
@@ -53,7 +60,7 @@ function sendEmail($username) {
 
 // Envoi de l'email
     if(!$mail->send()) {
-        return 'Erreur lors de l\'envoi de l\'email : ' . $mail->ErrorInfo;
+        return false;
     } else {
         return 'Veuillez consulter votre messagerie électronique, y compris le dossier des courriers indésirables, afin de vérifier si vous avez bien reçu notre message.';
     }

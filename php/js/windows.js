@@ -3,7 +3,7 @@ function openWindow(window, type = 'inline-block') {
     const windowElement = document.getElementById(window);
     if (windowElement) {
         if(window === 'lost-password'){
-            document.getElementById("connexion").style.display = "none";
+            document.getElementById("connection").style.display = "none";
         }
         if(window === 'display-pet') document.getElementById("display-type").style.display = "none";
         else if(document.getElementById("display-pet")) document.getElementById("display-pet").style.display = "none";
@@ -13,6 +13,12 @@ function openWindow(window, type = 'inline-block') {
         console.error(`Element with ID ${window} not found`);
     }
 }
+
+function openCodeWindow(window) {
+    document.getElementById(window).style.display = "block";
+}
+
+
 // fonction pour fermer la fenêtre
 function closeWindow(window) {
     document.getElementById(window).style.display = "none";

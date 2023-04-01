@@ -66,16 +66,29 @@
     background-color: rgba(106,182,158,0.75);
 }
 
+.classical:hover {
+    background-color: rgba(106,182,158,1);
+}
+
 .event {
     background-color: rgba(194,126,101,0.75);
+}
+.event:hover {
+    background-color: rgba(194,126,101,1);
 }
 
 .rescue {
     background-color: rgba(201,165,110,0.75);
 }
+.rescue:hover {
+    background-color: rgba(201,165,110,1);
+}
 
 .advice {
     background-color: rgba(101,167,208,0.75);
+}
+.advice:hover {
+    background-color: rgba(101,167,208,1);
 }
 
 .classical, .rescue, .advice, .event {
@@ -88,6 +101,20 @@
     font-size: 1vw;
 }
 
+.message:hover {
+    animation-name: messageHoverAnimation;
+    animation-duration: 0.7s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes messageHoverAnimation  {
+    0% {
+        background-color: rgba(31, 124, 98, 0.02);
+    }
+    100% {
+        background-color: rgba(31, 124, 98, 0.09);
+    }
+}
 
 .pet-image {
     width: 5vw;
@@ -100,24 +127,6 @@
 .pet-name {
     font-size: 1vw;
     font-family: "Plus Jakarta Sans", sans-serif;
-}
-
-.checkbox, .check-radio {
-    width: 1vw;
-    height: 1vw;
-    margin-top: 0;
-    border-radius: 50%;
-    -webkit-appearance: none;
-    background-color: white;
-    border: 0.1vw solid #999;
-}
-
-.checkbox:checked {
-    background-color: #1F7C62;
-}
-
-.check-radio:checked{
-    background-color: #3a3a3a;
 }
 
 .image-container {

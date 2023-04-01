@@ -12,8 +12,8 @@ $globalUser = User::getInstance($conn, $globalDb);
 
 $loginStatus = $globalUser->isLoggedIn();
 
-if(isset($_POST["destroyCookies"])) {
-    $globalUser->destroyLoginCookie();
+if(isset($_POST["destroySession"])) {
+    session_destroy();
     header("Location: ./connect.php");
 }
 if($loginStatus) {
@@ -56,7 +56,7 @@ if($loginStatus) {
                 ?>
                 <li class = "menu-item"><a href="messages.php"><img src="../images/message.png">Messages</a></li>
 
-                <li class = "menu-item"><a href = "profile.php?username=<?php echo urlencode($_COOKIE['username']); ?>"><img src="../images/profile.png">Profil</a></li>
+                <li class = "menu-item"><a href = "profile.php?username=<?php echo urlencode($_SESSION['username']); ?>"><img src="../images/profile.png">Profil</a></li>
                 <?php
             } else {
                 ?>
@@ -73,7 +73,7 @@ if($loginStatus) {
                 </div>
 
             <form action = "" method = "post" class = "center">
-                <button type = "submit" name ="destroyCookies" class = "deconnexion">Déconnexion</button>
+                <button type = "submit" name ="destroySession" class = "deconnexion">Déconnexion</button>
             </form>
             <?php
         }

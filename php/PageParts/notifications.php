@@ -66,8 +66,6 @@ $globalUser = User::getInstance($conn, $globalDb);
 
     <?php
     include("./trends.php");
-
-    include("./popupNewMessageForm.php");
     ?>
 </div>
 
