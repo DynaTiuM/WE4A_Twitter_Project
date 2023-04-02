@@ -15,6 +15,13 @@ function displayContainer($type) {
 
     if(isset($_POST['like']) && $loginStatus) $globalUser->likeMessage($_POST['like']);
 
+    if(isset($_POST['notification-id'])) {
+        require_once ('../Classes/Notification.php');
+        $notification = Notification::getNotificationLikeByMessageId($conn, $_POST['notification-id']);
+        $notificationId = $notification['id'];
+        Notification::setRead($conn, $notificationId);
+    }
+
     if(isset($_POST["submit"])) {
         include("./sendingMessage.php");
         Message::sendMessage($conn, $globalDb, $_POST["submit"]);

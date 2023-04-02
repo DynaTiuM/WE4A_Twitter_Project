@@ -3,7 +3,6 @@
 class Notification
 {
     private $conn;
-    private $read;
     private $db;
 
     function __construct($conn, $db) {
@@ -31,6 +30,36 @@ class Notification
     }
 
     private function displayLikeNotification($notificationData) {
+        $userId = $notificationData['username'];
+        $idMessage = $notificationData['id'];
+
+        $followerUser = User::getInstanceById($this->conn, $this->db, $userId);
+        $avatar = $followerUser->getAvatarEncoded64();
+        ?>
+        <form method="post" class="likeRedirectionForm" data-id="<?php echo $idMessage; ?>">
+            <input type="hidden" name="notification-id" value="<?php echo $idMessage; ?>">
+            <input type="submit" class="invisibleFile">
+            <div style="display: flex;" onclick="submitLikeRedirection(event);">
+                <label>
+                    <img class="image-modification" style="width: 4vw; height: 4vw; margin: 1vw;" src="data:image/jpeg;base64,<?php echo $avatar; ?>" alt="Image de profil">
+                </label>
+                <p style="margin-top: 2vw; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.2vw"> <?php echo $userId ?> a aimé l'un de vos messages</p>
+
+            </div>
+        </form>
+        <script>
+            function submitLikeRedirection(event) {
+                const likeRedirectionForm = event.target.closest('.likeRedirectionForm');
+                const id_message = likeRedirectionForm.dataset.id;
+
+                const queryString = `?answer=${id_message}`;
+
+                likeRedirectionForm.action = '../PageParts/explorer.php' + queryString;
+                likeRedirectionForm.submit();
+            }
+        </script>
+
+        <?php
     }
 
     private function displayMessageNotification($notificationData) {
@@ -150,14 +179,32 @@ class Notification
         // Check for adoption notification
 
         // Check for like notification
+        $queryLike = "SELECT 'like' AS notif_type, notification.*, utilisateur_likeur.*, utilisateur_liké.*, message.*
+                FROM notification_like
+                INNER JOIN like_message ON notification_like.message_id = like_message.message_id
+                INNER JOIN utilisateur AS utilisateur_likeur ON like_message.utilisateur_username = utilisateur_likeur.username
+                INNER JOIN message ON like_message.message_id = message.id
+                INNER JOIN utilisateur AS utilisateur_liké ON message.auteur_username = utilisateur_liké.username
+                INNER JOIN notification ON notification_like.notification_id = notification.id
+                WHERE notification_like.notification_id  = ?
+                GROUP BY like_message.id;";
+        $stmtFollow = $this->conn->prepare($queryLike);
+        $stmtFollow->bind_param("i", $notifId);
+        $stmtFollow->execute();
+        $resultFollow = $stmtFollow->get_result();
+
+        if ($resultFollow->num_rows > 0) {
+            return $resultFollow;
+        }
 
         // Check for follow notification
-        $queryFollow = "SELECT 'follow' AS notif_type, notification.vue, notification.id, utilisateur_suiveur.*, utilisateur_suivi.*,
+        $queryFollow = "SELECT 'follow' AS notif_type, notification.*, utilisateur_suiveur.*, utilisateur_suivi.*,
                 GROUP_CONCAT(animal.nom SEPARATOR ', ') AS animal_names
                 FROM notification_suivre
                 INNER JOIN utilisateur AS utilisateur_suiveur ON notification_suivre.suiveur_username = utilisateur_suiveur.username
                 INNER JOIN suivre ON notification_suivre.suivre_id = suivre.id
                 INNER JOIN utilisateur AS utilisateur_suivi ON suivre.utilisateur_username = utilisateur_suivi.username
+                    /* Ici nous ajoutons une jointure LEFT JOIN  si jamais il n'y a pas de correspondance sur la table animal */
                 LEFT JOIN animal ON suivre.suivi_id_animal = animal.id
                 INNER JOIN notification ON notification_suivre.notification_id = notification.id
                 WHERE notification_suivre.notification_id = ?
@@ -203,7 +250,21 @@ class Notification
         $assocStmt->execute();
     }
 
-    public static function getNotificationByMessageId($conn, $messageId) {
+    public function createNotificationForLike($username, $message_id) {
+        $insertQuery = "INSERT INTO notification (utilisateur_username, date, vue) VALUES (?, NOW(), FALSE);";
+        $insertStmt = $this->conn->prepare($insertQuery);
+        $insertStmt->bind_param("s", $username);
+        $insertStmt->execute();
+
+        $notifId = $this->conn->insert_id;
+
+        $assocQuery = "INSERT INTO notification_like (notification_id, likeur_username, message_id) VALUES (?, ?, ?);";
+        $assocStmt = $this->conn->prepare($assocQuery);
+        $assocStmt->bind_param("isi", $notifId, $username, $message_id);
+        $assocStmt->execute();
+    }
+
+    public static function getNotificationMessageByMessageId($conn, $messageId) {
 
         $stmt = $conn->prepare("SELECT n.id FROM notification n INNER JOIN notification_message nm ON n.id = nm.notification_id WHERE nm.message_id = ?");
         $stmt->bind_param("i", $messageId);
@@ -216,6 +277,31 @@ class Notification
         } else {
             return null;
         }
+    }
+
+    public static function getNotificationLikeByMessageId($conn, $messageId) {
+        $stmt = $conn->prepare("SELECT n.id FROM notification n INNER JOIN notification_like nl ON n.id = nl.notification_id WHERE nl.message_id = ?");
+        $stmt->bind_param("i", $messageId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result && $result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            return $row;
+        } else {
+            return null;
+        }
+    }
+
+    public function isAlreadySent($username, $messageId) {
+        $stmt = $this->conn->prepare("SELECT id FROM notification INNER JOIN notification_like
+                                        ON notification.id = notification_like.notification_id
+                                        WHERE notification_like.message_id = ? AND notification_like.likeur_username = ?");
+        $stmt->bind_param("is", $messageId, $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        return ($result && $result->num_rows > 0);
     }
 
 

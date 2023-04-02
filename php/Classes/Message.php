@@ -184,7 +184,7 @@ class Message
 
         if(isset($_GET['answer']) && ($user->isFollowing($this->authorUsername))) {
             require_once ('../Classes/Notification.php');
-            $notification = Notification::getNotificationByMessageId($this->conn, $_GET['answer']);
+            $notification = Notification::getNotificationMessageByMessageId($this->conn, $_GET['answer']);
             $notificationId = $notification['id'];
             Notification::setRead($this->conn, $notificationId);
         }

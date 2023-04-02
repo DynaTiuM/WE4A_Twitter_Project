@@ -43,6 +43,7 @@ $globalUser = User::getInstance($conn, $globalDb);
                 $notificationList = $notification->getNotifications($globalUser->getUsername());
 
                 if($notificationList) {
+
                     foreach($notificationList as $notifEntry) {
                         $row = $notifEntry[0]; // Les données de la notification
                         $read = $notifEntry[1]; // L'état de lecture (0 non lu, 1 lu)

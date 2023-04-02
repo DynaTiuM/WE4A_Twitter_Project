@@ -225,6 +225,11 @@ class User extends Entity
             $stmt->bind_param("sss", $id_message, $this->username, $date);
             $stmt->execute();
             $stmt->close();
+
+            require_once ("../Classes/Notification.php");
+            $notification = new Notification($this->conn, $this->db);
+            if(!$notification->isAlreadySent($this->username, $id_message))
+                $notification->createNotificationForLike($this->username, $id_message);
         } else {
             $stmt = $this->conn->prepare("DELETE FROM like_message WHERE message_id = ? AND utilisateur_username = ?");
             $stmt->bind_param("ss", $id_message, $this->username);
