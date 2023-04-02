@@ -13,7 +13,6 @@ function displayContainer($type) {
     $globalMessage = new Message($conn, $globalDb);
     $loginStatus = $globalUser->isLoggedIn();
 
-
     if(isset($_POST['like']) && $loginStatus) $globalUser->likeMessage($_POST['like']);
 
     if(isset($_POST["submit"])) {

@@ -44,14 +44,15 @@ if(isset($_SESSION['start_time_code'])) {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Réinitialisation du mot de passe | Twitturtle</title>
-        <link rel="stylesheet" href="../css/home.css">
         <link rel="stylesheet" href="../css/stylesheet.css">
+        <link rel="stylesheet" href="../css/home.css">
+        <link rel="stylesheet" href="../css/changePassword.css">
         <script src = "../js/windows.js"></script>
     </head>
     <body>
     <div class="container">
         <header>
-            <img src="../images/logo_white.png" alt="Logo Twitturtle" class="logo">
+            <img src="../images/logo.png" alt="Logo Twitturtle" class="logo">
         </header>
 
         <?php
@@ -80,9 +81,9 @@ if(isset($_SESSION['start_time_code'])) {
                 <div class="reset-password-form flashcard-style">
                     <form action="" method="post">
                         <label for="new_password">Nouveau mot de passe :</label>
-                        <input type="password" id="new_password" name="new_password" required>
+                        <input class ="new-password-form" type="password" id="new_password" name="new_password" required>
                         <label for="confirm_password">Confirmer le mot de passe :</label>
-                        <input type="password" id="confirm_password" name="confirm_password" required>
+                        <input class ="new-password-form" type="password" id="confirm_password" name="confirm_password" required>
                         <button class="button" name="submitChangePassword" type="submit">Réinitialiser le mot de passe</button>
                     </form>
                 </div>
@@ -116,108 +117,3 @@ else {
 
 
 ?>
-
-<style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #1F7C62;
-        color: #fff;
-    }
-
-    form {
-        background-color: white;
-    }
-
-    header {
-        width: 100%;
-        padding: 20px;
-        text-align: center;
-    }
-
-    .error-password {
-        margin-bottom: -1.5vw;
-        margin-top: 1vw;
-        color: #b95757;
-        background-color: white;
-        border-radius: 2vw;
-        opacity: 0;
-        animation-name: logoAnimation;
-        animation-delay: 1.3s;
-        animation-duration: 1s;
-        animation-fill-mode: forwards;
-    }
-
-    .reset-password {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        padding: 1vw;
-        width: 100%;
-    }
-
-    h1 {
-        font-family: "Plus Jakarta Sans", sans-serif;
-        font-size: 4.15vw;
-        animation-name: titleAnimation;
-        animation-duration: 0.7s;
-        animation-fill-mode: both;
-    }
-
-    .under_title {
-        animation-delay: 0.5s;
-    }
-
-    .reset-password-form {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-        padding: 2rem;
-    }
-
-    .reset-password-form label,
-    .reset-password-form input {
-        width: 30%;
-        margin-bottom: 1rem;
-        font-size: 1.5vw;
-    }
-    .reset-password-form.flashcard-style {
-        background-color: #fff;
-        margin-top: 3vw;
-        color: #1F7C62;
-        border-radius: 1vw;
-        padding: 20px;
-        width: 80%;
-        max-width: 500px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        opacity: 0;
-        animation-name: flashcardAnimation;
-        animation-duration: 1s;
-        animation-delay: 1s;
-        animation-fill-mode: forwards;
-    }
-
-    .reset-password-form input {
-        width: 100%;
-        margin-top: 1vw;
-        font-size: 1.5vw;
-        margin-bottom: 2vw;
-    }
-
-    .button {
-        margin-top: 0;
-        opacity: 1;
-        animation: none;
-        font-size: 1.7vw;
-        color: white;
-        background-color: #1F7C62;
-    }
-
-</style>

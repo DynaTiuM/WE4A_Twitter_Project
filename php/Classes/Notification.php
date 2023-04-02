@@ -2,8 +2,8 @@
 
 class Notification
 {
-    private $id;
     private $conn;
+    private $read;
     private $db;
 
     function __construct($conn, $db) {
@@ -15,30 +15,34 @@ class Notification
         $notificationType = $table["notif_type"];
         switch ($notificationType) {
             case 'follow':
-                return $this->displayNewFollowerNotification($table);
+                $this->displayNewFollowerNotification($table);
+                break;
             case 'like':
-                return $this->displayLikeNotification($table);
+                $this->displayLikeNotification($table);
+                break;
             case 'message':
-                return $this->displayMessageNotification($table);
+                $this->displayMessageNotification($table);
+                break;
             case 'adoption':
-                return $this->displayAdoptionNotification($table);
-            default:
-                return '';
+                $this->displayAdoptionNotification($table);
+                break;
         }
+        return null;
     }
-
-
 
     private function displayLikeNotification($notificationData) {
     }
 
     private function displayMessageNotification($notificationData) {
-        require_once ("../Classes/Message.php");
+        require_once("../Classes/Message.php");
         $messageId = $notificationData['id'];
         $message = new Message($this->conn, $this->db);
+
         $message->loadMessageById($messageId);
         $message->displayContent();
+
     }
+
     private function displayNewFollowerNotification($notificationData) {
         $userId = $notificationData['username'];
 
@@ -46,7 +50,7 @@ class Notification
         $avatar = $followerUser->getAvatarEncoded64();
         ?>
         <form method="post" id="profileRedirectionForm">
-            <input type="hidden" name="notification_id" value="<?php echo $notificationData['id']; ?>">
+            <input type="hidden" name="notification-id" value="<?php echo $notificationData['id']; ?>">
             <input type="submit" class="invisibleFile">
             <div style="display: flex;" id="profileRedirection" data-username="<?php echo $userId; ?>" onclick="submitProfileRedirectionForm();">
                 <label>
@@ -69,14 +73,10 @@ class Notification
                 profileRedirectionForm.submit();
             }
         </script>
-
-
-
-
         <?php
     }
 
-    public static function setVued($conn, $notificationId) {
+    public static function setRead($conn, $notificationId) {
         // Mettre à jour la notification
         $query = "UPDATE notification SET vue = 1 WHERE id = ?";
         $stmt = $conn->prepare($query);
@@ -89,15 +89,19 @@ class Notification
 
     function numNotifications($username) {
         global $conn;
-        $query = "SELECT COUNT(*) FROM notification WHERE utilisateur_username = ? AND vue = ?";
+        $query = "SELECT COUNT(*) AS count FROM notification WHERE utilisateur_username = ? AND vue = ?";
         $stmt = $conn->prepare($query);
         $read = 0;
         $stmt->bind_param("si", $username, $read);
         $stmt->execute();
         $result = $stmt->get_result();
 
-        return $result->fetch_Column();
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            return $row['count'];
+        }
 
+        return 0;
     }
 
     public function getNotifications($username) {
@@ -111,9 +115,10 @@ class Notification
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
                 $notifId = $row['id'];
+                $read = $row['vue'];
                 $singleNotifData = $this->getNotificationData($notifId);
                 if ($singleNotifData && $singleNotifData->num_rows > 0) {
-                    $notifData[] = $singleNotifData->fetch_assoc();
+                    $notifData[] = [$singleNotifData->fetch_assoc(), $read];
                 }
             }
         }
@@ -169,7 +174,6 @@ class Notification
         return null;
     }
 
-
     public function createNotificationsForFollowers($author_username, $message_id) {
         $followersQuery = "SELECT utilisateur_username FROM suivre WHERE suivi_id_utilisateur = ?;";
         $followersStmt = $this->conn->prepare($followersQuery);
@@ -197,6 +201,21 @@ class Notification
         $assocStmt = $this->conn->prepare($assocQuery);
         $assocStmt->bind_param("iis", $notifId, $message_id, $username);
         $assocStmt->execute();
+    }
+
+    public static function getNotificationByMessageId($conn, $messageId) {
+
+        $stmt = $conn->prepare("SELECT n.id FROM notification n INNER JOIN notification_message nm ON n.id = nm.notification_id WHERE nm.message_id = ?");
+        $stmt->bind_param("i", $messageId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result && $result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            return $row;
+        } else {
+            return null;
+        }
     }
 
 

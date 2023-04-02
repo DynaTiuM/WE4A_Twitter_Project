@@ -47,11 +47,11 @@ if(isset($_POST['follow'])) {
     }
 }
 
-if (isset($_POST['notification_id'])) {
-    $notificationId = $_POST['notification_id'];
+if (isset($_POST['notification-id'])) {
+    $notificationId = $_POST['notification-id'];
 
     require_once ("../Classes/Notification.php");
-    Notification::setVued($conn, $notificationId);
+    Notification::setRead($conn, $notificationId);
 }
 
 if (isset($_SESSION['username'])) {

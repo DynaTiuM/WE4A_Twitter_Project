@@ -72,7 +72,7 @@
 <span class = "image"></span>
 <div class="container">
     <header>
-        <img src="../images/logo_white.png" alt="Logo Twitturtle" class="logo">
+        <img src="../images/logo.png" alt="Logo Twitturtle" class="logo">
     </header>
     <section class="hero">
         <div class="title-container">

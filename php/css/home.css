@@ -7,8 +7,8 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #1F7C62;
-    color: #fff;
+    background-color: white;
+    color: #1F7C62;
     margin-left: 0;
 }
 
@@ -42,7 +42,7 @@ h1, .under_title {
 }
 
 .under_title {
-    color: #d3eae0;
+    color: #64a88a;
     font-size: 1.9vw;
     animation-delay: 0.8s;
 }
@@ -50,14 +50,16 @@ h1, .under_title {
 
 header {
     width: 100%;
-    padding: 20px;
+    padding-top : 1vw;
     text-align: center;
 }
 
 .logo {
-    max-width: 5vw;
+    max-width: 5.5vw;
     animation: logoAnimation 1s ease-in-out;
 }
+
+
 
 .hero {
     display: flex;
@@ -68,8 +70,8 @@ header {
 }
 
 .button {
-    background-color: #F0EAD6;
-    color: #1F7C62;
+    background-color: #1F7C62;
+    color: white;
     border: none;
     border-radius: 3vw;
     padding: 0.6vw 3vw;
@@ -85,8 +87,8 @@ header {
 }
 
 .button:hover {
-    background-color: #165e4a;
-    color: #fff;
+    background-color: #F0EAD6;
+    color: #165e4a;
 }
 
 .why-join {
@@ -108,7 +110,7 @@ h3 {
 }
 
 .flashcard {
-    background-color: #fff;
+    background-color: #f5f0e2;
     color: #1F7C62;
     border-radius: 5px;
     padding: 20px;

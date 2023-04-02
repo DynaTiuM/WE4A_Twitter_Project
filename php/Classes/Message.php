@@ -183,10 +183,12 @@ class Message
         $loginStatus = $user->isLoggedIn();
 
         if(isset($_GET['answer']) && ($user->isFollowing($this->authorUsername))) {
-            //$this->markNotificationAsRead();
+            require_once ('../Classes/Notification.php');
+            $notification = Notification::getNotificationByMessageId($this->conn, $_GET['answer']);
+            $notificationId = $notification['id'];
+            Notification::setRead($this->conn, $notificationId);
         }
 
-        // Ici commence la partie HTML
         ?>
         <div class="message">
         <a href="profile.php?username=<?php echo $this->authorUsername; ?>">

@@ -43,9 +43,11 @@ $globalUser = User::getInstance($conn, $globalDb);
                 $notificationList = $notification->getNotifications($globalUser->getUsername());
 
                 if($notificationList) {
-                    foreach($notificationList as $row) {
+                    foreach($notificationList as $notifEntry) {
+                        $row = $notifEntry[0]; // Les données de la notification
+                        $read = $notifEntry[1]; // L'état de lecture (0 non lu, 1 lu)
                         ?>
-                        <div <?php if($row['vue'] == 0) { ?> style = "background-color: #d3eae0" <?php } ?>>
+                        <div <?php if(!$read) { ?> style = "background-color: #d3eae0" <?php } ?>>
                             <?php
                             echo $notification->displayNotification($row);
                             ?>

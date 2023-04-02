@@ -86,7 +86,9 @@ class User extends Entity
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
-            return true;
+            $row = $result->fetch_assoc();
+            if($row['count'] > 0)
+                return true;
         }
 
         return false;
