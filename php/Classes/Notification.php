@@ -91,6 +91,21 @@ class Notification
 <?php
     }
 
+    private function displayAdoptionNotification($notificationData) {
+        require_once("../Classes/Message.php");
+        $userId = $notificationData['username'];
+        ?>
+        <form action = "../PageParts/adoption" method = "post">
+            <input type = "hidden" name = "adoption">
+            <input type="submit" class="invisibleFile">
+            <div style="display: flex; margin-left: 1vw" id="adoptionRedirection" data-username="<?php echo $userId; ?>">
+                <p style="margin-top: 2vw; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.2vw"> <?php echo $userId ?> souhaite adopter l'animal suivant : <?php echo $notificationData['id'];?></p>
+            </div>
+        </form>
+
+        <?php
+    }
+
     private function displayNewFollowerNotification($notificationData) {
         $userId = $notificationData['username'];
 
@@ -144,9 +159,6 @@ class Notification
         $stmt = $conn->prepare($query);
         $stmt->bind_param("i", $notificationId);
         $stmt->execute();
-    }
-
-    private function displayAdoptionNotification($notificationData) {
     }
 
     function numNotifications($username) {
@@ -210,7 +222,19 @@ class Notification
         }
 
         // Check for adoption notification
+        $queryAdoption = "SELECT 'adoption' AS notif_type, notification.*, utilisateur_adopteur.*, animal.*
+                        FROM notification_adoption INNER JOIN notification ON notification_adoption.notification_id = notification.id
+                        INNER JOIN utilisateur AS utilisateur_adopteur ON notification_adoption.adoptant_username = utilisateur_adopteur.username
+                        INNER JOIN animal ON notification_adoption.animal_id = animal.id
+                        WHERE notification_adoption.notification_id = ? ;";
+        $stmtFollow = $this->conn->prepare($queryAdoption);
+        $stmtFollow->bind_param("i", $notifId);
+        $stmtFollow->execute();
+        $resultFollow = $stmtFollow->get_result();
 
+        if ($resultFollow->num_rows > 0) {
+            return $resultFollow;
+        }
         // Check for answer notification
         $queryAnswer = "SELECT 'answer' AS notif_type, notification.*, utilisateur_repondeur.*, message.*
                     FROM notification_reponse
@@ -377,6 +401,52 @@ class Notification
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param("isis", $notificationId, $followerUsername, $followId, $date);
         $stmt->execute();
+    }
+
+    public function createNotificationAdoption($adopter_username, $animal_id) {
+        // Vérifier si l'animal existe
+        $stmt = $this->conn->prepare("SELECT * FROM animal WHERE id = ?");
+        $stmt->bind_param("s", $animal_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if($result->num_rows == 0) {
+            return "L'animal n'existe pas.";
+        }
+
+        // Vérifier si l'animal est déjà adopté
+        $stmt = $this->conn->prepare("SELECT * FROM adoption WHERE animal_id = ?");
+        $stmt->bind_param("s", $animal_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if($result->num_rows > 0) {
+            return "L'animal est déjà adopté.";
+        }
+
+        // Récupérer le propriétaire de l'animal
+        $stmt = $this->conn->prepare("SELECT maitre_username FROM animal WHERE id = ?");
+        $stmt->bind_param("s", $animal_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $maitre_username = $row['maitre_username'];
+
+        // Insérer la notification dans la table notification
+        $date = date("Y-m-d H:i:s");
+        $read = false;
+        $stmt = $this->conn->prepare("INSERT INTO notification (utilisateur_username, date, vue) VALUES (?, ?, ?)");
+        $stmt->bind_param("sss", $maitre_username, $date, $read);
+        $stmt->execute();
+
+        // Récupérer l'id de la notification insérée
+        $notification_id = $stmt->insert_id;
+
+        // Insérer la notification d'adoption dans la table notification_adoption
+        $etat = "en attente";
+        $stmt = $this->conn->prepare("INSERT INTO notification_adoption (notification_id, animal_id,  adoptant_username, etat) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("isss", $notification_id, $animal_id, $adopter_username, $etat);
+        $stmt->execute();
+
+        return "L'adoption a été effectuée avec succès.";
     }
 
     public function deleteFollowNotifications($followId) {

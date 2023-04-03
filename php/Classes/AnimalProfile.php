@@ -28,11 +28,8 @@ class AnimalProfile extends Profile {
         $masterUser = User::getInstanceById($this->conn, $this->db, $masterUsername);
 
         if(isset($_POST['adopt'])) {
-            require_once("./PageParts/Adoption.php");
-            $adoption = new Adoption($this->conn);
-
-            // Appeler la méthode adopter() avec les paramètres appropriés
-            $resultat = $adoption->adoptAnimal($this->username, $_COOKIE['username']);
+            $notification = new Notification($this->conn, $this->db);
+            $notification->createNotificationAdoption($globalUser->getUsername(), $_GET['username']);
         }
 
         ?>
