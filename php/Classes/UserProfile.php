@@ -28,7 +28,7 @@ class UserProfile extends Profile {
             else {
                 $adoption = null;
             }
-            if(isset($_FILES["avatar"]) && is_uploaded_file($_FILES["avatar"])) {
+            if(isset($_FILES["avatar"]) && is_uploaded_file($_FILES["avatar"]['tmp_name'])) {
                 $image = new Image($_FILES["avatar"]);
                 if ($image->getGD() !== null) {
                     $image->formatImage();

@@ -9,6 +9,7 @@ class Image
         $this->gdImage = $this->createImage($image);
     }
     public function formatImage() {
+        if(!$this->gdImage) return;
         // Définir la nouvelle taille
         $new_width = 500;
         $ratio = $new_width / imagesx($this->gdImage);

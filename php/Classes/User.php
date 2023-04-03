@@ -251,13 +251,13 @@ class User extends Entity
         $stmt->execute();
     }
 
-    public function updateProfile($avatar, $firstName, $lastName, $dateOfBirth, $bio, $newPassword, $confirmationNewPassword) {
+    public function updateProfile($avatar =null, $firstName, $lastName, $dateOfBirth, $bio, $newPassword, $confirmationNewPassword) {
         $query = "UPDATE utilisateur SET prenom = ?, nom = ?, date_de_naissance = ?, bio = ?";
 
         $params = array($firstName, $lastName, $dateOfBirth, $bio);
         $types = "ssss";
 
-        if(!empty($avatar)) {
+        if(isset($avatar) && is_uploaded_file($avatar['tmp_name'])) {
             require_once ("../Classes/Image.php");
             $avatar = new Image($avatar);
             $avatar->formatImage();

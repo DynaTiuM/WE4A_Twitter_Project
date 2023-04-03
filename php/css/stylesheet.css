@@ -285,6 +285,7 @@ label, .window-text {
 .avatar-message {
     width: 3.4vw;
     height: 3.4vw;
+    object-fit: cover;
     margin: 0.5vw 1vw 1vw;
     border-radius: 50%;
     background-color: #348f75;
