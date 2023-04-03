@@ -16,10 +16,10 @@ function sendEmail($username, $secretCode) {
     require_once '../phpmailer/SMTP.php';
     require_once '../phpmailer/Exception.php';
 
-// Création d'une instance de PHPMailer
+    // Création d'une instance de PHPMailer
     $mail = new PHPMailer\PHPMailer\PHPMailer();
 
-// Configuration du serveur SMTP
+    // Configuration du serveur SMTP
     $mail->isSMTP();
     $mail->Host = 'smtp-relay.sendinblue.com';
     $mail->SMTPAuth = true;
@@ -30,11 +30,11 @@ function sendEmail($username, $secretCode) {
     $mail->CharSet = 'UTF-8';
     $mail->Encoding = 'base64';
 
-// Configuration de l'expéditeur et du destinataire
+    // Configuration de l'expéditeur et du destinataire
     $mail->setFrom('raphael.perrin854@gmail.com', 'Twitturtle');
     $mail->addAddress($find_user['email'], $find_user['username']);
 
-// Configuration du message
+    // Configuration du message
     $mail->isHTML(true);
     $mail->Subject = 'Réinitialisation mot de passe Twitturtle';
 
@@ -52,7 +52,7 @@ function sendEmail($username, $secretCode) {
         </div>
     </div>';
 
-// Envoi de l'email
+    // Envoi de l'email
     if(!$mail->send()) {
         return false;
     } else {

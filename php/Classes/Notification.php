@@ -22,6 +22,9 @@ class Notification
             case 'message':
                 $this->displayMessageNotification($table);
                 break;
+            case 'answer':
+                $this->displayAnswerNotification($table);
+                break;
             case 'adoption':
                 $this->displayAdoptionNotification($table);
                 break;
@@ -44,16 +47,13 @@ class Notification
                     <img class="image-modification" style="width: 4vw; height: 4vw; margin: 1vw;" src="data:image/jpeg;base64,<?php echo $avatar; ?>" alt="Image de profil">
                 </label>
                 <p style="margin-top: 2vw; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.2vw"> <?php echo $userId ?> a aimé l'un de vos messages</p>
-
             </div>
         </form>
         <script>
             function submitLikeRedirection(event) {
                 const likeRedirectionForm = event.target.closest('.likeRedirectionForm');
                 const id_message = likeRedirectionForm.dataset.id;
-
                 const queryString = `?answer=${id_message}`;
-
                 likeRedirectionForm.action = '../PageParts/explorer.php' + queryString;
                 likeRedirectionForm.submit();
             }
@@ -70,6 +70,25 @@ class Notification
         $message->loadMessageById($messageId);
         $message->displayContent();
 
+    }
+
+    private function displayAnswerNotification($notificationData) {
+        require_once("../Classes/Message.php");
+        $messageId = $notificationData['id'];
+        $userId = $notificationData['username'];
+        ?>
+        <div style="display: flex; margin-left: 1vw" id="profileRedirection" data-username="<?php echo $userId; ?>">
+            <p style="margin-top: 2vw; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.2vw"> <?php echo $userId ?> a répondu à l'un de vos messages</p>
+        </div>
+        <div style = "margin-left: 1.5vw; margin-top: -0.5vw">
+            <?php
+            $message = new Message($this->conn, $this->db);
+
+            $message->loadMessageById($messageId);
+            $message->displayContent();
+            ?>
+        </div>
+<?php
     }
 
     private function displayNewFollowerNotification($notificationData) {
@@ -103,6 +122,20 @@ class Notification
             }
         </script>
         <?php
+    }
+
+    public static function isAnswerNotification($conn, $user, $messageId) : bool {
+        $query = "SELECT * FROM notification_reponse
+                    INNER JOIN notification ON notification.id = notification_reponse.notification_id
+                    WHERE notification_reponse.message_id = ? AND notification.utilisateur_username = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("is", $messageId, $user);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if($result->num_rows > 0) {
+            return true;
+        }
+        return false;
     }
 
     public static function setRead($conn, $notificationId) {
@@ -178,8 +211,24 @@ class Notification
 
         // Check for adoption notification
 
+        // Check for answer notification
+        $queryAnswer = "SELECT 'answer' AS notif_type, notification.*, utilisateur_repondeur.*, message.*
+                    FROM notification_reponse
+                    INNER JOIN notification ON notification_reponse.notification_id = notification.id
+                    INNER JOIN utilisateur AS utilisateur_repondeur ON notification_reponse.repondeur_username = utilisateur_repondeur.username
+                    INNER JOIN message ON message.id = notification_reponse.message_id
+                    WHERE notification_reponse.notification_id = ?
+                    GROUP BY message.id;";
+        $stmtFollow = $this->conn->prepare($queryAnswer);
+        $stmtFollow->bind_param("i", $notifId);
+        $stmtFollow->execute();
+        $resultFollow = $stmtFollow->get_result();
+
+        if ($resultFollow->num_rows > 0) {
+            return $resultFollow;
+        }
         // Check for like notification
-        $queryLike = "SELECT 'like' AS notif_type, notification.*, utilisateur_likeur.*, utilisateur_liké.*, message.*
+        $queryLike = "SELECT 'like' AS notif_type, notification.*, utilisateur_likeur.*, message.*
                 FROM notification_like
                 INNER JOIN like_message ON notification_like.message_id = like_message.message_id
                 INNER JOIN utilisateur AS utilisateur_likeur ON like_message.utilisateur_username = utilisateur_likeur.username
@@ -250,6 +299,31 @@ class Notification
         $assocStmt->execute();
     }
 
+    public function createNotificationForAnswer($username, $message_id) {
+        $query = "SELECT parent.auteur_username, answer.parent_message_id FROM message AS parent INNER JOIN message AS answer
+                    ON parent.id = answer.parent_message_id
+                    WHERE answer.id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("s", $message_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $author_username = $row['auteur_username'];
+        $parent_message_id = $row['parent_message_id'];
+
+        $insertQuery = "INSERT INTO notification (utilisateur_username, date, vue) VALUES (?, NOW(), FALSE);";
+        $insertStmt = $this->conn->prepare($insertQuery);
+        $insertStmt->bind_param("s", $author_username);
+        $insertStmt->execute();
+
+        $notifId = $this->conn->insert_id;
+
+        $assocQuery = "INSERT INTO notification_reponse (notification_id, repondeur_username, message_id, parent_message_id) VALUES (?, ?, ?, ?);";
+        $assocStmt = $this->conn->prepare($assocQuery);
+        $assocStmt->bind_param("isii", $notifId, $username, $message_id, $parent_message_id);
+        $assocStmt->execute();
+    }
+
     public function createNotificationForLike($username, $message_id) {
         $insertQuery = "INSERT INTO notification (utilisateur_username, date, vue) VALUES (?, NOW(), FALSE);";
         $insertStmt = $this->conn->prepare($insertQuery);
@@ -264,23 +338,9 @@ class Notification
         $assocStmt->execute();
     }
 
-    public static function getNotificationMessageByMessageId($conn, $messageId) {
+    public static function getNotificationTypeByMessageId($conn, $messageId, $type) {
 
-        $stmt = $conn->prepare("SELECT n.id FROM notification n INNER JOIN notification_message nm ON n.id = nm.notification_id WHERE nm.message_id = ?");
-        $stmt->bind_param("i", $messageId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result && $result->num_rows > 0) {
-            $row = $result->fetch_assoc();
-            return $row;
-        } else {
-            return null;
-        }
-    }
-
-    public static function getNotificationLikeByMessageId($conn, $messageId) {
-        $stmt = $conn->prepare("SELECT n.id FROM notification n INNER JOIN notification_like nl ON n.id = nl.notification_id WHERE nl.message_id = ?");
+        $stmt = $conn->prepare("SELECT n.id FROM notification n INNER JOIN notification_$type nt ON n.id = nt.notification_id WHERE nt.message_id = ?");
         $stmt->bind_param("i", $messageId);
         $stmt->execute();
         $result = $stmt->get_result();

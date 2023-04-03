@@ -215,21 +215,27 @@ class User extends Entity
         $id_message = $this->db->secureString_ForSQL($id_message);
         $date = date('Y-m-d H:i:s');
 
-        // Créez une nouvelle instance de Message avec l'ID du message
         $message = new Message($this->conn, $this->db);
         $message->setId($id_message);
 
-        // Vérifiez si le message est déjà liké par l'utilisateur
+        // Vérifier si le message est déjà liké par l'utilisateur
         if (!$message->isMessageLikedByUser($this->username)) {
             $stmt = $this->conn->prepare("INSERT INTO like_message (message_id, utilisateur_username, date) VALUES (?, ?, ?)");
             $stmt->bind_param("sss", $id_message, $this->username, $date);
             $stmt->execute();
             $stmt->close();
 
+            $stmt = $this->conn->prepare("SELECT auteur_username FROM  message WHERE id = ?");
+            $stmt->bind_param("s", $id_message);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $author_username = $result->fetch_assoc()['auteur_username'];
+            $stmt->close();
+
             require_once ("../Classes/Notification.php");
             $notification = new Notification($this->conn, $this->db);
-            if(!$notification->isAlreadySent($this->username, $id_message))
-                $notification->createNotificationForLike($this->username, $id_message);
+            if(!$notification->isAlreadySent($author_username, $id_message))
+                $notification->createNotificationForLike($author_username, $id_message);
         } else {
             $stmt = $this->conn->prepare("DELETE FROM like_message WHERE message_id = ? AND utilisateur_username = ?");
             $stmt->bind_param("ss", $id_message, $this->username);

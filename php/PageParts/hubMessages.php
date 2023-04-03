@@ -17,7 +17,7 @@ function displayContainer($type) {
 
     if(isset($_POST['notification-id'])) {
         require_once ('../Classes/Notification.php');
-        $notification = Notification::getNotificationLikeByMessageId($conn, $_POST['notification-id']);
+        $notification = Notification::getNotificationTypeByMessageId($conn, $_POST['notification-id'], 'like');
         $notificationId = $notification['id'];
         Notification::setRead($conn, $notificationId);
     }

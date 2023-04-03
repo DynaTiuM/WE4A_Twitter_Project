@@ -181,10 +181,15 @@ class Message
     public function displayContent($parent = false) {
         $user = new User($this->conn, $this->db);
         $loginStatus = $user->isLoggedIn();
+        require_once ('../Classes/Notification.php');
 
-        if(isset($_GET['answer']) && ($user->isFollowing($this->authorUsername))) {
-            require_once ('../Classes/Notification.php');
-            $notification = Notification::getNotificationMessageByMessageId($this->conn, $_GET['answer']);
+        if(isset($_GET['answer']) && $user->isFollowing($this->authorUsername)) {
+            $notification = Notification::getNotificationTypeByMessageId($this->conn, $_GET['answer'], 'message');
+            $notificationId = $notification['id'];
+            Notification::setRead($this->conn, $notificationId);
+        }
+        if(isset($_GET['answer']) && Notification::isAnswerNotification($this->conn, $user->getUsername(), $this->id)) {
+            $notification = Notification::getNotificationTypeByMessageId($this->conn, $_GET['answer'], 'reponse');
             $notificationId = $notification['id'];
             Notification::setRead($this->conn, $notificationId);
         }
@@ -396,6 +401,10 @@ class Message
         require_once ("../Classes/Notification.php");
         $notification = new Notification($conn, $db);
         $notification->createNotificationsForFollowers($username, $message_id);
+
+        if($reply_id != null) {
+            $notification->createNotificationForAnswer($username, $message_id);
+        }
 
         if (!empty($_POST['animaux'])) {
             foreach ($_POST['animaux'] as $animal_id) {
