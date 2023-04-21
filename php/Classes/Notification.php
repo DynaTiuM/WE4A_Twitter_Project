@@ -579,7 +579,7 @@ class Notification
         $stmt->execute();
     }
 
-    public function refuseAdoption($notificationId) : void {
+    public function denyAdoption($notificationId) : void {
         $query = "UPDATE notification_adoption
               SET etat = 'refusee'
               WHERE notification_id = ?;";

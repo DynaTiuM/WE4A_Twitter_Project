@@ -54,6 +54,92 @@ class Message
         }
     }
 
+    public function mainMessages($loginStatus) {
+        ?>
+        <div class = "hub-messages">
+            <?php
+            if(isset($_GET['answer'])) {
+                $messageIds = Message::mainMessagesQuery($this->conn, $this->db, $loginStatus, 'subs', $_GET['answer']);
+                if($messageIds)
+                    Message::displayMessages($this->conn, $this->db, $messageIds);
+                else
+                    echo '<h4><br>Aucune réponse disponible</h4>';
+            }
+            else {
+                $messageIds = Message::mainMessagesQuery($this->conn, $this->db, $loginStatus, 'subs', null);
+                if($messageIds)
+                    Message::displayMessages($this->conn, $this->db, $messageIds);
+                else
+                    echo '<h4><br>Aucun message disponible</h4>';
+            }
+            ?>
+
+        </div>
+        <?php
+    }
+
+    public function explorerMessages($loginStatus) {
+        ?>
+        <div class = "hub-messages">
+            <div class = "center">
+                <div style ="display: inline-flex; margin-bottom: 0">
+                    <a href = "explorer.php?category=sauvetage"><p class = "rescue" style = "font-size: 1.3vw">Sauvetages</p></a>
+                    <a href = "explorer.php?category=evenement"><p class = "event" style = "font-size: 1.3vw">Événements</p></a>
+                    <a href = "explorer.php?category=conseil"><p class = "advice" style = "font-size: 1.3vw">Conseils</p></a>
+                </div>
+            </div>
+
+            <?php
+
+            if(isset($_GET['answer'])) { if ($_GET['answer'] != '') {
+                $message = new Message($this->conn, $this->db);
+                $message->loadMessageById($_GET['answer']);
+                $parent_message_id = $message->getParentMessageId();
+
+                if ($parent_message_id) {
+                    ?>
+                    <div class="parent-message">
+                        <?php
+                        $parent_message = new Message($this->conn, $this->db);
+                        $parent_message->loadMessageById($parent_message_id);
+                        $parent_message->displayContent();
+                        ?>
+                        <span class="container-parent-message"></span>
+                    </div>
+                    <?php
+                }
+
+                $message->displayContent();
+            }
+                if(!isset($_POST['reply_to']) && !isset($_POST['new-message']) && $loginStatus) include("./newMessageForm.php");
+                $messageIds = Message::mainMessagesQuery($this->conn, $this->db, $loginStatus, 'explorer', $_GET['answer']);
+                if($messageIds)
+                    Message::displayMessages($this->conn, $this->db, $messageIds);
+                else
+                    echo '<h4><br>Aucune réponse disponible</h4>';
+            }
+            elseif (isset($_GET['category'])) {
+                $messageIds = Message::displayMessagesByCategory($this->conn, $this->db, $_GET['category']);
+                if($messageIds)
+                    Message::displayMessages($this->conn, $this->db, $messageIds);
+                else
+                    echo '<h4><br>Aucun message disponible dans cette catégorie</h4>';
+
+            }
+            else {
+                if(!isset($_POST['reply_to']) && !isset($_POST['new-message']) && $loginStatus) include("./newMessageForm.php");
+                $messageIds = Message::mainMessagesQuery($this->conn, $this->db, $loginStatus, 'explorer', null);
+                if($messageIds)
+                    Message::displayMessages($this->conn, $this->db, $messageIds);
+                else
+                    echo '<h4><br>Aucun message disponible</h4>';
+            }
+
+            ?>
+        </div>
+        <?php
+    }
+
     public static function createMessageFromRow($conn, $row) {
         global $globalDb;
         $message = new Message($conn, $globalDb);

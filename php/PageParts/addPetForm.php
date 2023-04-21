@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <html lang = "fr">
-<form  action ="" method="post" enctype="multipart/form-data">
+<form action ="" method="post" enctype="multipart/form-data">
 
     <div class="image-container">
         <label for="avatar_pet">
@@ -33,17 +33,21 @@
     $globalUser = User::getInstanceById($conn, $globalDb, $userId);
 
     if($globalUser->isOrganization()) {?>
+    <div class="adoption-center">
+        <div class="adoption-container">
+            <p>Cet animal est à la recherche d'un propriétaire</p>
+            <div>
+                <label>
+                    <input type="radio" class="check-radio" name="adoption" value="1" required>
+                    Oui
+                </label>
+                <label>
+                    <input type="radio" class="check-radio" name="adoption" value="0">
+                    Non
+                </label>
+            </div>
 
-    <div class ="answer">
-        <p>Cet animal est à la recherche d'un propriétaire</p>
-        <label>
-            <input type="radio" name="adoption" value="1" required>
-            Oui
-        </label>
-        <label>
-            <input type="radio" name="adoption" value="0">
-            Non
-        </label>
+        </div>
     </div>
 <?php
     } ?>
@@ -64,7 +68,7 @@
     <div class="formbutton">
         <button class = "form-button" type="submit" name = "add-pet">Ajouter l'animal</button>
     </div>
-
+    <br>
     <span>* L'identifiant de l'animal correspond au nom que vous utiliserez pour l'identifier dans un message</span>
 </form>
 </html>

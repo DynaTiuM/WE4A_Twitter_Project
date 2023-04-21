@@ -6,8 +6,6 @@ ob_start();
 
 require_once("./functions.php");
 
-require_once("./databaseFunctions.php");
-
 require_once("../Classes/Database.php");
 require_once("../Classes/User.php");
 require_once("../Classes/Message.php");
@@ -139,11 +137,11 @@ function displayConfirmationModificationProfile($result) {
             </div>
             <?php
             if ($type == 'utilisateur') {
-                displayModificationProfile();
+                displayPopUpProfile("Modification du profil", "./profileModificationForm.php");
                 displayAddPet();
             }
             elseif($type == 'animal') {
-                displayModificationPetProfile();
+                displayPopUpProfile("Modification du profil", "./petProfileModificationForm.php");
             }
 
             include("./trends.php");

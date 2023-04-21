@@ -1,21 +1,12 @@
 <?php
-$filename = basename($_SERVER['SCRIPT_FILENAME']);
 
-
-require_once("../Classes/Database.php");
-require_once("../Classes/User.php");
-require_once("../Classes/Message.php");
 require_once("config.php");
 
+require_once("init.php");
+global $conn;
 global $globalDb;
-global $globalUser;
-global $globalMessage;
-$globalDb = Database::getInstance();
-$conn = $globalDb->getConnection();
-$globalUser = User::getInstance($conn, $globalDb);
-$globalMessage = new Message($conn, $globalDb);
-include("adressSearch.php");
-
+$userId = $_SESSION['username'];
+$globalUser = User::getInstanceById($conn, $globalDb, $userId);
 
 ?>
 
@@ -25,7 +16,7 @@ include("adressSearch.php");
 <head>
     <meta charset = "utf-8">
     <script src="https://maps.googleapis.com/maps/api/js?key=<?php echo LOCATION_API_KEY?>&libraries=places"></script>
-
+    <script src = "../js/addressSearch.js"></script>
     <link rel = "stylesheet" href = "../css/stylesheet.css">
     <link rel = "stylesheet" href = "../css/newMessage.css">
 </head>

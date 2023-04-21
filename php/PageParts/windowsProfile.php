@@ -1,12 +1,12 @@
 <?php
 
-function displayModificationProfile() {
+function displayPopUpProfile($title, $url) {
     ?>
-<div id="modification-profile" class="window-background">
+<div id="pop-up-profile" class="window-background">
     <div class="window-content">
-        <span class="close" onclick="closeWindow('modification-profile')">&times;</span>
-        <h2 class = "window-title">Modification du profil</h2>
-        <?php include("./profileModificationForm.php"); ?>
+        <span class="close" onclick="closeWindow('pop-up-profile')">&times;</span>
+        <h2 class = "window-title"><?php echo $title ?></h2>
+        <?php include($url); ?>
     </div>
 </div>
 <?php
@@ -24,14 +24,3 @@ function displayAddPet() {
 <?php
 }
 
-function displayModificationPetProfile() {
-    ?>
-    <div id="modification-pet-profile" class="window-background">
-        <div class="window-content">
-            <span class="close" onclick="closeWindow('modification-pet-profile')">&times;</span>
-            <h2 class = "window-title">Modification du profil de l'animal</h2>
-            <?php include("./petProfileModificationForm.php"); ?>
-        </div>
-    </div>
-<?php
-}

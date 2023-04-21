@@ -19,7 +19,7 @@ class AnimalProfile extends Profile {
             $gender = $_POST['sexe'];
             $bio = $_POST['bio'];
             $species = $_POST['espece'];
-            $adoption = isset($_POST['adoption']) ? $_POST['adoption'] : null;
+            $adoption = $_POST['adoption'] ?? null;
 
             $avatar = $_FILES['avatar'];
 
@@ -59,7 +59,7 @@ class AnimalProfile extends Profile {
         }
         ?>
         <div style = "display: flex">
-            <h4 style = "color: #3a3a3a"><?php echo numFollowers($this->profileUser->getUsername(), "animal")." abonnés" ?></h4>
+            <h4 style = "color: #3a3a3a"><?php echo $this->getUser()->numFollowers("animal")." abonnés" ?></h4>
         </div>
         <?php
         $this->displayButton($loginStatus, $globalUser);
@@ -73,7 +73,7 @@ class AnimalProfile extends Profile {
         $masterUsername = $this->profileUser->getMasterUsername();
         if ($globalUser->getUsername() == $masterUsername) {
             ?>
-            <button class="button-modify-profile" onclick = "openWindow('modification-pet-profile')">Editer le profil</button>
+            <button class="button-modify-profile" onclick = "openWindow('pop-up-profile')">Editer le profil</button>
 
             <?php
         } else {

@@ -33,7 +33,7 @@ function sendEmail($username, $secretCode) {
     $mail->Encoding = 'base64';
 
     // Configuration de l'expéditeur et du destinataire
-    $mail->setFrom('raphael.perrin854@gmail.com', 'Twitturtle');
+    $mail->setFrom(EMAIL_USERNAME, 'Twitturtle');
     $mail->addAddress($find_user['email'], $find_user['username']);
 
     // Configuration du message

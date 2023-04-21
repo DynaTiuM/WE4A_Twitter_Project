@@ -7,10 +7,12 @@ if (session_status() == PHP_SESSION_NONE) {
 require_once("./functions.php");
 
 function displayContainer($type) {
-    $globalDb = Database::getInstance();
-    $conn = $globalDb->getConnection();
-    $globalUser = User::getInstance($conn, $globalDb);
-    $globalMessage = new Message($conn, $globalDb);
+    require_once("init.php");
+
+    global $globalDb;
+    global $globalUser;
+    global $globalMessage;
+    global $conn;
     $loginStatus = $globalUser->isLoggedIn();
 
     if(isset($_POST['like']) && $loginStatus) $globalUser->likeMessage($_POST['like']);
@@ -58,7 +60,7 @@ function displayContainer($type) {
                 <div class = "spacing"></div>
                 <?php
                 if ($loginStatus) {
-                    mainMessages($loginStatus);
+                    $globalMessage->mainMessages($loginStatus);
                 }
                 else {
                     echo '<h4>Connectez-vous pour accéder au contenu</h4>';
@@ -71,7 +73,7 @@ function displayContainer($type) {
                 </div>
                 <div class = "spacing"></div>
                 <?php
-                explorerMessages($loginStatus);
+                $globalMessage->explorerMessages($loginStatus);
             }
             ?>
         </div>

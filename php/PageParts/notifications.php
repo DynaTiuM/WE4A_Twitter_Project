@@ -30,7 +30,7 @@ if(isset($_POST['adoption-status'])) {
         <?php
     }
     else {
-        $notification->refuseAdoption($_POST['notification-id']);
+        $notification->denyAdoption($_POST['notification-id']);
         displayPopUp("Adoption","Vous avez refusé l'adoption.");
         ?>
         <script>

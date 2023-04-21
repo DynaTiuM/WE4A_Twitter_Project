@@ -109,7 +109,7 @@ class UserProfile extends Profile {
 
         if ($globalUser->getUsername() == $this->getUser()->getUsername()) {
             ?>
-            <button class="button-modify-profile" onclick="openWindow('modification-profile')">Editer le profil</button>
+            <button class="button-modify-profile" onclick="openWindow('pop-up-profile')">Editer le profil</button>
             <button class="add-pet" onclick="openWindow('add-pet')">Ajouter un animal</button>
             <?php
         } else {
