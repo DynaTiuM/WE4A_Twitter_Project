@@ -11,7 +11,7 @@ class Notification
     }
 
     public function displayNotification($table) {
-        $notificationType = $table["notif_type"];
+        $notificationType = $table->notif_type;
         switch ($notificationType) {
             case 'follow':
                 $this->displayNewFollowerNotification($table);
@@ -32,9 +32,48 @@ class Notification
         return null;
     }
 
+    private function displayAdoptionNotification($notificationData) {
+        $adoptantPrenom = $notificationData->adoptant_prenom;
+        $adoptantUsername = $notificationData->adoptant_username;
+        $animalId = $notificationData->animal_id;
+        $animalNom = $notificationData->animal_nom;
+        $notificationId = $notificationData->notification_id;
+
+        $adoptantAvatar = base64_encode($notificationData->adoptant_avatar);
+        $animalAvatar = base64_encode($notificationData->animal_avatar);
+        ?>
+        <div style="display: flex;">
+            <a href="profile.php?username=<?php echo $adoptantUsername; ?>">
+                <img class="image-modification" style="width: 4vw; height: 4vw; margin: 1vw;" src="data:image/jpeg;base64,<?php echo $adoptantAvatar; ?>" alt="Image de l'adoptant">
+            </a>
+            <p style="margin-top: 2vw; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.2vw">
+                <?php echo $adoptantPrenom; ?> souhaite adopter <?php echo $animalNom; ?>
+            </p>
+            <a href="profile.php?username=<?php echo $animalId; ?>">
+                <img class="image-modification" style="width: 4vw; height: 4vw; margin: 1vw;" src="data:image/jpeg;base64,<?php echo $animalAvatar; ?>" alt="Image de l'animal">
+            </a>
+        </div>
+        <?php
+        if(!$this->isRead($notificationId)) {
+            ?>
+            <form method="post" action="">
+                <input type="hidden" name="adoptant-username" value="<?php echo $adoptantUsername; ?>">
+                <input type="hidden" name="animal-id" value="<?php echo $animalId; ?>">
+                <input type="hidden" name="notification-id" value="<?php echo $notificationId; ?>">
+                <div class = "button-container">
+                    <button type="submit" class = "button-follow" name="adoption-status" value="acceptee">Accepter</button>
+                    <button type="submit" class = "button-follow" name="adoption-status" value="refusee">Refuser</button>
+                </div>
+            </form>
+            <?php
+        }
+
+    }
+
+
     private function displayLikeNotification($notificationData) {
-        $userId = $notificationData['username'];
-        $idMessage = $notificationData['id'];
+        $userId = $notificationData->username;
+        $idMessage = $notificationData->id;
 
         $followerUser = User::getInstanceById($this->conn, $this->db, $userId);
         $avatar = $followerUser->getAvatarEncoded64();
@@ -64,7 +103,7 @@ class Notification
 
     private function displayMessageNotification($notificationData) {
         require_once("../Classes/Message.php");
-        $messageId = $notificationData['id'];
+        $messageId = $notificationData->id;
         $message = new Message($this->conn, $this->db);
 
         $message->loadMessageById($messageId);
@@ -74,8 +113,8 @@ class Notification
 
     private function displayAnswerNotification($notificationData) {
         require_once("../Classes/Message.php");
-        $messageId = $notificationData['id'];
-        $userId = $notificationData['username'];
+        $messageId = $notificationData->id;
+        $userId = $notificationData->username;
         ?>
         <div style="display: flex; margin-left: 1vw" id="profileRedirection" data-username="<?php echo $userId; ?>">
             <p style="margin-top: 2vw; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.2vw"> <?php echo $userId ?> a répondu à l'un de vos messages</p>
@@ -91,29 +130,14 @@ class Notification
 <?php
     }
 
-    private function displayAdoptionNotification($notificationData) {
-        require_once("../Classes/Message.php");
-        $userId = $notificationData['username'];
-        ?>
-        <form action = "../PageParts/adoption" method = "post">
-            <input type = "hidden" name = "adoption">
-            <input type="submit" class="invisibleFile">
-            <div style="display: flex; margin-left: 1vw" id="adoptionRedirection" data-username="<?php echo $userId; ?>">
-                <p style="margin-top: 2vw; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.2vw"> <?php echo $userId ?> souhaite adopter l'animal suivant : <?php echo $notificationData['id'];?></p>
-            </div>
-        </form>
-
-        <?php
-    }
-
     private function displayNewFollowerNotification($notificationData) {
-        $userId = $notificationData['username'];
+        $userId = $notificationData->username;
 
         $followerUser = User::getInstanceById($this->conn, $this->db, $userId);
         $avatar = $followerUser->getAvatarEncoded64();
         ?>
         <form method="post" id="profileRedirectionForm">
-            <input type="hidden" name="notification-id" value="<?php echo $notificationData['id']; ?>">
+            <input type="hidden" name="notification-id" value="<?php echo $notificationData->id; ?>">
             <input type="submit" class="invisibleFile">
             <div style="display: flex;" id="profileRedirection" data-username="<?php echo $userId; ?>" onclick="submitProfileRedirectionForm();">
                 <label>
@@ -161,6 +185,20 @@ class Notification
         $stmt->execute();
     }
 
+    private function isRead($notificationId) {
+        $query = "SELECT vue FROM notification WHERE id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("i", $notificationId);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+
+        if($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            return $row['vue'] == 1;
+        }
+    }
+
     function numNotifications($username) {
         global $conn;
         $query = "SELECT COUNT(*) AS count FROM notification WHERE utilisateur_username = ? AND vue = ?";
@@ -191,8 +229,8 @@ class Notification
                 $notifId = $row['id'];
                 $read = $row['vue'];
                 $singleNotifData = $this->getNotificationData($notifId);
-                if ($singleNotifData && $singleNotifData->num_rows > 0) {
-                    $notifData[] = [$singleNotifData->fetch_assoc(), $read];
+                if ($singleNotifData) {
+                    $notifData[] = [$singleNotifData, $read];
                 }
             }
         }
@@ -218,22 +256,27 @@ class Notification
         $resultMessage = $stmtMessage->get_result();
 
         if ($resultMessage->num_rows > 0) {
-            return $resultMessage;
+            return $resultMessage->fetch_object();
         }
 
         // Check for adoption notification
-        $queryAdoption = "SELECT 'adoption' AS notif_type, notification.*, utilisateur_adopteur.*, animal.*
-                        FROM notification_adoption INNER JOIN notification ON notification_adoption.notification_id = notification.id
-                        INNER JOIN utilisateur AS utilisateur_adopteur ON notification_adoption.adoptant_username = utilisateur_adopteur.username
-                        INNER JOIN animal ON notification_adoption.animal_id = animal.id
-                        WHERE notification_adoption.notification_id = ? ;";
+        $queryAdoption = "SELECT 'adoption' AS notif_type, notification.id AS notification_id,
+            adoptant.username AS adoptant_username, adoptant.prenom AS adoptant_prenom, adoptant.avatar AS adoptant_avatar,
+            animal.id AS animal_id, animal.nom AS animal_nom, animal.avatar AS animal_avatar,
+            organisation.username AS organisation_username, organisation.nom AS organisation_nom, organisation.prenom AS organisation_prenom, organisation.avatar AS organisation_avatar
+        FROM notification_adoption
+        INNER JOIN utilisateur AS adoptant ON notification_adoption.adoptant_username = adoptant.username
+        INNER JOIN animal ON notification_adoption.animal_id = animal.id
+        INNER JOIN utilisateur AS organisation ON animal.maitre_username = organisation.username
+        INNER JOIN notification ON notification_adoption.notification_id = notification.id
+        WHERE notification_adoption.notification_id = ?";
         $stmtFollow = $this->conn->prepare($queryAdoption);
         $stmtFollow->bind_param("i", $notifId);
         $stmtFollow->execute();
         $resultFollow = $stmtFollow->get_result();
 
         if ($resultFollow->num_rows > 0) {
-            return $resultFollow;
+            return $resultFollow->fetch_object();
         }
         // Check for answer notification
         $queryAnswer = "SELECT 'answer' AS notif_type, notification.*, utilisateur_repondeur.*, message.*
@@ -249,7 +292,7 @@ class Notification
         $resultFollow = $stmtFollow->get_result();
 
         if ($resultFollow->num_rows > 0) {
-            return $resultFollow;
+            return $resultFollow->fetch_object();
         }
         // Check for like notification
         $queryLike = "SELECT 'like' AS notif_type, notification.*, utilisateur_likeur.*, message.*
@@ -267,7 +310,7 @@ class Notification
         $resultFollow = $stmtFollow->get_result();
 
         if ($resultFollow->num_rows > 0) {
-            return $resultFollow;
+            return $resultFollow->fetch_object();
         }
 
         // Check for follow notification
@@ -288,9 +331,32 @@ class Notification
         $resultFollow = $stmtFollow->get_result();
 
         if ($resultFollow->num_rows > 0) {
-            return $resultFollow;
+            return $resultFollow->fetch_object();
         }
+/*
+        // Check for adoption notification
+        $queryAdoption = "SELECT 'adoption' AS notif_type, 
+            adoptant.username AS adoptant_username, adoptant.nom AS adoptant_nom, adoptant.prenom AS adoptant_prenom, adoptant.avatar AS adoptant_avatar,
+            animal.id AS animal_id, animal.nom AS animal_nom, animal.avatar AS animal_avatar,
+            organisation.username AS organisation_username, organisation.nom AS organisation_nom, organisation.prenom AS organisation_prenom, organisation.avatar AS organisation_avatar
+        FROM notification_adoption
+        INNER JOIN utilisateur AS adoptant ON notification_adoption.adoptant_username = adoptant.username
+        INNER JOIN animal ON notification_adoption.animal_id = animal.id
+        INNER JOIN utilisateur AS organisation ON animal.maitre_username = organisation.username
+        INNER JOIN notification ON notification_adoption.notification_id = notification.id
+        WHERE notification_adoption.notification_id = ?;
+        ";
 
+        $stmtAdoption = $this->conn->prepare($queryAdoption);
+        $stmtAdoption->bind_param("i", $notifId);
+        $stmtAdoption->execute();
+        $resultAdoption = $stmtAdoption->get_result();
+
+        if ($resultAdoption->num_rows > 0) {
+            return $resultAdoption->fetch_object();
+
+        }
+*/
         return null;
     }
 
@@ -396,10 +462,9 @@ class Notification
         $stmt->execute();
         $notificationId = $stmt->insert_id;
 
-        $date = date("d M Y H:i:s");
-        $query = "INSERT INTO notification_suivre (notification_id, suiveur_username, suivre_id, date) VALUES (?, ?, ?, ?)";
+        $query = "INSERT INTO notification_suivre (notification_id, suiveur_username, suivre_id) VALUES (?, ?, ?)";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("isis", $notificationId, $followerUsername, $followId, $date);
+        $stmt->bind_param("isi", $notificationId, $followerUsername, $followId);
         $stmt->execute();
     }
 
@@ -489,5 +554,39 @@ class Notification
         $stmt->execute();
     }
 
-    public function markNotificationAsRead($message_id) { /* ... */ }
+    public function acceptAdoption($notificationId) : void {
+        $query = "UPDATE notification_adoption
+              SET etat = 'acceptee'
+              WHERE notification_id = ?;";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("i", $notificationId);
+        $stmt->execute();
+        $query = "UPDATE animal
+              SET maitre_username = (
+                  SELECT adoptant_username
+                  FROM notification_adoption
+                  WHERE notification_id = ?
+              )
+              WHERE id = (
+                  SELECT animal_id
+                  FROM notification_adoption
+                  WHERE notification_id = ?
+              );";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("ii", $notificationId, $notificationId);
+        $stmt->execute();
+    }
+
+    public function refuseAdoption($notificationId) : void {
+        $query = "UPDATE notification_adoption
+              SET etat = 'refusee'
+              WHERE notification_id = ?;";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("i", $notificationId);
+        $stmt->execute();
+    }
+
 }

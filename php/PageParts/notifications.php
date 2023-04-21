@@ -8,16 +8,46 @@ if (session_status() == PHP_SESSION_NONE) {
 
 require_once("../Classes/Database.php");
 require_once("../Classes/User.php");
+require_once("../Classes/Notification.php");
 
 $globalDb = Database::getInstance();
 $conn = $globalDb->getConnection();
 $globalUser = User::getInstance($conn, $globalDb);
+
+if(isset($_POST['adoption-status'])) {
+    $notification = new Notification($conn, $globalDb);
+    $notification::setRead($conn, $_POST['notification-id']);
+    require_once ("functions.php");
+    if($_POST['adoption-status'] == 'acceptee') {
+        $notification->acceptAdoption($_POST['notification-id']);
+        displayPopUp("Adoption","Vous avez accepté l'adoption !");
+        ?>
+        <script>
+            window.onload = function() {
+                openWindow('pop-up');
+            }
+        </script>
+        <?php
+    }
+    else {
+        $notification->refuseAdoption($_POST['notification-id']);
+        displayPopUp("Adoption","Vous avez refusé l'adoption.");
+        ?>
+        <script>
+            window.onload = function() {
+                openWindow('pop-up');
+            }
+        </script>
+        <?php
+    }
+}
 ?>
 
 <html lang = "fr">
 <head>
     <meta charset = "utf-8">
     <link rel = "stylesheet" href = "../css/stylesheet.css">
+    <link rel = "stylesheet" href = "../css/notification.css">
     <link rel="shortcut icon" href="../favicon.ico">
 </head>
 <body>

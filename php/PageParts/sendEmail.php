@@ -1,5 +1,7 @@
 <?php
 
+require_once("config.php");
+
 function sendEmail($username, $secretCode) {
     global $globalDb;
 
@@ -21,10 +23,10 @@ function sendEmail($username, $secretCode) {
 
     // Configuration du serveur SMTP
     $mail->isSMTP();
-    $mail->Host = 'smtp-relay.sendinblue.com';
+    $mail->Host = HOST;
     $mail->SMTPAuth = true;
-    $mail->Username = 'raphael.perrin854@gmail.com';
-    $mail->Password = '';
+    $mail->Username = EMAIL_USERNAME;
+    $mail->Password = EMAIL_PASSWORD;
     $mail->SMTPSecure = 'tls';
     $mail->Port = 587;
     $mail->CharSet = 'UTF-8';
@@ -43,7 +45,7 @@ function sendEmail($username, $secretCode) {
         '<div style="font-family: Arial, sans-serif; color: #333; background-color: rgba(49,124,103,0.22); padding: 1rem; max-width: 600px; margin: 0 auto;">
         <div style="background-color: #ffffff; border-radius: 5px; padding: 2rem;">
             <h1 style="font-size: 1.5rem; margin-bottom: 1rem; color: #165e4a">Réinitialisation de votre mot de passe</h1>
-            <p style="font-size: 1rem; line-height: 1.5; margin-bottom: 1rem;">Bonjour aa a,</p>
+            <p style="font-size: 1rem; line-height: 1.5; margin-bottom: 1rem;">Bonjour '. $find_user['prenom'].' '. $find_user['nom'].',</p>
             <p style="font-size: 1rem; line-height: 1.5; margin-bottom: 1rem;">Nous avons reçu une demande de réinitialisation de votre mot de passe sur Twitturtle. Pour procéder à cette réinitialisation, veuillez entrer le code suivant sur notre site :</p>
             <div style="font-size: 1.2rem; font-weight: bold; text-align: center; padding: 1rem; border: 1px solid #333; border-radius: 5px; margin-bottom: 1rem;">' . $secretCode . '</div>
             <p style="font-size: 1rem; line-height: 1.5; margin-bottom: 1rem;">Si vous n\'êtes pas à l\'origine de cette demande, nous vous prions de bien vouloir contacter notre équipe d\'assistance dès que possible.</p>

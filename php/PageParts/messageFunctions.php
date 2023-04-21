@@ -40,29 +40,26 @@ function explorerMessages($loginStatus) {
         <?php
         include("./messageForm.php");
 
-        if(isset($_GET['answer'])) {
-            if (isset($_GET['answer'])) {
-                if ($_GET['answer'] != '') {
-                    $message = new Message($conn, $globalDb);
-                    $message->loadMessageById($_GET['answer']);
-                    $parent_message_id = $message->getParentMessageId();
+        if(isset($_GET['answer'])) { if ($_GET['answer'] != '') {
+            $message = new Message($conn, $globalDb);
+            $message->loadMessageById($_GET['answer']);
+            $parent_message_id = $message->getParentMessageId();
 
-                    if ($parent_message_id) {
-                        ?>
-                        <div class="parent-message">
-                            <?php
-                            $parent_message = new Message($conn, $globalDb);
-                            $parent_message->loadMessageById($parent_message_id);
-                            $parent_message->displayContent();
-                            ?>
-                            <span class="container-parent-message"></span>
-                        </div>
-                        <?php
-                    }
-
-                    $message->displayContent();
-                }
+            if ($parent_message_id) {
+                ?>
+                <div class="parent-message">
+                    <?php
+                    $parent_message = new Message($conn, $globalDb);
+                    $parent_message->loadMessageById($parent_message_id);
+                    $parent_message->displayContent();
+                    ?>
+                    <span class="container-parent-message"></span>
+                </div>
+                <?php
             }
+
+            $message->displayContent();
+        }
 
 
 

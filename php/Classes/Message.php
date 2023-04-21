@@ -61,7 +61,8 @@ class Message
         $message->setAuthorUsername($row['auteur_username']);
         $message->setContent($row['contenu']);
         $message->setDate($row['date']);
-        // Mettez à jour les informations du message avant de l'afficher
+        $message->setLocation($row['localisation']);
+        // Mettre à jour les informations du message avant de l'afficher
         $message->setInformationMessage();
         $message->setParentMessageId($row['id']);
 
@@ -69,7 +70,7 @@ class Message
     }
 
     public function loadMessageById($id) {
-        // Récupérez les données du message en utilisant l'ID du message et stockez-les dans les attributs de la classe
+        // Récupérer les données du message en utilisant l'ID du message et stockage dans les attributs de la classe
         $query = "SELECT * FROM message WHERE id = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param("i", $id);
@@ -84,6 +85,7 @@ class Message
             $this->content = $data['contenu'];
             $this->image = $data['image'];
             $this->category = $data['categorie'];
+            $this->location = $data['localisation'];
             $this->date = $this->dateConverted($data['date']);
             $this->setInformationMessage();
         }
@@ -190,8 +192,10 @@ class Message
         }
         if(isset($_GET['answer']) && Notification::isAnswerNotification($this->conn, $user->getUsername(), $this->id)) {
             $notification = Notification::getNotificationTypeByMessageId($this->conn, $_GET['answer'], 'reponse');
-            $notificationId = $notification['id'];
-            Notification::setRead($this->conn, $notificationId);
+            if($notification) {
+                $notificationId = $notification['id'];
+                Notification::setRead($this->conn, $notificationId);
+            }
         }
 
         ?>
@@ -228,7 +232,7 @@ class Message
         }
         if ($this->location != null) {
             echo '<div>
-                      <img style="width: 1vw; float: left;" src="./images/localisation.png" alt="Localisation">
+                      <img style="width: 1vw; float: left;" src="../images/localisation.png" alt="Localisation">
                       <p class="localisation-message" style="margin-left: 1vw;">' . $this->location . '</p>
                   </div>';
         } ?>

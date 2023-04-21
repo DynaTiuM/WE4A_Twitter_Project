@@ -13,13 +13,24 @@ class AnimalProfile extends Profile {
     }
     public function displayProfile() {
         if (isset($_POST['modification-pet-profile'])) {
-            if(isset($_POST['adoption'])) {
-                echo $this->getUser()->updateProfile($_POST['nom'], $_POST['age'], $_POST['sexe'], $_POST['bio'], $_POST['espece'], $_POST['adoption']);
-            }
-            else {
-                echo $this->getUser()->updateProfile($_POST['nom'], $_POST['age'], $_POST['sexe'], $_POST['bio'], $_POST['espece']);
+            // Récupérez les valeurs soumises par le formulaire
+            $name = $_POST['nom'];
+            $age = $_POST['age'];
+            $gender = $_POST['sexe'];
+            $bio = $_POST['bio'];
+            $species = $_POST['espece'];
+            $adoption = isset($_POST['adoption']) ? $_POST['adoption'] : null;
+
+            $avatar = $_FILES['avatar'];
+
+            // Appelez la fonction updateProfile de la classe Animal
+            if ($adoption !== null) {
+                echo $this->getUser()->updateProfile($name, $age, $avatar, $gender, $bio, $species, $adoption);
+            } else {
+                echo $this->getUser()->updateProfile($name, $age, $avatar, $gender, $bio, $species);
             }
         }
+
         $userId = $_SESSION['username'];
         $globalUser = User::getInstanceById($this->conn, $this->db, $userId);
         $loginStatus = $globalUser->isLoggedIn();

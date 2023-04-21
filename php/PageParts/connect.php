@@ -2,7 +2,7 @@
 session_start();
 require_once("../Classes/Database.php");
 require_once("../Classes/User.php");
-require_once("../PageParts/functions.php");
+require_once ("functions.php");
 
 global $globalDb;
 global $globalUser;
@@ -10,36 +10,6 @@ $globalDb = Database::getInstance();
 $conn = $globalDb->getConnection();
 $globalUser = new User($conn, $globalDb);
 $newLoginStatus = $globalUser->checkLogin();
-
-
-
-if(!$newLoginStatus[0]) {
-    $newAccountStatus = $globalUser->checkNewAccountForm();
-
-    if($newAccountStatus[1]){
-        $_SESSION['username'] = $globalUser->getUsername();
-
-        echo '<h1 class="successMessage">Nouveau compte créé avec succès!</h1>';
-    }
-    elseif ($newAccountStatus[0]){
-        echo '<h1 class="errorMessage">'.$newAccountStatus[2].'</h1>';
-    }
-}
-else {
-    $_SESSION['username'] = $globalUser->getUsername();
-
-    header("Location: subscriptions.php");
-    exit();
-}
-if ($newLoginStatus[2] != NULL) { ?>
-    <script>
-        // Ouverture automatique de la fenêtre erreur-connexion
-        window.onload = function() {
-            openWindow('error-connection');
-        }
-    </script>
-<?php
-}
 
 ?>
 
@@ -62,6 +32,29 @@ if ($newLoginStatus[2] != NULL) { ?>
 <body>
 <div class = "Container">
 	<?php include("./navigation.php");
+
+    if(!$newLoginStatus[0]) {
+        $newAccountStatus = $globalUser->checkNewAccountForm();
+        if($newAccountStatus[1]){
+            $_SESSION['username'] = $globalUser->getUsername();
+        }
+    }
+    else {
+        $_SESSION['username'] = $globalUser->getUsername();
+
+        header("Location: subscriptions.php");
+        exit();
+    }
+    if ($newLoginStatus[2] != NULL) { ?>
+        <script>
+            // Ouverture automatique de la fenêtre erreur-connexion
+            window.onload = function() {
+                openWindow('error-connection');
+            }
+        </script>
+        <?php
+    }
+
     displayCode();
     if(isset($_POST['submitEmail'])) {
         require_once("./sendEmail.php");
@@ -137,14 +130,36 @@ if ($newLoginStatus[2] != NULL) { ?>
 
 	</div>
 
-
-
     <?php
+    include("./trends.php"); ?>
+
+<?php
+    if($newAccountStatus[1]){
+        displayPopUp("Compte","Nouveau compte créé avec succès !");
+        ?>
+        <script>
+            window.onload = function() {
+                openWindow('pop-up');
+            }
+        </script>
+    <?php
+    }
+    elseif ($newAccountStatus[0]){
+        displayPopUp("Compte","$newAccountStatus[2]");
+        ?>
+        <script>
+            window.onload = function() {
+                openWindow('pop-up');
+            }
+        </script>
+        <?php
+    }
+
     displayConnection();
     displayRegister();
     displayErrorConnection();
     displayLostPassword();
-    include("./trends.php"); ?>
+    ?>
 </div>
 </body>
 

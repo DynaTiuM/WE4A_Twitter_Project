@@ -1,0 +1,18 @@
+
+
+.button-container {
+    display: flex;
+    justify-content: left;
+}
+
+.button-follow {
+    justify-content: center;
+    background-color: #1F7C62;
+    padding: 0.5vw 2vw 0.5vw 2vw;
+    color: white;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    border:none;
+    border-radius: 10vw;
+    font-size: 1vw;
+    margin: 1vw 1vw;
+}

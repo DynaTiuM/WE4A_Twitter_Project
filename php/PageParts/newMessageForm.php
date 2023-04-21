@@ -5,6 +5,7 @@ $filename = basename($_SERVER['SCRIPT_FILENAME']);
 require_once("../Classes/Database.php");
 require_once("../Classes/User.php");
 require_once("../Classes/Message.php");
+require_once("config.php");
 
 global $globalDb;
 global $globalUser;
@@ -23,7 +24,7 @@ include("adressSearch.php");
 <html lang ="fr">
 <head>
     <meta charset = "utf-8">
-    <script src="https://maps.googleapis.com/maps/api/js?key=KEY&libraries=places"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=<?php echo LOCATION_API_KEY?>&libraries=places"></script>
 
     <link rel = "stylesheet" href = "../css/stylesheet.css">
     <link rel = "stylesheet" href = "../css/newMessage.css">

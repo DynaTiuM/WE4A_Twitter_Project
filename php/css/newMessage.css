@@ -147,6 +147,8 @@
 }
 
 .localisation-message {
-    font-size: 1vw;
+    font-size: 0.9vw;
+    margin: 0.4vw;
     width:100%;
+    color: gray;
 }

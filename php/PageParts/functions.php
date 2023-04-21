@@ -135,3 +135,14 @@ function passwordModified() {?>
     </div>
 <?php
 }
+
+function displayPopUp($title, $message) { ?>
+    <div id="pop-up" class="window-background">
+        <div class="window-content">
+            <span class="close" onclick="closeWindow('pop-up')">&times;</span>
+            <h2 class = "window-title"><?php echo $title?></h2>
+            <p class = "window-text"><?php echo $message?></p>
+        </div>
+    </div>
+    <?php
+}

@@ -54,8 +54,6 @@ if($loginStatus) {
                     <?php
                 }
                 ?>
-                <li class = "menu-item"><a href="messages.php"><img src="../images/message.png">Messages</a></li>
-
                 <li class = "menu-item"><a href = "profile.php?username=<?php echo urlencode($_SESSION['username']); ?>"><img src="../images/profile.png">Profil</a></li>
                 <?php
             } else {

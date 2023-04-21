@@ -36,6 +36,7 @@ function displayContainer($type) {
         <link rel = "stylesheet" href = "../css/stylesheet.css">
         <link rel = "stylesheet" href = "../css/newMessage.css">
         <link rel="shortcut icon" href="../favicon.ico">
+
     </head>
     <body>
     <div class = "Container">

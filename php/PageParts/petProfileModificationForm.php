@@ -61,11 +61,11 @@ $profile = Animal::getInstanceById($conn, $globalDb, $userId);
                 <p>Est à la recherche d'un propriétaire</p>
                 <div>
                     <label>
-                        <input type="radio" class = "check-radio" name="adoption" value="1" required  <?php if($globalUser->isOrganization()) {?> checked <?php }?>>
+                        <input type="radio" class="check-radio" name="adoption" value="1" required <?php if ($profile->getAdoption() == 1) { ?>checked<?php } ?>>
                         Oui
                     </label>
                     <label>
-                        <input type="radio" class = "check-radio" name="adoption" value="0" <?php if($globalUser->isOrganization()) {?> checked <?php }?>>
+                        <input type="radio" class="check-radio" name="adoption" value="0" <?php if ($profile->getAdoption() == 0) { ?>checked<?php } ?>>
                         Non
                     </label>
                 </div>

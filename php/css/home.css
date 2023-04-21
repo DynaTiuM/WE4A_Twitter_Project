@@ -37,7 +37,7 @@ h1 {
 
 h1, .under_title {
     animation-name: titleAnimation;
-    animation-duration: 0.7s;
+    animation-duration: 0.5s;
     animation-fill-mode: both;
 }
 

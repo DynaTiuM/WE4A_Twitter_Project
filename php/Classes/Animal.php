@@ -99,24 +99,20 @@ class Animal extends Entity
 
         if (isset($_FILES["avatar_pet"]) && is_uploaded_file($_FILES["avatar_pet"]["tmp_name"])) {
             $image = file_get_contents($_FILES["avatar_pet"]["tmp_name"]);
-
-            $query = "INSERT INTO animal (id, nom, maitre_username, age, sexe, avatar, caracteristiques, espece, adopter) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            $stmt = $this->conn->prepare($query);
-            $stmt->bind_param("sssisssss", $_POST['id'], $_POST['nom'], $_COOKIE['username'], $_POST['age'], $_POST['gender'], $image, $_POST['bio'], $_POST['species'], $this->adoption);
-            $stmt->execute();
-            $stmt->close();
-            return "Animal ajouté!";
+        } else {
+            $image = file_get_contents('../images/default_avatar_pet.png');
         }
 
-        $avatar = file_get_contents('../images/default_avatar_pet.png');
-        $avatarBLOB = mysqli_real_escape_string($this->conn, $avatar);
         $query = "INSERT INTO animal (id, nom, maitre_username, age, sexe, avatar, caracteristiques, espece, adopter) 
-                  VALUES ('" . $_POST['id'] . "', '" . $_POST['nom'] . "', '" . $_COOKIE['username'] . "', " . $_POST['age'] . ", '" . $_POST['gender'] . "', '$avatarBLOB', '" . $_POST['bio'] . "', '" . $_POST['species'] . "', '$this->adoption')";
-        $this->conn->query($query);
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("sssissssi", $id, $name, $masterUsername, $age, $gender, $image, $characteristics, $species, $adoption);
+        $stmt->execute();
+        $stmt->close();
 
         return "Animal ajouté!";
     }
+
 
     function getPetInformation($conn) {
         $query = "SELECT * FROM animal WHERE id = ?";
@@ -143,30 +139,50 @@ class Animal extends Entity
         return $result->num_rows > 0;
     }
 
-    public function updateProfile($name, $age, $gender, $bio, $species, $adoption = null) {
-        if($adoption == null) {
-            $query = "UPDATE animal SET nom = '$name', age = '$age', sexe = '$gender', caracteristiques = '$bio', espece = '$species' WHERE id = '" . $this->username . "'";
+    public function updateProfile($name, $age, $avatar, $gender, $bio, $species, $adoption = null) {
+        $query = "UPDATE animal SET nom = ?, age = ?, sexe = ?, caracteristiques = ?, espece = ?";
+
+        $params = array($name, $age, $gender, $bio, $species);
+        $types = "sisss";
+
+        if (isset($avatar) && is_uploaded_file($avatar['tmp_name'])) {
+            require_once ("../Classes/Image.php");
+            $avatar = new Image($avatar);
+            $avatar->formatImage();
+            $query .= ", avatar = ?";
+            $params[] = $avatar->getFormatedImage();
+            $types .= "s";
         }
-        else {
-            $query = "UPDATE animal SET nom = '$name', age = '$age', sexe = '$gender', caracteristiques = '$bio', espece = '$species', adopter = '$adoption' WHERE id = '" . $this->username . "'";
+
+        if ($adoption !== null) {
+            $query .= ", adopter = ?";
+            $params[] = $adoption;
+            $types .= "s";
         }
+
+        $query .= " WHERE id = ?";
 
         $stmt = $this->conn->prepare($query);
+        $params[] = $this->username;
+        $types .= "s";
+
+        $stmt->bind_param($types, ...$params);
         $stmt->execute();
 
-        // Mettre à jour les attributs de l'objet User après la mise à jour réussie
         if ($stmt->affected_rows > 0) {
             $this->name = $name;
             $this->age = $age;
             $this->gender = $gender;
             $this->bio = $bio;
             $this->species = $species;
-            if($this->adoption != null) $this->adoption = $adoption;
+            if ($this->adoption != null) $this->adoption = $adoption;
 
             return "Profil modifié avec succès !";
         }
-
     }
+
+
+
 
     public function loadAvatar() {
         $sql = "SELECT avatar FROM animal WHERE id = ?";
