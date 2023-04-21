@@ -10,7 +10,6 @@ require_once ("init.php");
 <body>
 <?php
 require_once('./hubMessages.php');
-require_once('./messageFunctions.php');
 displayContainer('subs');
 
 ?>
