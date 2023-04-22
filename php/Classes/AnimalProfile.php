@@ -31,9 +31,10 @@ class AnimalProfile extends Profile {
             }
         }
 
-        $userId = $_SESSION['username'];
+        $userId = $_SESSION['username'] ?? null;
         $globalUser = User::getInstanceById($this->conn, $this->db, $userId);
-        $loginStatus = $globalUser->isLoggedIn();
+        if(!$globalUser) $loginStatus = false;
+        else $loginStatus = $globalUser->isLoggedIn();
 
         $masterUsername = $this->profileUser->getMasterUsername(); // Remplacez cette ligne par la méthode appropriée pour obtenir le username du maître
         $masterUser = User::getInstanceById($this->conn, $this->db, $masterUsername);

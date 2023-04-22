@@ -11,9 +11,10 @@ class UserProfile extends Profile {
     }
 
     public function displayProfile() {
-        $userId = $_SESSION['username'];
+        $userId = $_SESSION['username'] ?? null;
         $globalUser = User::getInstanceById($this->conn, $this->db, $userId);
-        $loginStatus = $globalUser->isLoggedIn();
+        if(!$globalUser) $loginStatus = false;
+        else $loginStatus = $globalUser->isLoggedIn();
 
 
         if (isset($_POST['add-pet'])) {

@@ -18,8 +18,9 @@ global $globalMessage;
 $globalDb = Database::getInstance();
 $conn = $globalDb->getConnection();
 $globalMessage = new Message($conn, $globalDb);
-$userId = $_SESSION['username'];
+$userId = $_SESSION['username'] ?? null;
 $globalUser = User::getInstanceById($conn, $globalDb, $userId);
+
 
 $username = $_GET['username'];
 require_once ("../Classes/Profile.php");
@@ -136,6 +137,9 @@ function displayConfirmationModificationProfile($result) {
 
             </div>
             <?php
+            include("./trends.php");
+
+
             if ($type == 'utilisateur') {
                 displayPopUpProfile("Modification du profil", "./profileModificationForm.php");
                 displayAddPet();
@@ -143,9 +147,6 @@ function displayConfirmationModificationProfile($result) {
             elseif($type == 'animal') {
                 displayPopUpProfile("Modification du profil", "./petProfileModificationForm.php");
             }
-
-            include("./trends.php");
-
             ?>
     </div>
 
