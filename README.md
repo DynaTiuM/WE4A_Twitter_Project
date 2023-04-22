@@ -1,4 +1,4 @@
-# README du site web
+# README du site web Twitturtle
 
 Ce README explique comment mettre en place le site web et présente les fonctionnalités principales.
 
@@ -53,8 +53,8 @@ Ce README explique comment mettre en place le site web et présente les fonction
 
 ## Contacts
 Si vous avez d'éventuelles questions, n'hésitez surtout pas à nous contacter par e-mail :
-raphael.perrin@utbm.fr
-eileen.jovenin@utbm.fr
+- raphael.perrin@utbm.fr
+- eileen.jovenin@utbm.fr
 
 Raphaël PERRIN, Eileen JOVENIN - Projet WE4A, Automne 2022
 UTBM
