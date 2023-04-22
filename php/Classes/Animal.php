@@ -110,7 +110,7 @@ class Animal extends Entity
         $stmt->execute();
         $stmt->close();
 
-        return "Animal ajouté!";
+        return "Animal ajouté avec succès !";
     }
 
 
@@ -179,6 +179,8 @@ class Animal extends Entity
 
             return "Profil modifié avec succès !";
         }
+
+        return "Erreur lors de la modification du profil !";
     }
 
 

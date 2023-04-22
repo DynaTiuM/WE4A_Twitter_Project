@@ -25,10 +25,18 @@ class AnimalProfile extends Profile {
 
             // Appelez la fonction updateProfile de la classe Animal
             if ($adoption !== null) {
-                echo $this->getUser()->updateProfile($name, $age, $avatar, $gender, $bio, $species, $adoption);
+                $status = $this->getUser()->updateProfile($name, $age, $avatar, $gender, $bio, $species, $adoption);
             } else {
-                echo $this->getUser()->updateProfile($name, $age, $avatar, $gender, $bio, $species);
+                $status =  $this->getUser()->updateProfile($name, $age, $avatar, $gender, $bio, $species);
             }
+            displayPopUp("Modification du profil", $status);
+            ?>
+            <script>
+                window.onload = function() {
+                    openWindow('pop-up');
+                }
+            </script>
+            <?php
         }
 
         $userId = $_SESSION['username'] ?? null;

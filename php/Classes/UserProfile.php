@@ -51,11 +51,14 @@ class UserProfile extends Profile {
             $result = $animal->setAttributes($id, $name, $globalUser->getUsername(), $age, $gender, $formatedImage, $bio, $species, $adoption);
 
             if ($result) {
-                // L'animal a été ajouté avec succès
-                // Rediriger vers une autre page ou afficher un message de succès
-            } else {
-                // Une erreur s'est produite lors de l'ajout de l'animal
-                // Afficher un message d'erreur ou gérer l'erreur
+                displayPopUp("Ajout animal", $result);
+                ?>
+                <script>
+                    window.onload = function() {
+                        openWindow('pop-up');
+                    }
+                </script>
+                <?php
             }
         }
         global $loginStatus;
@@ -95,7 +98,7 @@ class UserProfile extends Profile {
             if($result->num_rows > 0) echo'<h3>Animaux</h3> <br>';
             while ($row = $result->fetch_assoc()) {
                 ?>
-                <a href="./profile.php?username=<?php echo $row['id']; ?>"><img style = "border-radius: 50%; width: 4vw; height: 4vw; margin-left: 1vw;" src="data:image/jpeg;base64,<?php echo base64_encode($row['avatar']); ?>" alt="Bouton parcourir"></a>
+                <a href="./profile.php?username=<?php echo $row['id']; ?>"><img style = "border-radius: 50%; width: 4vw; height: 4vw; margin-left: 1vw; object-fit: cover" src="data:image/jpeg;base64,<?php echo base64_encode($row['avatar']); ?>" alt="Bouton parcourir"></a>
                 <?php
             }
             ?>
@@ -140,14 +143,6 @@ class UserProfile extends Profile {
         }
     }
 
-    public function addAnimal($id, $name, $age, $species, $adoption, $bio, $gender, $avatar_pet) {
-        $stmt = $this->conn->prepare("INSERT INTO animals (id, name, age, species, adoption, bio, gender, avatar_pet) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("ssiissss", $id, $name, $age, $species, $adoption, $bio, $gender, $avatar_pet);
-        $result = $stmt->execute();
-        $stmt->close();
-
-        return $result;
-    }
 
     public function getUsername()
     {
