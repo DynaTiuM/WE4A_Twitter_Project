@@ -1,35 +1,12 @@
 
-<div id="updateMessagePopup" class="update-message-popup">
-    <div class="window-content">
-        <span class="close-popup">&times;</span>
+<div id="updateMessagePopup" class="window-background">
+    <div class="window-content" style = "text-align: center">
+        <span class="close" onclick="closeWindow('updateMessagePopup')">&times;</span>
         <form id="updateMessageForm" onsubmit="return false;">
             <input type="hidden" id="messageIdToUpdate" value="">
-            <label for="newContent">Nouveau contenu du message:</label>
-            <textarea id="newContent" class = "message-content"></textarea>
-            <button onclick="submitUpdateMessageForm()">Mettre à jour</button>
+            <label for="newContent" class = "window-title">Modification du message</label>
+            <textarea id="newContent" class = "message-content" style = "margin-top: 2vw; padding-top: 1vw; border-top: 0.1vw solid rgba(31, 124, 98, 0.29); border-bottom: 0.1vw solid rgba(31, 124, 98, 0.29);"></textarea>
+            <button onclick="submitUpdateMessageForm()" class = "tweet-button" style = "border:none">Mettre à jour</button>
         </form>
     </div>
 </div>
-
-<style>
-    .update-message-popup {
-        display: none;
-        position: fixed;
-        z-index: 100;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.4);
-    }
-
-    .popup-content {
-        background-color: #fefefe;
-        margin: 15% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 50%;
-    }
-
-</style>

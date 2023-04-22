@@ -86,6 +86,7 @@ function displayConfirmationModificationProfile($result) {
     <link rel = "stylesheet" href = "../css/stylesheet.css">
     <link rel = "stylesheet" href = "../css/profile.css">
     <link rel = "stylesheet" href = "../css/newMessage.css">
+    <link rel = "stylesheet" href = "../css/message.css">
     <title>Profil</title>
     <link rel="shortcut icon" href="../favicon.ico">
 

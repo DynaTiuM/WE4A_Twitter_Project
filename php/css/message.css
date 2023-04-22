@@ -1,35 +1,44 @@
 .message-options {
     position: relative;
     display: inline-block;
+    z-index: 2; /* ajouter une z-index plus élevée */
 }
 
 .options-button {
     border: none;
     background-color: transparent;
-    font-size: 1.5em;
+    font-size: 1.5vw;
+    padding-top: 0.8vw;
+    padding-left: 0.5vw;
+    color: #888888;
     cursor: pointer;
-    z-index: -1;
+    float: right;
+    z-index: 2;
 }
+
 
 .options-dropdown {
     display: none;
     position: absolute;
     right: 0;
     background-color: #f9f9f9;
-    min-width: 160px;
+    min-width: 5vw;
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
     z-index: 1;
 }
 
 .options-dropdown-item {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 1vw;
     color: black;
-    padding: 12px 16px;
+    padding: 1vw 1vw;
     text-decoration: none;
     border: none;
     background-color: transparent;
     width: 100%;
     text-align: left;
     cursor: pointer;
+    z-index: 1;
 }
 
 .options-dropdown-item:hover {

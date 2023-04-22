@@ -26,9 +26,6 @@ function popUpUpdateMessage(messageId, currentContent) {
     document.getElementById("messageIdToUpdate").value = messageId;
     document.getElementById("newContent").value = currentContent;
 }
-document.querySelector(".close-popup").addEventListener("click", function () {
-    document.getElementById("updateMessagePopup").style.display = "none";
-});
 
 function editMessage(messageId) {
     // Récupérer le contenu actuel du message
@@ -93,4 +90,9 @@ function deleteMessage(messageId) {
     // The encodeURIComponent is used to avoid special characters' problem
     // Thanks to these information, we'll be able to modify a message on database thanks to post method
     xhr.send("messageId=" + messageId);
+
+
+    const messageElement = document.getElementById("message-container-" + messageId);
+    messageElement.style.display = "none";
+
 }

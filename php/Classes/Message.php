@@ -292,7 +292,7 @@ class Message
         }
 
         ?>
-        <div class="message">
+        <div class="message" id="message-container-<?php echo $this->id ?>">
         <a href="profile.php?username=<?php echo $this->authorUsername; ?>">
             <img class="avatar-message" src="data:image/jpeg;base64,<?php echo base64_encode($this->avatar); ?>">
         </a>
@@ -330,31 +330,36 @@ class Message
                   </div>';
         } ?>
 
-            <a class="display-answer" href="./explorer.php?answer=<?php echo $this->id ?>">
-                <div>
-                    <p id="message-<?php echo $this->id ?>"><?php echo stripcslashes($this->content) ?></p>
-                </div>
+            <div style = "display: flex; ">
+                <a class="display-answer" href="./explorer.php?answer=<?php echo $this->id ?>">
+                    <div>
+                        <p id="message-<?php echo $this->id ?>"><?php echo stripcslashes($this->content) ?></p>
+                    </div>
+                    <?php
+                    if ($this->image != null) { ?>
+                        <img class="message-image" src="data:image/png;base64,<?php echo base64_encode($this->image); ?>">
+                    <?php } ?>
+                </a>
                 <?php
-                if ($this->image != null) { ?>
-                    <img class="message-image" src="data:image/png;base64,<?php echo base64_encode($this->image); ?>">
-                <?php } ?>
-            </a>
+
+                if ($isAuthor) {
+                    include("../PageParts/updateMessageForm.php");
+                    ?>
+                    <div class="message-options">
+                        <button class="options-button" id="options-button-<?php echo $this->id ?>" onclick="toggleDropdown(<?php echo $this->id ?>)">✎</button>
+                        <div class="options-dropdown" id="options-dropdown-<?php echo $this->id ?>">
+                            <button class="options-dropdown-item" onclick="editMessage(<?php echo $this->id ?>)">Modifier</button>
+                            <button class="options-dropdown-item" onclick="deleteMessage(<?php echo $this->id ?>)">Supprimer</button>
+                        </div>
+                    </div>
+                    <?php
+                }
+
+                ?>
         </div>
 
+        </div>
             <?php
-
-            if ($isAuthor) {
-                include("../PageParts/updateMessageForm.php");
-                ?>
-                <div class="message-options">
-                    <button class="options-button" id="options-button-<?php echo $this->id ?>" onclick="toggleDropdown(<?php echo $this->id ?>)">&#x2022;&#x2022;&#x2022;</button>
-                    <div class="options-dropdown" id="options-dropdown-<?php echo $this->id ?>">
-                        <button class="options-dropdown-item" onclick="editMessage(<?php echo $this->id ?>)">Modifier</button>
-                        <button class="options-dropdown-item" onclick="deleteMessage(<?php echo $this->id ?>)">Supprimer</button>
-                    </div>
-                </div>
-                <?php
-            }
 
             if (!$parent) { ?>
                 <div style="display: flex;">
