@@ -47,6 +47,7 @@ if(isset($_POST['adoption-status'])) {
 <head>
     <meta charset = "utf-8">
     <link rel = "stylesheet" href = "../css/stylesheet.css">
+    <link rel = "stylesheet" href = "../css/newMessage.css">
     <link rel = "stylesheet" href = "../css/notification.css">
     <link rel="shortcut icon" href="../favicon.ico">
 </head>

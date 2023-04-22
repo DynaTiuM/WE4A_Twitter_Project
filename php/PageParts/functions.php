@@ -14,6 +14,7 @@ function popUpNewMessage($forced = false) {
     }
 }
 
+
 function displayNewMessageForm($conn, $db, $messageId = null) {
     echo '<div id="new-message" class="window-background">
         <div class="window-content">';

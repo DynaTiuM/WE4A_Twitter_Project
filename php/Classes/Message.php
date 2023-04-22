@@ -267,9 +267,16 @@ class Message
 
 
     public function displayContent($parent = false) {
+        ?>
+        <script src="../js/optionsMessage.js" defer></script>
+            <?php
         $user = new User($this->conn, $this->db);
         $loginStatus = $user->isLoggedIn();
         require_once ('../Classes/Notification.php');
+
+        $currentUser = $user->getUsername();
+        $isAuthor = $currentUser === $this->authorUsername;
+
 
         if(isset($_GET['answer']) && $user->isFollowing($this->authorUsername)) {
             $notification = Notification::getNotificationTypeByMessageId($this->conn, $_GET['answer'], 'message');
@@ -323,17 +330,33 @@ class Message
                   </div>';
         } ?>
 
-    <a class="display-answer" href="./explorer.php?answer=<?php echo $this->id ?>">
-        <label>
-            <p><?php echo stripcslashes($this->content) ?></p>
-        </label>
-        <?php
-        if ($this->image != null) { ?>
-            <img class="message-image" src="data:image/png;base64,<?php echo base64_encode($this->image); ?>">
-        <?php } ?>
-    </a>
+            <a class="display-answer" href="./explorer.php?answer=<?php echo $this->id ?>">
+                <div>
+                    <p id="message-<?php echo $this->id ?>"><?php echo stripcslashes($this->content) ?></p>
+                </div>
+                <?php
+                if ($this->image != null) { ?>
+                    <img class="message-image" src="data:image/png;base64,<?php echo base64_encode($this->image); ?>">
+                <?php } ?>
+            </a>
         </div>
-            <?php if (!$parent) { ?>
+
+            <?php
+
+            if ($isAuthor) {
+                include("../PageParts/updateMessageForm.php");
+                ?>
+                <div class="message-options">
+                    <button class="options-button" id="options-button-<?php echo $this->id ?>" onclick="toggleDropdown(<?php echo $this->id ?>)">&#x2022;&#x2022;&#x2022;</button>
+                    <div class="options-dropdown" id="options-dropdown-<?php echo $this->id ?>">
+                        <button class="options-dropdown-item" onclick="editMessage(<?php echo $this->id ?>)">Modifier</button>
+                        <button class="options-dropdown-item" onclick="deleteMessage(<?php echo $this->id ?>)">Supprimer</button>
+                    </div>
+                </div>
+                <?php
+            }
+
+            if (!$parent) { ?>
                 <div style="display: flex;">
                     <?php if (!isset($_POST['reply_to'])) { ?>
                         <div>
@@ -532,6 +555,32 @@ class Message
             $this->parentMessageId = $row['parent_message_id'];
         }
         $stmt->close();
+    }
+
+    public function modifyMessage() {
+        $stmt = $this->conn->prepare("UPDATE message SET contenu = ? WHERE id = ?");
+        $stmt->bind_param("si", $this->content, $this->id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if($result->num_rows > 0) {
+            $stmt->close();
+            return "Message mis à jour.";
+        }
+        $stmt->close();
+        return "Erreur lors de la mise à jour du message";
+    }
+
+    public function deleteMessage(): string {
+        $stmt = $this->conn->prepare("DELETE FROM message WHERE id = ?");
+        $stmt->bind_param("i", $this->id);
+        $stmt->execute();
+        $affected_rows = $stmt->affected_rows;
+        if ($affected_rows > 0) {
+            $stmt->close();
+            return "Message supprimé.";
+        }
+        $stmt->close();
+        return "Erreur lors de la suppression du message";
     }
 
     public function getParentMessageId() {
