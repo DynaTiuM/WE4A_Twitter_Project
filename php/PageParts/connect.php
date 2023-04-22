@@ -45,10 +45,7 @@ $newLoginStatus = $globalUser->checkLogin();
         header("Location: subscriptions.php");
         exit();
     }
-    if(isset($_SESSION['username'])) {
-        header("Location: subscriptions.php");
-        exit();
-    }
+   
     if ($newLoginStatus[2] != NULL) { ?>
         <script>
             // Ouverture automatique de la fenêtre erreur-connexion

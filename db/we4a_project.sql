@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : sam. 22 avr. 2023 à 17:28
+-- Généré le : sam. 22 avr. 2023 à 18:30
 -- Version du serveur : 10.4.28-MariaDB
 -- Version de PHP : 8.2.4
 
@@ -353,7 +353,7 @@ ALTER TABLE `like_message`
 -- AUTO_INCREMENT pour la table `message`
 --
 ALTER TABLE `message`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT pour la table `message_animaux`
@@ -365,7 +365,7 @@ ALTER TABLE `message_animaux`
 -- AUTO_INCREMENT pour la table `notification`
 --
 ALTER TABLE `notification`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table `suivre`
@@ -408,7 +408,7 @@ ALTER TABLE `like_message`
 --
 ALTER TABLE `message`
   ADD CONSTRAINT `message_ibfk_1` FOREIGN KEY (`auteur_username`) REFERENCES `utilisateur` (`username`),
-  ADD CONSTRAINT `message_ibfk_2` FOREIGN KEY (`parent_message_id`) REFERENCES `message` (`id`);
+  ADD CONSTRAINT `message_ibfk_2` FOREIGN KEY (`parent_message_id`) REFERENCES `message` (`id`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `message_animaux`
