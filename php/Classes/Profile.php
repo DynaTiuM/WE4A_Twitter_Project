@@ -70,7 +70,7 @@ abstract class Profile
     }
 
     public function profileMessagesAndAnswers($isMessage) {
-        $query = $this->queryMessagesAndAnswers($isMessage);
+        $query = $this->getUser()->queryMessagesAndAnswers($isMessage);
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param("s", $this->username);
         $stmt->execute();
@@ -91,6 +91,7 @@ abstract class Profile
             }
         }
     }
+
 
     abstract public function displayProfile(); // Méthode abstraite à implémenter dans les classes filles
     abstract protected function displayButton($loginStatus, $globalUser); // Méthode abstraite à implémenter dans les classes filles

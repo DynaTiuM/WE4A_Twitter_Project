@@ -193,7 +193,6 @@ class User extends Entity
         return $this->organisation == 1;
     }
 
-
     public function getPets() {
         $query = "SELECT * FROM animal WHERE maitre_username = ?";
         $stmt = $this->conn->prepare($query);
@@ -391,7 +390,21 @@ class User extends Entity
         return $stmt->get_result();
     }
 
-    public function loadAvatar() {
+    public function queryMessagesAndAnswers($isMessage): string {
+        if ($isMessage) {
+            return "SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username
+            FROM message 
+            JOIN utilisateur ON message.auteur_username = utilisateur.username
+            WHERE (auteur_username = ? AND parent_message_id IS NULL) ORDER BY date DESC";
+        } else {
+            return "SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username
+            FROM message 
+            JOIN utilisateur ON message.auteur_username = utilisateur.username
+            WHERE (auteur_username = ? AND parent_message_id is not NULL) ORDER BY date DESC";
+        }
+    }
+
+    public function loadAvatar() : string {
         $sql = "SELECT avatar FROM utilisateur WHERE username = ?";
         return $this->selectSQLAvatar($sql);
     }

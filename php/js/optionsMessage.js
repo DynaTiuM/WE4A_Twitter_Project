@@ -1,5 +1,5 @@
 
-function toggleDropdown(messageId) {
+function displayModification(messageId) {
     var dropdown = document.getElementById("options-dropdown-" + messageId);
     if (dropdown.style.display === "block") {
         dropdown.style.display = "none";

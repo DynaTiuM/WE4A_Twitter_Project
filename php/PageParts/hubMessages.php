@@ -39,7 +39,6 @@ function displayContainer($type) {
         <link rel = "stylesheet" href = "../css/newMessage.css">
         <link rel = "stylesheet" href = "../css/message.css">
         <link rel="shortcut icon" href="../favicon.ico">
-
     </head>
     <body>
     <div class = "Container">
@@ -61,7 +60,7 @@ function displayContainer($type) {
                 <div class = "spacing"></div>
                 <?php
                 if ($loginStatus) {
-                    $globalMessage->mainMessages($loginStatus);
+                    $globalMessage->subMessages($loginStatus);
                 }
                 else {
                     echo '<h4>Connectez-vous pour accéder au contenu</h4>';

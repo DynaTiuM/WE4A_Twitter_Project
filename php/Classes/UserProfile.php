@@ -129,20 +129,6 @@ class UserProfile extends Profile {
         }
     }
 
-    protected function queryMessagesAndAnswers($isMessage): string {
-        if ($isMessage) {
-            return "SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username
-            FROM message 
-            JOIN utilisateur ON message.auteur_username = utilisateur.username
-            WHERE (auteur_username = ? AND parent_message_id IS NULL) ORDER BY date DESC";
-        } else {
-            return "SELECT message.*, utilisateur.nom, utilisateur.prenom, utilisateur.username
-            FROM message 
-            JOIN utilisateur ON message.auteur_username = utilisateur.username
-            WHERE (auteur_username = ? AND parent_message_id is not NULL) ORDER BY date DESC";
-        }
-    }
-
 
     public function getUsername()
     {

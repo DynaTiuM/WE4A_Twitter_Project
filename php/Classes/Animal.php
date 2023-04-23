@@ -4,8 +4,7 @@ require_once ("Entity.php");
 
 
 // La classe Animal est une classe qui communique directement avec la base de données pour y effectuer des opérations
-class Animal extends Entity
-{
+class Animal extends Entity {
 
     // Attributs privés essentiels que possède un animal
     // Ces attributs correspondent aux colonnes de la table animaux dans la base de données
@@ -104,10 +103,10 @@ class Animal extends Entity
      * @param string $masterUsername Username du maitre de l'animal
      * @param string $age Age de l'animal
      * @param string $gender Sexe de l'animal
-     * @param string $avatar Avatar de l'animal
+     * @param array $avatar Avatar de l'animal
      * @param string $characteristics Bio de l'animal
      * @param string $species Espece de l'animal
-     * @param boolean $adoption L'animal est à adopter
+     * @param bool $adoption L'animal est à adopter
      *
      * @return string
      */
@@ -158,15 +157,14 @@ class Animal extends Entity
      * @param string $name Nom de l'animal
      * @param string $age Age de l'animal
      * @param string $gender Sexe de l'animal
-     * @param string $avatar Avatar de l'animal
+     * @param array $avatar Avatar de l'animal
      * @param string $bio Bio de l'animal
      * @param string $species Espece de l'animal
-     * @param boolean $adoption L'animal est à adopter
+     * @param bool $adoption L'animal est à adopter
      *
      * @return string
      */
-    public function updateProfile($name, $age, $avatar, $gender, $bio, $species, $adoption = null): string
-    {
+    public function updateProfile($name, $age, $avatar, $gender, $bio, $species, $adoption = null): string {
 
         // On prépare tout d'abord la requête SQL dont les informations seront nécessairement réenvoyées
         $query = "UPDATE animal SET nom = ?, age = ?, sexe = ?, caracteristiques = ?, espece = ?";
@@ -212,6 +210,9 @@ class Animal extends Entity
         $stmt = $this->conn->prepare($query);
 
         // Et de lier les paramètres avec le tableau de types et leur paramètres correspondants
+        // Ici, nous utilisons ... devant $param pour décompresser notre tableau params
+        // En effet, la méthode bind_param() attend des éléments séparés, et non un tableau en paramètres
+        // ...$param est donc équivalent à $name, $age, $gender, $bio, $species, etc en fonction de la requete
         $stmt->bind_param($types, ...$params);
         $stmt->execute();
 
@@ -232,13 +233,36 @@ class Animal extends Entity
         return "Erreur lors de la modification du profil !";
     }
 
+
+    /**
+     *
+     * Méthode permettant de déterminer tous les messages du profil d'un animal par requête SQL
+     *
+     * @param bool $isMessage
+     * @return string
+     */
+    public function queryMessagesAndAnswers($isMessage = true) : string {
+        // On sélectionne toutes les informations du message (*) de la table message
+        // On lie cette table avec la table message_animaux, la liaison s'effectue en fonction de l'id du message
+        // Puis enfin on lie la table animal avec la table message_animaux par l'id de l'animal
+        // La condition ici est l'id de l'animal
+        // Ceci permet ainsi de récupérer tous les messages en fonction de l'id d'un animal
+        return "SELECT message.*
+                FROM message
+                    JOIN message_animaux
+                        ON message.id = message_animaux.message_id
+                    JOIN animal
+                        ON animal.id = message_animaux.animal_id
+                WHERE animal.id = ?";
+    }
+
+
     /**
      * Fonction permettant de récupérer l'avatar d'un animal à partir de la base de données
      *
      * @return string
      */
-    public function loadAvatar(): string
-    {
+    public function loadAvatar() : string {
         $sql = "SELECT avatar FROM animal WHERE id = ?";
         return $this->selectSQLAvatar($sql);
     }

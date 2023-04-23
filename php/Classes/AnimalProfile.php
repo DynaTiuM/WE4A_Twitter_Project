@@ -17,12 +17,10 @@ class AnimalProfile extends Profile {
      *
      * @return void
      */
-    public function __construct($conn, $username, $db)
-    {
+    public function __construct($conn, $username, $db) {
         parent::__construct($conn, $username, $db);
         // La méthode getInstanceById permet ainsi ici de lier le AnimalProfile à un animal spécifique correspondant à son username dans la base de données
         $this->profileUser = Animal::getInstanceById($this->conn, $this->db, $this->username);
-
     }
 
     /**
@@ -50,20 +48,25 @@ class AnimalProfile extends Profile {
         // On effectue la meme opération pour récupérer l'utilisateur maître
         $masterUser = User::getInstanceById($this->conn, $this->db, $masterUsername);
 
+        // Dans le cas où l'utilisateur actuel a appuyé sur le bouton de formulaire d'adoption,
         if(isset($_POST['adopt'])) {
+            // Il est nécessaire de créer une nouvelle notification pour informer l'organisation que l'utilisateur souhaite adopter l'animal
             $notification = new Notification($this->conn, $this->db);
+            // On crée ainsi une notification d'adoption par rapport au username de l'utilisateur qui souhaite adopter, et le username de l'organisation du profil
             $notification->createNotificationAdoption($globalUser->getUsername(), $_GET['username']);
         }
 
+        // Quelques lignes de HTML/PHP permettant de mettre en ordre le profil de l'animal :
         ?>
         <div style = "display : flex">
-            <img class = "profile-picture-pet" src="data:image/jpeg;base64,<?php echo base64_encode($this->profileUser->loadAvatar()); ?>"  alt="Photo de profil">
+            <img class = "profile-picture-pet" src="data:image/jpeg;base64,<?php echo $this->profileUser->getAvatarEncoded64(); ?>"  alt="Photo de profil">
             <div style = "text-align: center">
                 <h4 style = "margin-bottom: 0.4vw">Maître</h4>
-                <a href = "./profile.php?username=<?php echo $masterUser->getUsername();?>"><img class = "profile-picture" style ="width:4.5vw; height: 4.5vw" src="data:image/jpeg;base64,<?php echo base64_encode($masterUser->loadAvatar()); ?>"  alt="Photo de profil maitre"></a>
+                <a href = "./profile.php?username=<?php echo $masterUser->getUsername();?>"><img class = "profile-picture" style ="width:4.5vw; height: 4.5vw" src="data:image/jpeg;base64,<?php echo $masterUser->getAvatarEncoded64(); ?>"  alt="Photo de profil maitre"></a>
             </div>
         </div>
         <?php
+        // Getters classiques pour récupérer les attributs de l'animal du profil correspondant
         echo "<h3 class = 'name-profile'>" . $this->profileUser->getName() . "</h3>";
         echo "<h4>" ."@" . $this->profileUser->getUsername() . "</h4>";
         if($this->profileUser->getCharacteristics() != ("Bio" && null)) {
@@ -74,6 +77,8 @@ class AnimalProfile extends Profile {
             <h4 style = "color: #3a3a3a"><?php echo $this->getUser()->numFollowers("animal")." abonnés" ?></h4>
         </div>
         <?php
+
+        // Il est enfin important d'afficher les boutons en fonction de l'utilisateur qui parcours la page de profil de l'animal
         $this->displayButton($loginStatus, $globalUser);
     }
 
@@ -119,29 +124,52 @@ class AnimalProfile extends Profile {
         }
     }
 
-    protected function displayButton($loginStatus, $globalUser)
-    {
+    /**
+     * Méthode permettant d'afficher les boutons du profil en fonction de l'utilisateur qui le visionne
+     *
+     * @param $loginStatus
+     * @param $globalUser
+     * @return void
+     */
+    protected function displayButton($loginStatus, $globalUser) : void {
+
+        // Tout d'abord, si l'utilisateur n'est pas connecté, il est nécessaire de n'afficher aucun bouton
         if(!$loginStatus)
             return;
 
+        // On récupère à nouveau le nom du maitre de l'animal du profil
         $masterUsername = $this->profileUser->getMasterUsername();
+
+        // Si l'utilisateur qui visionne actuellement le profil est égal à l'utilisateur maitre du chien, cela signifie
+        // Qu'il est le maitre du chien
         if ($globalUser->getUsername() == $masterUsername) {
+            // Ainsi, il faut ajouter le bouton d'éditage du profil de l'animal
             ?>
             <button class="button-modify-profile" onclick = "openWindow('pop-up-profile')">Editer le profil</button>
 
             <?php
-        } else {
-            if (!$globalUser->checkFollow($this->getUser()->getUsername(), 'animal')) { ?>
+        }
+        // Sinon, cela signifie qu'il s'agit d'un utilisateur étranger
+        else {
+            // On vérifier si l'utilisateur n'est pas abonné à l'animal
+            if (!$globalUser->checkFollow($this->getUser()->getUsername(), 'animal')) {
+                // Si c'est le cas, on afficher le bouton "Suivre"
+                ?>
                 <form action="" method="post" class="button-follow">
                     <button type="submit" name="follow" class="button-modify-profile">Suivre</button>
                 </form>
-            <?php } else { ?>
+            <?php }
+            // Sinon, cela signifie que l'utilisateur est abonné, on affiche le bouton "Suivi"
+            else { ?>
                 <form action="" method="post" class="button-follow">
                     <button type="submit" name="follow" class="button-following">Suivi</button>
                 </form>
             <?php }
 
-            if($this->profileUser->getAdoption() == 1) {?>
+            // Enfin, si l'animal est à adopter et qu'il s'agit d'un utilisateur extérieur,
+            if($this->profileUser->getAdoption() == 1) {
+                // On affiche un bouton permettant d'envoyer une demande d'adoption de l'animal
+                ?>
                 <div style = "align-self: flex-end;">
                     <form action = "./profile.php?username=<?php echo $this->profileUser->getUsername();?>" method = "post">
                         <input type = "submit" class = "add-pet" name = "adopt" value = "Adopter">
@@ -152,23 +180,25 @@ class AnimalProfile extends Profile {
         }
     }
 
-    protected function queryMessagesAndAnswers($isMessage = true) : string {
-        return "SELECT message.*
-                FROM message
-                    JOIN message_animaux
-                        ON message.id = message_animaux.message_id
-                    JOIN animal
-                        ON animal.id = message_animaux.animal_id
-                WHERE animal.id = ?";
-    }
-
-
-
+    /**
+     *
+     * Méthode affichant sur le profil de l'animal les messages où il est mentionné
+     *
+     * @return void
+     */
     public function displayBoxes() {
+        // Dans le cas du profil animal, il y a seulement une section Message :
         ?>
         <div id="message-content">
             <?php
+            /* On stocke les IDs des messages correspondant aux messages où l'animal est mentionné dans une variable
+            /* Ces IDs sont récupérés grâce à la méthode profileMessagesAndAnswers, appartenant à la classe Profile.php
+            /* En effet, cette méthod est également utilisée pour le profil des utilisateurs, elle est donc commune aux 2 types de profil.
+            /* Ici on met en paramètres true car on souhaite seulement les messages, et non les réponses
+            */
             $messageIds = $this->profileMessagesAndAnswers(true);
+
+            // S'il y a des messages, on les affiche grâce à la classe Message
             if($messageIds) Message::displayMessages($this->conn, $this->db, $messageIds);
             ?>
         </div>

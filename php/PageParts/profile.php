@@ -38,12 +38,7 @@ else {
 }
 
 if(isset($_POST['follow'])) {
-    $followId = $globalUser->follow_unfollow($username, $type);
-    if ($followId) {
-        require_once ("../Classes/Notification.php");
-        $notification = new Notification($conn, $globalDb);
-        $notification->createNotificationForFollow($userId, $username, $followId);
-    }
+    $globalUser->followUnfollow($username, $type);
 }
 
 if (isset($_POST['notification-id'])) {
