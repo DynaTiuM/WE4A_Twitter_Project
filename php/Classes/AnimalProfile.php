@@ -3,48 +3,51 @@
 require_once("../Classes/Image.php");
 require_once("../Classes/Animal.php");
 require_once("../Classes/Profile.php");
+
+// Classe dédiée à l'affichage du profil d'un animal
+// Une classe AnimalProfile hérite de la classe Profile, car il s'agit d'un profil classique ayant quelques particularités différentes
 class AnimalProfile extends Profile {
 
+    /**
+     * Constructeur prenant en paramètres une instance de mysqli() et une instance de la base de données, ainsi que le username d'un animal
+     *
+     * @param mysqli $conn Instance de la classe mysqli
+     * @param Database $db Instance de la classe Database
+     * @param string $username Username de l'animal
+     *
+     * @return void
+     */
     public function __construct($conn, $username, $db)
     {
         parent::__construct($conn, $username, $db);
+        // La méthode getInstanceById permet ainsi ici de lier le AnimalProfile à un animal spécifique correspondant à son username dans la base de données
         $this->profileUser = Animal::getInstanceById($this->conn, $this->db, $this->username);
 
     }
-    public function displayProfile() {
-        if (isset($_POST['modification-pet-profile'])) {
-            // Récupérez les valeurs soumises par le formulaire
-            $name = $_POST['nom'];
-            $age = $_POST['age'];
-            $gender = $_POST['sexe'];
-            $bio = $_POST['bio'];
-            $species = $_POST['espece'];
-            $adoption = $_POST['adoption'] ?? null;
 
-            $avatar = $_FILES['avatar'];
+    /**
+     * Méthode permettant d'afficher le profil d'un animal
+     *
+     * @return void
+     *
+     */
+    public function displayProfile() : void {
 
-            // Appelez la fonction updateProfile de la classe Animal
-            if ($adoption !== null) {
-                $status = $this->getUser()->updateProfile($name, $age, $avatar, $gender, $bio, $species, $adoption);
-            } else {
-                $status =  $this->getUser()->updateProfile($name, $age, $avatar, $gender, $bio, $species);
-            }
-            displayPopUp("Modification du profil", $status);
-            ?>
-            <script>
-                window.onload = function() {
-                    openWindow('pop-up');
-                }
-            </script>
-            <?php
-        }
+        // On vérifie tout d'abord si le profil a été mis à jour
+        $this->checkModificationProfile();
 
+        // On récupère le username de l'utilisateur actuellement connecté grâce à notre session
         $userId = $_SESSION['username'] ?? null;
+        // On récupère l'instance de notre utilisateur en fonction de son username
         $globalUser = User::getInstanceById($this->conn, $this->db, $userId);
+        // Dans le cas où globalUser est null, cela signifie que l'utilisateur n'est pas connecté
         if(!$globalUser) $loginStatus = false;
+        // Sinon, dans le cas où une session est active, on vérifie si l'utilisateur est bien connecté par l'intermédiaire de la méthode isLoggedIn()
         else $loginStatus = $globalUser->isLoggedIn();
 
-        $masterUsername = $this->profileUser->getMasterUsername(); // Remplacez cette ligne par la méthode appropriée pour obtenir le username du maître
+        // On récupère le username du maitre de l'animal du profil
+        $masterUsername = $this->profileUser->getMasterUsername();
+        // On effectue la meme opération pour récupérer l'utilisateur maître
         $masterUser = User::getInstanceById($this->conn, $this->db, $masterUsername);
 
         if(isset($_POST['adopt'])) {
@@ -72,6 +75,48 @@ class AnimalProfile extends Profile {
         </div>
         <?php
         $this->displayButton($loginStatus, $globalUser);
+    }
+
+    /**
+     *
+     * Méthode permettant de vérifier si le profil a été mis à jour
+     *
+     * @return void
+     */
+    private function checkModificationProfile() : void {
+        // Pour vérifier si le profil a été modifié, on regarde si le formulaire de modification de profil a été envoyé
+        if (isset($_POST['modification-pet-profile'])) {
+
+            // Si c'est le cas, on récupère toutes les informations nécessaires en les sécurisant
+            $name = $this->db->secureString_ForSQL($_POST['nom']);
+            $age = $this->db->secureString_ForSQL($_POST['age']);
+            $gender = $this->db->secureString_ForSQL($_POST['sexe']);
+            $bio = $this->db->secureString_ForSQL($_POST['bio']);
+            $species = $this->db->secureString_ForSQL($_POST['espece']);
+            $adoption = $this->db->secureString_ForSQL($_POST['adoption']) ?? null;
+            $avatar = $_FILES['avatar'];
+
+            // Enfin, on appelle la fonction updateProfile de la classe Animal
+            // Dans le cas où adoption n'est pas null, c'est à dire que l'utilisateur a mis à jour les paramètres d'adoption,
+            //on ajoute l'information dans la méthode updateProfile
+            if ($adoption !== null) {
+                $status = $this->getUser()->updateProfile($name, $age, $avatar, $gender, $bio, $species, $adoption);
+            }
+            // Sinon, on ne le met pas, et adoption sera automatiquement passé en "null" dans la méthode.
+            else {
+                $status =  $this->getUser()->updateProfile($name, $age, $avatar, $gender, $bio, $species);
+            }
+
+            // On affiche enfin à l'utilisateur le status de modification du profil.
+            displayPopUp("Modification du profil", $status);
+            ?>
+            <script>
+                window.onload = function() {
+                    openWindow('pop-up');
+                }
+            </script>
+            <?php
+        }
     }
 
     protected function displayButton($loginStatus, $globalUser)
@@ -116,6 +161,7 @@ class AnimalProfile extends Profile {
                         ON animal.id = message_animaux.animal_id
                 WHERE animal.id = ?";
     }
+
 
 
     public function displayBoxes() {

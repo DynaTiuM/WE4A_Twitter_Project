@@ -92,7 +92,7 @@ class Entity {
     }
 
     public function verifyUnicity($parameter) {
-        $query = "(SELECT username FROM utilisateur WHERE username = ?) UNION (SELECT id FROM animal WHERE id = ?)";
+        $query = "SELECT username FROM utilisateur WHERE username = ?) UNION (SELECT id FROM animal WHERE id = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param("ss", $parameter, $parameter);
         $stmt->execute();

@@ -296,7 +296,7 @@ class User extends Entity
         $stmt->execute();
         $result = $stmt->get_result();
 
-        return $result->fetch_Column();
+        return $result->fetch_column();
     }
 
     public function checkNewAccountForm(): array {

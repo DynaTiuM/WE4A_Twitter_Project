@@ -624,7 +624,7 @@ class Message
         $result = $stmt->get_result();
 
         if ($result && $result->num_rows > 0) {
-            return $result->fetch_Column();
+            return $result->fetch_column();
         }
     }
 
@@ -636,7 +636,7 @@ class Message
         $result = $stmt->get_result();
 
         if ($result && $result->num_rows > 0) {
-            return $result->fetch_Column();
+            return $result->fetch_column();
         }
     }
 
@@ -663,6 +663,6 @@ class Message
         $stmt->execute();
         $result = $stmt->get_result();
 
-        return $result->fetch_Column();
+        return $result->fetch_column();
     }
 }
