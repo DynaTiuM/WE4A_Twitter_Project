@@ -181,22 +181,32 @@ class UserProfile extends Profile {
         return $this->username;
     }
 
+    /**
+     * Méthode permettant l'affichage des différentes catégories de message dans le profil utilisateur
+     *
+     * @return void
+     */
     public function displayBoxes() {
         ?>
         <div id="message-content">
             <?php
+            // La première section concerne l'affichage des messages
             $messageIds = $this->profileMessagesAndAnswers(true);
+            // S'il y a des messages récupérés, on les affiche
             if($messageIds) Message::displayMessages($this->conn, $this->db, $messageIds);
             ?>
         </div>
         <div id="answer-content" style="display:none;">
             <?php
-                $messageIds = $this->profileMessagesAndAnswers(false);
-                if($messageIds) Message::displayMessages($this->conn, $this->db, $messageIds);
-                ?>
+            // La deuxième concerne l'affichage des réponses
+            $messageIds = $this->profileMessagesAndAnswers(false);
+            // Meme mécanisme que les messages
+            if($messageIds) Message::displayMessages($this->conn, $this->db, $messageIds);
+            ?>
         </div>
         <div id="like-content" style="display:none;">
             <?php
+            // La troisième concerne l'affichage des messages likés
             $messageIds = $this->likedMessages();
             if($messageIds) Message::displayMessages($this->conn, $this->db, $messageIds);
             ?>
