@@ -186,7 +186,7 @@ class AnimalProfile extends Profile {
      *
      * @return void
      */
-    public function displayBoxes() {
+    public function displayBoxes() : void {
         // Dans le cas du profil animal, il y a seulement une section Message :
         ?>
         <div id="message-content">

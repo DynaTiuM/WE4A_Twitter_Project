@@ -53,7 +53,7 @@ class Animal extends Entity {
     }
 
     /**
-     * Fonction static permettant de récupérer l'instance d'un animal par rapport à son username
+     * Méthode static permettant de récupérer l'instance d'un animal par rapport à son username
      *
      * @param mysqli $conn Instance de la classe mysqli
      * @param Database $db Instance de la classe Database
@@ -110,8 +110,7 @@ class Animal extends Entity {
      *
      * @return string
      */
-    public function setAttributes($id, $name, $masterUsername, $age, $gender, $avatar, $characteristics, $species, $adoption): string
-    {
+    public function setAttributes($id, $name, $masterUsername, $age, $gender, $avatar, $characteristics, $species, $adoption): string {
         global $globalUser;
 
         // Si l'adoption n'est pas renseignée, on la met par défaut sur false
@@ -265,5 +264,23 @@ class Animal extends Entity {
     public function loadAvatar() : string {
         $sql = "SELECT avatar FROM animal WHERE id = ?";
         return $this->selectSQLAvatar($sql);
+    }
+
+    /**
+     * Méthode permettant de compter tous les messages d'un animal
+     *
+     * @return mixed
+     */
+    public function countAllMessages() {
+        // Cette requete SQL récupère tout simplement le nombre de messages d'un animal en fonction de son ID
+        $query = "SELECT COUNT(*) FROM message_animaux WHERE animal_id = ?";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("s", $this->username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        // Cette méthode renvoie ainsi le nombre de messages
+        return $result->fetch_column();
     }
 }

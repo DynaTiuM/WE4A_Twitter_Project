@@ -34,32 +34,4 @@ $loginStatus = $globalUser->isLoggedIn();
         echo"</div></a>";
     }
     ?>
-    <?php
-    /*
-    if($loginStatus) {
-        ?>
-
-    <?php
-        $result = displayPets($_COOKIE['username']);
-        if($result->num_rows > 0) {
-            ?>
-
-            <h1>Animaux</h1>
-            <div class = "center">
-                <?php
-                while($row = $result->fetch_assoc()) {?>
-                    <a href = './profile.php?username=<?php echo $row['id']?>'><img class="pet-preview" phpmailer="data:image/jpeg;base64,<?php echo base64_encode($row['avatar']); ?>" alt="Animal : <?php echo $row['nom']?>"></a>
-                    <p><?php echo $row['nom']?></p>
-                    <?php
-                }
-                ?>
-            </div>
-            <?php
-        }
-    }
-    else {
-        echo '<br><h4>Connectez-vous pour accéder aux catégories</h4><br>';
-    }
-*/
-    ?>
 </div>

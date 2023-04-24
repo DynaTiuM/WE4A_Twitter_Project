@@ -2,54 +2,81 @@
 require_once("../Classes/Profile.php");
 require_once("../Classes/Image.php");
 require_once("../Classes/Animal.php");
+
+
+/**
+ * Classe qui hérite de la classe Profile, avec des spécificités propres au profil d'un utilisateur
+ */
 class UserProfile extends Profile {
 
+    /**
+     * Constructeur de base de la classe UserProfile
+     *
+     * @param $conn
+     * @param $username
+     * @param $db
+     */
     public function __construct($conn, $username, $db)
     {
         parent::__construct($conn, $username, $db);
         $this->profileUser = User::getInstanceById($this->conn, $this->db, $this->username);
     }
 
+    /**
+     * Méthode permettant d'afficher le profil utilisateur
+     *
+     * @return mixed|void
+     */
     public function displayProfile() {
+        // Nous créons une instance de la classe User qui correspondra à l'utilisateur qui visite actuellement le profil
         $userId = $_SESSION['username'] ?? null;
         $globalUser = User::getInstanceById($this->conn, $this->db, $userId);
+        // Si aucun utilisateur n'est trouvé par rapport au username de l'utilisateur qui visite le profil, cela signifie que la personne qui visite ce profil n'est pas connectée
         if(!$globalUser) $loginStatus = false;
+        // Sinon, on effectue la vérification de connexion si une instance est trouvée
         else $loginStatus = $globalUser->isLoggedIn();
 
-
+        // Si le formulaire d'ajout d'un animal est posté :
         if (isset($_POST['add-pet'])) {
-            // Récupérer les données du formulaire
+            // On récupère les données du formulaire
             $id = $_POST['id'];
             $name = $_POST['nom'];
             $age = $_POST['age'];
             $species = $_POST['species'];
+            $bio = $_POST['bio'];
+            $gender = $_POST['gender'];
+            // Si le critère d'adoption est renseigné, on l'ajoute aussi
             if(isset($_POST['adoption'])) {
                 $adoption = $_POST['adoption'];
             }
             else {
                 $adoption = null;
             }
+
+            // Si un avatar est ajouté à l'animal :
             if(isset($_FILES["avatar"]) && is_uploaded_file($_FILES["avatar"]['tmp_name'])) {
+                // On crée une nouvelle instance de la classe Image
                 $image = new Image($_FILES["avatar"]);
+                // Si cette image GD crée n'est pas nulle :
                 if ($image->getGD() !== null) {
+                    // On formate l'image à sa nouvelle taille
                     $image->formatImage();
+                    // Et enfin on récupère l'image formatée
                     $formatedImage = $image->getFormatedImage();
                 }
             }
             else {
+                // Sinon, il sera tout simplement envoyé null dans la colonne d'avatar de l'animal
                 $formatedImage = null;
             }
 
-            $bio = $_POST['bio'];
-            $gender = $_POST['gender'];
-            $avatar_pet = $_FILES['avatar_pet']['name']; // Vous devrez également gérer le téléchargement du fichier
-
-            // Créer une instance de la classe Animal
+            // Finalement, on crée une instance de la classe Animal, pour créer notre nouvel animal
             $animal = new Animal($this->conn, $this->db);
 
-            // Appeler la fonction addAnimal
+            // Et on ajoute les attributs de l'animal grâce à la récupération du formulaire
             $result = $animal->setAttributes($id, $name, $globalUser->getUsername(), $age, $gender, $formatedImage, $bio, $species, $adoption);
 
+            // S'il y a un résultat, on affiche une pop-up, avec la réponse à la création du profil de l'animal (qu'elle soit bonne ou mauvaise)
             if ($result) {
                 displayPopUp("Ajout animal", $result);
                 ?>
@@ -61,18 +88,24 @@ class UserProfile extends Profile {
                 <?php
             }
         }
+
         global $loginStatus;
-        /* DUPLICATED!!!! */
+
+        // Par ailleurs, on effectue également une vérification dans le profil :
+        // Si l'utilisateur a cliqué sur le formulaire de like d'un message et qu'il est connecté, alors on like le message
         if(isset($_POST['like']) && $loginStatus) $globalUser->likeMessage($_POST['like']);
 
+        // S'il a envoyé un message depuis le profil :
         if(isset($_POST["submit"])) {
-            include("./sendingMessage.php");
+            // On envoie le message
             Message::sendMessage($this->conn, $this->db, $_POST["submit"]);
         }
 
+        // Il ne reste plus qu'à réaliser du PHP/HTML simple pour l'affichage des différentes partie du profil utilisateur :
         ?>
             <img <?php if($this->profileUser->isOrganization()) { ?> class = "profile-picture-organisation" <?php } else { ?> class = "profile-picture" <?php } ?> src="data:image/jpeg;base64,<?php echo base64_encode($this->profileUser->loadAvatar()); ?>"  alt="Photo de profil">
             <?php
+        // Si le profil est une organisation, on affiche un petit logo en or à droite du nom de l'utilisateur
             if ($this->profileUser->isOrganization()) {
                 echo "<h3 class = 'name-profile'>" . $this->profileUser->getFirstName() . " " . $this->profileUser->getLastName() . "<img title=\"Ce compte est certifié car il s'agit d'une organisation\" src = '../images/organisation.png' style = 'margin-left: 0.8vw; width:1.4vw; height: 1.4vw;'></h3>";
             } else {
@@ -106,18 +139,31 @@ class UserProfile extends Profile {
         <?php
     }
 
+    /**
+     * Méthode permettant d'afficher les boutons du profil utilisateur en fonction de l'utilisateur qui consulte le profil
+     *
+     * @param $loginStatus
+     * @param $globalUser
+     * @return mixed|void
+     */
     protected function displayButton($loginStatus, $globalUser) {
 
+        // Si l'utilisateur qui consulte le profil n'est pas connecté, on n'affiche aucun bouton, on sort de la méthode
         if(!$loginStatus)
             return;
 
+        // Si l'utilisateur qui consulte le profil est l'utilisateur du profil :
         if ($globalUser->getUsername() == $this->getUser()->getUsername()) {
+            // On ajoute des boutons qui lui permet de configurer son profil
             ?>
             <button class="button-modify-profile" onclick="openWindow('pop-up-profile')">Editer le profil</button>
             <button class="add-pet" onclick="openWindow('add-pet')">Ajouter un animal</button>
             <?php
         } else {
-            if (!$globalUser->checkFollow($this->getUser()->getUsername(), 'utilisateur')) { ?>
+            // Sinon, il s'agit d'un utilisateur connecté. On vérifie s'il suit l'utilisateur du profil :
+            if (!$globalUser->checkFollow($this->getUser()->getUsername(), 'utilisateur')) {
+                // S'il ne le suit pas, on affiche le bouton suivre, sinon on affiche le bouton suivi
+                ?>
                 <form action="" method="post" class="button-follow">
                     <button type="submit" name="follow" class="button-modify-profile">Suivre</button>
                 </form>
@@ -129,7 +175,7 @@ class UserProfile extends Profile {
         }
     }
 
-
+    // Getter
     public function getUsername()
     {
         return $this->username;

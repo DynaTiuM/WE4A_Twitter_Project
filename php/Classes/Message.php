@@ -346,7 +346,6 @@ class Message {
         // Puis, il est nécessaire de vérifier ainsi s'il est venu jusqu'ici grâce à la notification de message
 
         // Donc, s'il s'agit d'un message d'un utilisateur que l'utilisateur suit, ou une réponse à un message de l'utilisateur
-
         if(isset($_GET['answer']) && ($user->isFollowing($this->authorUsername) || Notification::isAnswerNotification($this->conn, $user->getUsername(), $this->id))) {
             // Il est nécessaire de mettre la notification en lue :
             $notification = Notification::getNotificationTypeByMessageId($this->conn, $_GET['answer'], 'message');
@@ -523,7 +522,7 @@ class Message {
      * @param $level
      * @return array
      */
-    public static function mainMessagesQuery($conn, $db, $loginStatus, $search, $level) {
+    public static function mainMessagesQuery($conn, $db, $loginStatus, $search, $level) : array {
         // Si le niveau est null, il s'agit d'un message simple (et non pas une réponse à un message)
         if ($level == null) {
             // On indique donc que level prend cette valeur, afin de réaliser notre requete SQL par la suite
@@ -609,7 +608,7 @@ class Message {
      * @param $reply_id
      * @return void
      */
-    public static function sendMessage($conn, $db, $reply_id = null) {
+    public static function sendMessage($conn, $db, $reply_id = null) : void {
 
         // Vérification basique : Si le contenu est vide, on n'envoie pas le message
         if (!isset($_POST["content"])) {
@@ -720,88 +719,144 @@ class Message {
     }
 
 
-    public function setParentMessageId($id_son) {
+    /**
+     * Méthode permettant de désigner le message parent d'un message, dans le cas où il s'agit d'un message réponse
+     *
+     * @param $id_son
+     * @return void
+     */
+    public function setParentMessageId($id_son) : void {
         $id_son = $this->db->secureString_ForSQL($id_son);
 
+        // On prépare une requete SQL simple permettant de sélectionner l'id du message parent en fonction de l'id du message
         $stmt = $this->conn->prepare("SELECT parent_message_id FROM message WHERE id = ?");
         $stmt->bind_param("i", $id_son);
         $stmt->execute();
         $result = $stmt->get_result();
         if($result->num_rows > 0) {
             $row = $result->fetch_assoc();
+            // Il suffit simplement de stocker ainsi cette valeur dans la variable privée de la classe message
             $this->parentMessageId = $row['parent_message_id'];
         }
         $stmt->close();
     }
 
+    /**
+     * Méthode permettant de modifier un message
+     *
+     * @return string
+     */
     public function modifyMessage() {
+        // On prépare la requete SQL permettant de mettre à jour la colonne contenu en fonction de l'id du message
         $stmt = $this->conn->prepare("UPDATE message SET contenu = ? WHERE id = ?");
         $stmt->bind_param("si", $this->content, $this->id);
+        // On execute simplement la requete avec le nouveau contenu du message
         $stmt->execute();
         $result = $stmt->get_result();
         if($result->num_rows > 0) {
             $stmt->close();
+            // Dans le cas où une ligne a été impactée, cela signifie que le message a bien été mis à jour
             return "Message mis à jour.";
         }
         $stmt->close();
+
+        // Sinon on indique à l'utilisateur qu'il y a eu une erreur lors de la mise à jour du message
         return "Erreur lors de la mise à jour du message";
     }
 
+    /**
+     * Méthode permettant de supprimer un message
+     *
+     * @return string
+     */
     public function deleteMessage(): string {
+        // On prépare la requete SQL permettant de supprimer un message en fonction de son id
         $stmt = $this->conn->prepare("DELETE FROM message WHERE id = ?");
         $stmt->bind_param("i", $this->id);
         $stmt->execute();
         $affected_rows = $stmt->affected_rows;
         if ($affected_rows > 0) {
             $stmt->close();
+            // Si une ligne a été impactée par cette suppression, c'est que le message a bien été supprimé
             return "Message supprimé.";
         }
         $stmt->close();
+        // Sinon, on indique qu'il y a eu une erreur lors de la suppression du message
         return "Erreur lors de la suppression du message";
     }
 
+    // Getter
     public function getParentMessageId() {
         return $this->parentMessageId;
     }
 
+    /**
+     * Méthode permettant de vérifier si un message a été liké par un utilisateur cible
+     *
+     * @param $username
+     * @return bool
+     */
     public function isMessageLikedByUser($username) {
+        // Requete SQL simple permettant de retourner une ligne dans la table like_message par rapport à un message et à un utilisateur
         $stmt = $this->conn->prepare("SELECT * FROM like_message WHERE message_id = ? AND utilisateur_username = ?");
         $stmt->bind_param("is", $this->id, $username);
         $stmt->execute();
         $result = $stmt->get_result();
         $stmt->close();
 
+        // Si une ligne est retournée, ça retourne vrai, sinon faux
         return ($result->num_rows > 0);
     }
 
-    public function isCommented()
-    {
+    /**
+     * Méthode permettant de savoir si un message est commenté
+     *
+     * @return bool
+     */
+    public function isCommented() {
+        // Dans ce cas-ci, il est nécessaire de regarder du coté des réponses
+        // En effet, si un message dans la table message possède un message parent qui possède l'ID du message où l'on veut s'avoir s'il possède des réponses, il a nécessairement au moins 1 réponse
         $query = "SELECT * FROM message WHERE parent_message_id = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param("i", $this->id);
         $stmt->execute();
         $result = $stmt->get_result();
 
+        // On retourne en fonction du nombre de lignes retrouvées
+        // S'il y a au moins un message qui possède un message père possédant cet ID, c'est que le message possède des réponses
         if ($result->num_rows > 0) {
             return true;
         }
+        // Sinon le message ne possède pas de réponses
         return false;
     }
 
-    public function numComments()
-    {
+    /**
+     * Méthode permettant de connaitre les nombre de commentaires d'un message
+     *
+     * @return void
+     */
+    public function numComments() {
+        // Cette requete SQL utilise le meme procédé que isCommented(), seulement en récupérant le nombre de lignes que la requete retournera grâce à COUNT()
         $stmt = $this->conn->prepare("SELECT COUNT(*) FROM message WHERE parent_message_id = ?");
         $stmt->bind_param("s", $this->id);
         $stmt->execute();
         $result = $stmt->get_result();
 
+        // S'il y a au moins une ligne, on retourne
         if ($result && $result->num_rows > 0) {
+            // Cette méthode permet de récupérer le nombre de commentaires
             return $result->fetch_column();
         }
     }
 
-    public function numLike()
-    {
+    /**
+     * Méthode permettant de récupérer le nombre de likes d'un message
+     *
+     * @return void
+     */
+    public function numLike() {
+        // Le procédé est identique que la méthode numComments, seulement, elle s'effectue avec la table like_message
         $stmt = $this->conn->prepare("SELECT COUNT(*) FROM like_message WHERE message_id = ?");
         $stmt->bind_param("i", $this->id);
         $stmt->execute();
@@ -812,29 +867,21 @@ class Message {
         }
     }
 
-    function findPets() {
-        global $conn;
-
+    /**
+     * Méthode permettant de récupérer tous les animaux mentionnés dans un message
+     *
+     * @return false|mysqli_result
+     */
+    public function findPets() {
+        // Afin de récupérer les caractéristiques de chaques animaux, il est nécessaire de lier la table message_animaux
+        // avec la table animal, grâce à l'id de l'animal
+        // Pour la condition de vérification est au niveau de l'ID du message
         $query = "SELECT animal.* FROM animal JOIN message_animaux ON animal.id = message_animaux.animal_id WHERE message_id = ?";
-        $stmt = $conn->prepare($query);
+        $stmt = $this->conn->prepare($query);
         $stmt->bind_param("i", $this->id);
         $stmt->execute();
 
+        // Finalement, on renvoie tous les animaux qui correspondent à cet id de message
         return $stmt->get_result();
-    }
-
-
-    public static function countAllMessages($conn, $username, $type) {
-        if ($type == "utilisateur") {
-            $query = "SELECT COUNT(*) FROM message WHERE auteur_username = ?";
-        } else {
-            $query = "SELECT COUNT(*) FROM message_animaux WHERE animal_id = ?";
-        }
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("s", $username);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        return $result->fetch_column();
     }
 }

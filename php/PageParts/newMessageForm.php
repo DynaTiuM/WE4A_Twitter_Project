@@ -77,7 +77,7 @@ $globalUser = User::getInstanceById($conn, $globalDb, $userId);
             <h2 class = "window-title">Sélectionner animaux</h2>
 
             <?php
-            $result = $globalUser->getPets();
+            $result = $globalUser->displayPets();
             if($result->num_rows == 0) {
                 echo '<h4>Vous n\'avez ajouté aucun animal</h4>';
             }

@@ -100,7 +100,7 @@ function displayConfirmationModificationProfile($result) {
 
         <?php include("./navigation.php");
 
-        $profile->setNumberOfMessages(Message::countAllMessages($conn, $username, $type));
+        $profile->setNumberOfMessages($profile->getUser()->countAllMessages());
 
         ?>
         <div class = "MainContainer">

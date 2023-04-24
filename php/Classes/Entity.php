@@ -1,6 +1,6 @@
 <?php
 
-class Entity {
+abstract class Entity {
 
     protected $username;
     protected $conn;
