@@ -42,8 +42,8 @@
 .pets-content {
     border-radius: 1vw;
     background-color: #fefefe;
-    margin-left: auto; /* modifier la marge gauche */
-    margin-right: auto; /* modifier la marge droite */
+    margin-left: auto;
+    margin-right: auto;
     padding: 2vw;
     border: 0.1vw solid #888;
     text-align: center;

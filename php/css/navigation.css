@@ -1,5 +1,5 @@
 .navigation {
-    width: 17%; /* largeur fixe pour la navigation */
+    width: 17%;
     margin-left: 7%;
     height: 100vh;
     padding: 0;
@@ -7,7 +7,7 @@
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 2; /* assure que la navigation sera au-dessus du reste de la page */
+    z-index: 2;
 }
 
 .navigation img {
@@ -35,11 +35,11 @@
     content: '';
     display: block;
     position: absolute;
-    top: 0; /* Centrer le hover par rapport au contenu de la navigation bar */
+    top: 0;
     left: -1vw;
     width: 118%;
     height: 100%;
-    border-radius: 2vw; /* Ajuster la valeur de la taille des coins arrondis */
+    border-radius: 2vw;
     background-color: #E0E0E0;
     z-index: -1;
 }

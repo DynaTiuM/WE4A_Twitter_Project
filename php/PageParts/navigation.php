@@ -1,23 +1,30 @@
 <?php
 
+// On récupère la connexion à la base de données
 $globalDb = Database::getInstance();
 $conn = $globalDb->getConnection();
+
+// S'il n'y a pas de sessions active :
 if (session_status() == PHP_SESSION_NONE) {
+    // On en démarre une nouvelle
     session_start();
-    $userId = $_SESSION['username'];
-    $globalUser = User::getInstanceById($conn, $globalDb, $userId);
 }
 
+// On récupère l'utilisateur qui regarde le site
 $globalUser = User::getInstance($conn, $globalDb);
 
+// On vérifie s'il est connecté
 $loginStatus = $globalUser->isLoggedIn();
 
 if(isset($_POST["destroySession"])) {
     session_destroy();
     header("Location: ./connect.php");
 }
+
+// Si l'utilisateur est connecté, et que le bouton d'envoi d'un nouveau message est cliqué :
 if($loginStatus) {
     if(isset($_POST['new-message'])) {
+        // On affiche le formulaire de création d'un nouveau message par pop-up
         displayNewMessageForm($conn, null);
         popUpNewMessage(true);
     }
@@ -41,13 +48,17 @@ if($loginStatus) {
 
             <?php if($loginStatus) {
                 require_once ("../Classes/Notification.php");
+                // Pour la section notification de la navigation bar :
                 $notification = new Notification($conn, $globalDb);
+                // On récupère le nombre de notifications de l'utilisateur
                 $numNotifications = $notification->numNotifications($globalUser->getUsername());
+                // S'il y a aucune notification, on affiche seulement le texte "Notifications"
                 if($numNotifications == 0) {
                     ?>
                     <li class = "menu-item"><a href="notifications.php"><img src="../images/notification.png">Notifications</a></li>
                     <?php
                 }
+                // Sinon, on affiche le nombre de notifications entre parenthèses ()
                 else {
                     ?>
                     <li class = "menu-item"><a href="notifications.php"><img src="../images/notifications_not_read.png">Notifications (<?php echo $numNotifications?>)</a></li>
@@ -63,7 +74,9 @@ if($loginStatus) {
             }
             ?>
         </ul>
-        <?php if($loginStatus) { ?>
+        <?php
+        // Si l'utilisateur est connecté, on affiche également la section déconenxion et la possibilité d'ajouter un nouveau message
+        if($loginStatus) { ?>
                 <div class = "center">
                     <form method = "post" action = "">
                         <input type ="submit" name = "new-message" class = "tweet-button" style ="border: none;" value = "Message">

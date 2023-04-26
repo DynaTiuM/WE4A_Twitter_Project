@@ -15,6 +15,7 @@ $globalUser = User::getInstanceById($conn, $globalDb, $userId);
 <html lang ="fr">
 <head>
     <meta charset = "utf-8">
+    <!-- Liaison avec l'API google : ajout de la clé API secrete grâce à la constante définie dans le fichier config.php -->
     <script src="https://maps.googleapis.com/maps/api/js?key=<?php echo LOCATION_API_KEY?>&libraries=places"></script>
     <script src = "../js/addressSearch.js"></script>
     <link rel = "stylesheet" href = "../css/stylesheet.css">

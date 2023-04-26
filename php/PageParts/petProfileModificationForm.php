@@ -5,10 +5,13 @@ global $profile;
 
 global $globalUser;
 global $globalDb;
+
+// Comme la majorité des fichiers php, on récupère les instances à la base de données
 $globalDb = Database::getInstance();
 $conn = $globalDb->getConnection();
 
 $userId = $_GET['username'];
+// Et ici on récupère l'id d'un animal, car nous nous situons sur le profil d'un animal
 $profile = Animal::getInstanceById($conn, $globalDb, $userId);
 
 ?>
@@ -55,6 +58,8 @@ $profile = Animal::getInstanceById($conn, $globalDb, $userId);
     $userId = $_SESSION['username'];
     $globalUser = User::getInstanceById($conn, $globalDb, $userId);
 
+    // Dans le cas où l'utilisateur qui modifie le profil de l'animal est une organisation, alors il peut changer le status de l'animal
+    // C'est à dire, s'il est à adopter ou non
     if($globalUser->isOrganization()) { ?>
         <div class="adoption-center">
             <div class="adoption-container">

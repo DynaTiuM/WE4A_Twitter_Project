@@ -1,7 +1,7 @@
 .message-options {
     position: relative;
     display: inline-block;
-    z-index: 2; /* ajouter une z-index plus élevée */
+    z-index: 2;
 }
 
 .options-button {
