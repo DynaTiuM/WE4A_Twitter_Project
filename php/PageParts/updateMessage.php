@@ -5,24 +5,17 @@ require_once("functions.php");
 global $conn;
 global $globalDb;
 
+// Si l'id du message est set et que le nouveau contenu du message est set également par méthode POST :
 if (isset($_POST["messageId"]) && isset($_POST["newContent"])) {
+    // On récupère les valeurs dans des variables :
     $messageId = intval($_POST["messageId"]);
     $newContent = $_POST["newContent"];
 
+    // On crée un nouveau message
     $message = new Message($conn, $globalDb);
+    // On ajoute ainsi les attributs du message
     $message->setId($messageId);
     $message->setContent($newContent);
+    // Puis on modifie le message
     $result = $message->modifyMessage();
-
-    displayPopUp("Succès", "Message mis à jour.");
-    ?>
-    <script>
-        // Ouverture automatique de la fenêtre
-        window.onload = function() {
-            openWindow('pop-up');
-        }
-    </script>
-    <?php
-} else {
-    displayPopUp("Erreur", "Erreur lors de la mise à jour du message.");
 }

@@ -32,6 +32,7 @@
     $userId = $_SESSION['username'];
     $globalUser = User::getInstanceById($conn, $globalDb, $userId);
 
+    // Condition qui vérifie si l'utilisateur est une organisation, si c'est le cas, on peut lui demander si l'animal qu'il souhaite ajouter est à la recherche d'un propriétaire
     if($globalUser->isOrganization()) {?>
     <div class="adoption-center">
         <div class="adoption-container">

@@ -345,15 +345,23 @@ class Message {
         // (Donc dans cette partie du code)
         // Puis, il est nécessaire de vérifier ainsi s'il est venu jusqu'ici grâce à la notification de message
 
-        // Donc, s'il s'agit d'un message d'un utilisateur que l'utilisateur suit, ou une réponse à un message de l'utilisateur
-        if(isset($_GET['answer']) && ($user->isFollowing($this->authorUsername) || Notification::isAnswerNotification($this->conn, $user->getUsername(), $this->id))) {
-            // Il est nécessaire de mettre la notification en lue :
+        // Donc, s'il s'agit d'un message d'un utilisateur que l'utilisateur suit :
+        if(isset($_GET['answer']) && $user->isFollowing($this->authorUsername)) {
+            // On récupère la notification en question
             $notification = Notification::getNotificationTypeByMessageId($this->conn, $_GET['answer'], 'message');
             $notificationId = $notification['id'];
-            // Nous mettons donc la notification en lue
+            // Puis on la met en lue
             Notification::setRead($this->conn, $notificationId);
         }
-
+        // De même, s'il s'agit d'un message qui est la réponse d'un message de l'utilisateur :
+        if(isset($_GET['answer']) && Notification::isAnswerNotification($this->conn, $user->getUsername(), $this->id)) {
+            $notification = Notification::getNotificationTypeByMessageId($this->conn, $_GET['answer'], 'reponse');
+            if($notification) {
+                $notificationId = $notification['id'];
+                // On la met également en lue
+                Notification::setRead($this->conn, $notificationId);
+            }
+        }
         // Il ne reste plus qu'à réaliser du HTML/PHP simple pour afficher le message :
         ?>
         <div class="message" id="message-container-<?php echo $this->id ?>">

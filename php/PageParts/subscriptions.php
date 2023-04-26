@@ -10,8 +10,9 @@ require_once ("init.php");
 <body>
 <?php
 require_once('./hubMessages.php');
-displayContainer('subs');
 
+// On affiche l'onglet abonnements
+displayContainer('subs');
 ?>
 </body>
 </html>

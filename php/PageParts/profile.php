@@ -21,7 +21,6 @@ $globalMessage = new Message($conn, $globalDb);
 $userId = $_SESSION['username'] ?? null;
 $globalUser = User::getInstanceById($conn, $globalDb, $userId);
 
-
 $username = $_GET['username'];
 require_once ("../Classes/Profile.php");
 $type = Profile::determineProfileType($conn, $username);
@@ -95,9 +94,7 @@ function displayConfirmationModificationProfile($result) {
 </head>
 
 <body>
-
     <div class = "Container">
-
         <?php include("./navigation.php");
 
         $profile->setNumberOfMessages($profile->getUser()->countAllMessages());
@@ -145,8 +142,6 @@ function displayConfirmationModificationProfile($result) {
             }
             ?>
     </div>
-
-
 </body>
 </html>
 

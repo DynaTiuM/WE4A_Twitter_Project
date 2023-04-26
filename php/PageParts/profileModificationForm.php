@@ -1,6 +1,6 @@
 <?php
-// Assurez-vous d'avoir une instance de UserProfile dans votre code.
 
+// On récupère l'instance de l'utilisateur actuel qui souhaite modifier son profil
 global $profile;
 ?>
 

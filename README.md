@@ -18,6 +18,11 @@ Ce README explique comment mettre en place le site web et présente les fonction
 1. Ouvrir le fichier php.ini du configurateur Apache.
 2. Rechercher la ligne ;extension=gd puis supprimer le ;.
 3. Relancer Apache & MySQL.
+### Versions d'utilisation
+1. Le site a été testé en versions PHP 8.2.4 et 8.1.18
+2. Les versions MySQL utilisées sont 5.2.1 et 5.7.11
+### Initialisation de l'environnement de travail
+- Pour lier le site avec la base de données, modifier les informations de root et mot de passe dans la classe Database.
 
 ## Fonctionnalités du site web
 ### Inscription

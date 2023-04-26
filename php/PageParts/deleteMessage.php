@@ -5,23 +5,14 @@ require_once("functions.php");
 global $conn;
 global $globalDb;
 
+// Dans le cas où l'id du message est POST :
 if (isset($_POST["messageId"])) {
-    error_log("POST values are set");
+    // On stocke la valeur de l'id dans uen variable
     $messageId = intval($_POST["messageId"]);
 
+    // On crée un nouveau message
     $message = new Message($conn, $globalDb);
     $message->setId($messageId);
+    // Et on delete finalement le message
     $message->deleteMessage();
-
-    displayPopUp("Succès", "Message Supprimé.");
-    ?>
-    <script>
-        // Ouverture automatique de la fenêtre erreur-connexion
-        window.onload = function() {
-            openWindow('pop-up');
-        }
-    </script>
-    <?php
-} else {
-    displayPopUp("Erreur", "Erreur lors de la suppression du message.");
 }

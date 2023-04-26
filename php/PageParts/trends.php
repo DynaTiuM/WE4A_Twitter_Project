@@ -23,10 +23,13 @@ $loginStatus = $globalUser->isLoggedIn();
     <?php
     global $conn;
 
+    // Cette requete SQL permet de récupérer les tags et leur nombre pour chacun grâce à la caractéristique GROUP BY
+    // De plus, on affiche ça de manière décroissante pour avoir d'abord les hashtags les plus présents, et on ajoute une limite d'apparition d'hashtag de 10
     $query = "SELECT tag, COUNT(*) AS count FROM hashtag GROUP BY tag ORDER BY count DESC LIMIT 10";
 
     $result = $conn->query($query);
 
+    // Tant qu'on a un hashtag différent dans le top 10, on l'affiche :
     while ($row = $result->fetch_assoc()) {
         echo"<a  href='explorer.php?tag=" . $row['tag'] . "'><div class = hashtag_block>";
         echo "<p class = 'trend'>" ."#" . $row['tag'] ."</p>";

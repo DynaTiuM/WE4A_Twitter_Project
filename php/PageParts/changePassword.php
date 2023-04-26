@@ -4,8 +4,6 @@ require_once("../Classes/Database.php");
 require_once("../Classes/User.php");
 require_once("../PageParts/functions.php");
 
-
-
 session_start();
 if(isset($_SESSION['start_time_code'])) {
     $elapsed_time = time() - $_SESSION['start_time_code'];
