@@ -95,11 +95,7 @@ class UserProfile extends Profile {
         // Si l'utilisateur a cliqué sur le formulaire de like d'un message et qu'il est connecté, alors on like le message
         if(isset($_POST['like']) && $loginStatus) $globalUser->likeMessage($_POST['like']);
 
-        // S'il a envoyé un message depuis le profil :
-        if(isset($_POST["submit"])) {
-            // On envoie le message
-            Message::sendMessage($this->conn, $this->db, $_POST["submit"]);
-        }
+        verificationPostSubmit($this->conn, $this->db);
 
         // Il ne reste plus qu'à réaliser du PHP/HTML simple pour l'affichage des différentes partie du profil utilisateur :
         ?>

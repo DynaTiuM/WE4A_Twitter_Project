@@ -10,7 +10,7 @@
         </label>
     </div>
 
-    <input id="avatar_pet" class = "invisibleFile" type="file" name = "avatar_pet">
+    <input id="avatar_pet" class = "invisibleFile" type="file" name = "avatar">
     <div>
         <input name = "id" class = "answer" placeholder="Identifiant de l'animal*" required>
     </div>

@@ -182,4 +182,5 @@ abstract class Entity {
         // Sinon, on retourne true, l'unicité est vérifiée !
         return true;
     }
+
 }

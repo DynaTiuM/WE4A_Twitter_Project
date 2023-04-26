@@ -121,30 +121,35 @@ class Message {
                     $message = new Message($this->conn, $this->db);
                     // On le charge grâce à son id positionné dans l'url du site
                     $message->loadMessageById($_GET['answer']);
+                    if($message->id != null) {
 
+                        // Il est également nécessaire de chercher le message parent, s'il existe, pour pouvoir éventuellement remonter dans les réponses
+                        $parent_message_id = $message->getParentMessageId();
 
-                    // Il est également nécessaire de chercher le message parent, s'il existe, pour pouvoir éventuellement remonter dans les réponses
-                    $parent_message_id = $message->getParentMessageId();
-
-                    // Si le message parent existe :
-                    if ($parent_message_id) {
-                        ?>
-                        <div class="parent-message">
-                            <?php
-                            // On effectue exactement la meme méthode d'affichage pour le message parent
-                            $parent_message = new Message($this->conn, $this->db);
-                            $parent_message->loadMessageById($parent_message_id);
-                            // On affiche d'abord le message parent,
-                            $parent_message->displayContent();
+                        // Si le message parent existe :
+                        if ($parent_message_id) {
                             ?>
-                            <span class="container-parent-message"></span>
-                        </div>
-                        <?php
-                    }
+                            <div class="parent-message">
+                                <?php
+                                // On effectue exactement la meme méthode d'affichage pour le message parent
+                                $parent_message = new Message($this->conn, $this->db);
+                                $parent_message->loadMessageById($parent_message_id);
+                                // On affiche d'abord le message parent,
+                                $parent_message->displayContent();
+                                ?>
+                                <span class="container-parent-message"></span>
+                            </div>
+                            <?php
+                        }
 
-                    // Puis on affiche ensuite le message fils (celui actuellement que l'on visionne)
-                    // Afin de voir le message parent au dessus de la réponse apportée
-                    $message->displayContent();
+                        // Puis on affiche ensuite le message fils (celui actuellement que l'on visionne)
+                        // Afin de voir le message parent au dessus de la réponse apportée
+                        $message->displayContent();
+                    }
+                    else {
+                        echo "<h4><br>Ce message n'existe pas !</h4>";
+                        return;
+                    }
                 }
                 // Si $_POST['reply_to'] n'est pas set, c'est à dire si l'utilisateur n'a pas cliqué sur l'icon pour répondre à un commentaire
                 // Et si isset($_POST['new-message'] n'est pas set également, c'est à dire que l'utilisateur n'a pas cliqué sur le bouton de nouveau message positionné sur la navigation bar,

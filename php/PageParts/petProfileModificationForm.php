@@ -1,8 +1,6 @@
 <?php
 
 global $profile;
-
-
 global $globalUser;
 global $globalDb;
 

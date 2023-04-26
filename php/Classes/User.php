@@ -299,7 +299,7 @@ class User extends Entity
             // On vérifie si la notification a déjà été envoyée à l'auteur du message
             if(!$notification->isAlreadySent($author_username, $id_message))
                 // Si ce n'est pas le cas, on crée la notification à l'auteur du message
-                $notification->createNotificationForLike($author_username, $id_message);
+                $notification->createNotificationForLike($author_username, $this->username, $id_message);
         } else {
             // Dans le cas où le message est déjà liké par l'utilisateur, on le supprime. En effet, lorsqu'on clique une deuxième fois sur un like, le like est supprimé
             $stmt = $this->conn->prepare("DELETE FROM like_message WHERE message_id = ? AND utilisateur_username = ?");
@@ -340,6 +340,11 @@ class User extends Entity
      */
     public function updateProfile($avatar =null, $firstName, $lastName, $dateOfBirth, $bio, $newPassword, $confirmationNewPassword) {
 
+        $age = $this->calculateAge($dateOfBirth);
+
+        if($age < 13) {
+            return "L'âge renseigné n'est pas assez agé pour notre site !";
+        }
         // Le mécanisme ici est identique à celui de la classe Animal.
         // J'invite le lecteur à regarder les commentaires plus détaillés de la méthode updateProfile() de la classe Animal pour comprendre le mécanisme de concaténation des strings
         $query = "UPDATE utilisateur SET prenom = ?, nom = ?, date_de_naissance = ?, bio = ?";
@@ -424,8 +429,8 @@ class User extends Entity
             && isset($_POST["prenom"]) && isset($_POST["nom"])
             && isset($_POST["date_de_naissance"]) &&  isset($_POST["organisation"]);
 
-        //Si tout est rempli et que l'unicité du nom d'utilisateur est vérifiée :
-        if($completed && $this->verifyUnicity($_POST['username'])){
+        //Si tout est rempli et que l'unicité du nom d'utilisateur & de l'email est vérifiée :
+        if($completed && $this->verifyUnicity($_POST['username']) && $this->verifyEmailUnicity($_POST['email'])){
             // On informe qu'une création de compte a été essayée
             $creationAttempted = true;
 
@@ -491,6 +496,28 @@ class User extends Entity
         $interval = $now->diff($dateOfBirth);
         // Et on renvoie cet interval en années avec ->y
         return $interval->y;
+    }
+
+    /**
+     * Méthode permettant de vérifier l'unicité d'un email
+     *
+     * @param $email
+     * @return bool
+     */
+    public function verifyEmailUnicity($email): bool {
+        $query = "SELECT * FROM utilisateur WHERE email = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        // Finalement, si le nombre de lignes retourné est supérieur à 0, cela signifie forcément qu'il y a déjà un utilisateur possédant cet email
+        if($result->num_rows > 0) {
+            return false;
+        }
+
+        // Sinon, on retourne true, l'unicité est vérifiée !
+        return true;
     }
 
     /**

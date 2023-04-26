@@ -581,7 +581,11 @@ class Notification {
      * @param $message_id
      * @return void
      */
-    public function createNotificationForLike($username, $message_id) {
+    public function createNotificationForLike($username, $likeur_username, $message_id) {
+        // Si l'utilisateur qui like le message est le meme qui a écrit le message, alors il n'est pas nécessaire de créer de notification !
+        if($likeur_username == $username) {
+            return;
+        }
         // La méthode réalisée est exactement la même que les autres méthodes de création de notification
         $query = "INSERT INTO notification (utilisateur_username, date, vue) VALUES (?, NOW(), FALSE);";
         $stmt = $this->conn->prepare($query);
@@ -593,7 +597,7 @@ class Notification {
         // Ici, on crée une notification de like plus spécifique, en informant le nom de l'utilisateur qui a liké, ainsi que le message qui a été liké
         $query = "INSERT INTO notification_like (notification_id, likeur_username, message_id) VALUES (?, ?, ?);";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("isi", $notifId, $username, $message_id);
+        $stmt->bind_param("isi", $notifId, $likeur_username, $message_id);
         $stmt->execute();
     }
 

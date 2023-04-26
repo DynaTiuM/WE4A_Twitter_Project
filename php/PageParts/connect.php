@@ -42,6 +42,18 @@ $newLoginStatus = $globalUser->checkLogin();
         } catch (Exception $e) {
             echo "Erreur";
         }
+
+        // S'il y a une erreur lors de la connexion, on l'affiche en appelant l'ouverture de la pop-up error-connection
+        if ($newLoginStatus[2]) {
+            displayPopUp("Erreur de connexion", "Il semble que le nom d'utilisateur et/ou le mot de passe ne soient pas valides.<br><br>Veuillez vérifier vos informations de connexion et réessayer.");?>
+            <script>
+                // Ouverture automatique de la fenêtre erreur-connexion
+                window.onload = function() {
+                    openWindow('pop-up');
+                }
+            </script>
+            <?php
+        }
     }
     // Sinon, si l'utilisateur est actuellement connecté :
     else {
@@ -51,17 +63,6 @@ $newLoginStatus = $globalUser->checkLogin();
         // Et on renvoie directement l'utilisateur sur la section abonnements
         header("Location: subscriptions.php");
         exit();
-    }
-
-    // S'il y a une erreur lors de la connexion, on l'affiche en appelant l'ouverture de la pop-up error-connection
-    if ($newLoginStatus[2] != NULL) { ?>
-        <script>
-            // Ouverture automatique de la fenêtre erreur-connexion
-            window.onload = function() {
-                openWindow('error-connection');
-            }
-        </script>
-        <?php
     }
 
     // La fonction displayCode permet d'afficher le formulaire d'ajout du code récupéré par e-mail :

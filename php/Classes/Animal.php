@@ -130,9 +130,9 @@ class Animal extends Entity {
         }
 
         // Dans le cas où un avatar a été chargé, il est nécessaire tout d'abord de vérifier s'il est upload
-        if (isset($avatar) && is_uploaded_file($avatar["tmp_name"])) {
+        if ($avatar) {
             // Si c'est le cas,, on récupère son contenu dans une variable $image
-            $image = file_get_contents($avatar["tmp_name"]);
+            $image = $avatar;
         } else {
             // Sinon, cela signifie que l'utilisateur a choisi de ne pas mettre d'avatar, on ajoute alors un avatar par défaut à la création du profil
             $image = file_get_contents('../images/default_avatar_pet.png');

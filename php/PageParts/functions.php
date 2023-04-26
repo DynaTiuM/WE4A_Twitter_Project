@@ -213,3 +213,62 @@ function displayPopUp($title, $message) { ?>
     </div>
     <?php
 }
+
+/**
+ * Fonction qui vérifie si un utilisateur souhaite suivre un autre utilisateur
+ *
+ * @param $globalUser
+ * @param $username
+ * @param $type
+ * @return void
+ */
+function verificationPostFollow($globalUser, $username, $type) {
+    // Si le bouton de suivi a été cliqué, on réalisé l'opération de suivi ou d'annulation de suivi de l'utilisateur du profil
+    if(isset($_POST['follow'])) {
+        $globalUser->followUnfollow($username, $type);
+    }
+}
+
+/**
+ * Fonction qui vérifie si un utilisateur a aimé un message
+ *
+ * @param $loginStatus
+ * @param $globalUser
+ * @return void
+ */
+function verificationPostLike($loginStatus, $globalUser) {
+    // Si un message a été liké et que l'utilisateur est connecté, alors on utilise la méthode likeMessage qui permet à un utilisateur de liker un message
+    if(isset($_POST['like']) && $loginStatus) $globalUser->likeMessage($_POST['like']);
+}
+
+/**
+ * Fonction qui vérifie si une notification a été cliquée, pour la mettre en vue
+ *
+ * @param $conn
+ * @return void
+ */
+function verificationPostNotification($conn) {
+    // Si le formualire de notification est envoyé, cela signifie que l'utilisateur a été amené jusqu'à ce profil par l'intermédiaire du clic d'une notification
+    if (isset($_POST['notification-id'])) {
+        $notificationId = $_POST['notification-id'];
+
+        require_once ("../Classes/Notification.php");
+        // On met donc cette notification qui a été cliquée en vue
+        Notification::setRead($conn, $notificationId);
+    }
+}
+
+/**
+ * Fonction qui vérifie si un message a été envoyé
+ *
+ * @param $conn
+ * @param $globalDb
+ * @return void
+ */
+function verificationPostSubmit($conn, $globalDb) {
+    // Si un message a été posté grâce au bouton d'envoi du formulaire de message :
+    if(isset($_POST["submit"])) {
+        // On envoie le message dans la base de données
+        Message::sendMessage($conn, $globalDb, $_POST["submit"]);
+    }
+}

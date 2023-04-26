@@ -24,8 +24,7 @@ function displayContainer($type) {
     // On vérifie le statut de connexion de l'utilisateur
     $loginStatus = $globalUser->isLoggedIn();
 
-    // Si un message a été liké et que l'utilisateur est connecté, alors on utilise la méthode likeMessage qui permet à un utilisateur de liker un message
-    if(isset($_POST['like']) && $loginStatus) $globalUser->likeMessage($_POST['like']);
+    verificationPostLike($loginStatus, $globalUser);
 
     // Si une notification a été cliquée dans la section notification :
     if(isset($_POST['notification-id'])) {
@@ -37,11 +36,7 @@ function displayContainer($type) {
         Notification::setRead($conn, $notificationId);
     }
 
-    // Enfin, si un message a été posté grâce au bouton d'envoi du formulaire de message :
-    if(isset($_POST["submit"])) {
-        // On envoie le message dans la base de données
-        Message::sendMessage($conn, $globalDb, $_POST["submit"]);
-    }
+    verificationPostSubmit($conn, $globalDb);
 
     ?>
 

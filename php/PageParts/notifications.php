@@ -11,7 +11,7 @@ if (session_status() == PHP_SESSION_NONE) {
 require_once("../Classes/Database.php");
 require_once("../Classes/User.php");
 require_once("../Classes/Notification.php");
-
+require_once ("functions.php");
 // On récupère les instances d'utilisateur et de base de données
 $globalDb = Database::getInstance();
 $conn = $globalDb->getConnection();
@@ -22,7 +22,6 @@ if(isset($_POST['adoption-status'])) {
     $notification = new Notification($conn, $globalDb);
     // On met cette notification en lue par rapport à l'id de l'adoption
     $notification::setRead($conn, $_POST['notification-id']);
-    require_once ("functions.php");
     // Et donc on étudie la valeur du status de l'adoption
     // Si l'adoption est acceptée,
     if($_POST['adoption-status'] == 'acceptee') {

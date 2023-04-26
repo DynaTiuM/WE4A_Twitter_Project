@@ -22,6 +22,7 @@ $conn = $globalDb->getConnection();
 // Puis on récupère l'utilisateur qui se promène sur le site, dans le cas où il est connecté
 $userId = $_SESSION['username'] ?? null;
 $globalUser = User::getInstanceById($conn, $globalDb, $userId);
+$loginStatus = $globalUser->checkLogin();
 
 // On récupère également le username de l'utilisateur du profil
 $username = $_GET['username'];
@@ -43,19 +44,9 @@ else {
     echo 'Utilisateur non trouvé';
 }
 
-// Si le bouton de suivi a été cliqué, on réalisé l'opération de suivi ou d'annulation de suivi de l'utilisateur du profil
-if(isset($_POST['follow'])) {
-    $globalUser->followUnfollow($username, $type);
-}
-
-// Si le formualire de notification est envoyé, cela signifie que l'utilisateur a été amené jusqu'à ce profil par l'intermédiaire du clic d'une notification
-if (isset($_POST['notification-id'])) {
-    $notificationId = $_POST['notification-id'];
-
-    require_once ("../Classes/Notification.php");
-    // On met donc cette notification qui a été cliquée en vue
-    Notification::setRead($conn, $notificationId);
-}
+verificationPostFollow($loginStatus, $username, $type);
+verificationPostSubmit($conn, $globalDb);
+verificationPostNotification($conn);
 
 // Si le formualaire de réponse à un message a été cliqué, cela signifie que l'utilisateur qui se promène sur le profil d'un autre utilisateur, a souhaité cliquer sur le bouton de commentaire de l'un des messages du profil
 if(isset($_POST['reply_to'])) {
