@@ -1,4 +1,4 @@
-#README du site web Twitturtle
+# README du site web Twitturtle
 
 Ce README explique comment mettre en place le site web et présente les fonctionnalités principales.
 
@@ -19,8 +19,8 @@ Ce README explique comment mettre en place le site web et présente les fonction
 2. Rechercher la ligne ;extension=gd puis supprimer le ;.
 3. Relancer Apache & MySQL.
 ### Versions d'utilisation
-1. Le site a été testé en versions PHP 8.2.4 et 8.1.18
-2. Les versions MySQL utilisées sont 5.2.1 et 5.7.11
+- Le site a été testé en versions PHP 8.2.4 et 8.1.18
+- Les versions MySQL utilisées sont 5.2.1 et 5.7.11
 ### Fichier config.php
 - Assurez-vous de posséder le fichier config.php, contenant les clés API et mots de passe de connexion à l'hébergeur d'envoi d'emails. (fichier non disponible sous GitHub pour des questions de sécurité)
 ### Initialisation de l'environnement de travail
