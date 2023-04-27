@@ -21,14 +21,19 @@ $conn = $globalDb->getConnection();
 
 // Puis on récupère l'utilisateur qui se promène sur le site, dans le cas où il est connecté
 $userId = $_SESSION['username'] ?? null;
-$globalUser = User::getInstanceById($conn, $globalDb, $userId);
-$loginStatus = $globalUser->checkLogin();
+
 
 // On récupère également le username de l'utilisateur du profil
 $username = $_GET['username'];
 require_once ("../Classes/Profile.php");
 // On détermine le type de profil (animal ou utilisateur) car à la méthode static de la classe Profile
 $type = Profile::determineProfileType($conn, $username);
+
+if($userId != null) {
+    $globalUser = User::getInstanceById($conn, $globalDb, $userId);
+    $loginStatus = $globalUser->checkLogin();
+    verificationPostFollow($globalUser, $username, $type);
+}
 
 global $profile;
 // Puis en fonction du type de profil, on crée une instance d'un nouveau profil :
@@ -44,7 +49,6 @@ else {
     echo 'Utilisateur non trouvé';
 }
 
-verificationPostFollow($loginStatus, $username, $type);
 verificationPostSubmit($conn, $globalDb);
 verificationPostNotification($conn);
 
@@ -53,6 +57,17 @@ if(isset($_POST['reply_to'])) {
     // On affiche donc une nouvelle pop-up permettant l'affichage d'une pop-up de réponse à un message
     popUpNewMessage();
     displayNewMessageForm($conn, $globalDb, $_POST['reply_to']);
+}
+
+if(isset($_POST['adopt'])) {
+    displayPopUp("Demande d'adoption", "La demande d'adoption a bien été envoyée !<br><br>Dans le cas d'acception de votre demande, l'animal sera ajouté automatiquement sur votre profil.");
+    ?>
+    <script>
+        window.onload = function() {
+            openWindow('pop-up');
+        }
+    </script>
+    <?php
 }
 
 // Enfin, si le formulaire de modification de profil a été envoyé, cela signifie qu'il est nécessaire de mettre à jour les informations de l'utilisateur

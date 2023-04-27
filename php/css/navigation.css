@@ -75,7 +75,10 @@ ul {
     border-radius: 3vw;
     background-color: #1F7C62;
 }
-
+.tweet-button:hover {
+    transition: 0.3s;
+    background-color: #15604b;
+}
 .deconnexion {
     margin-top: 6vw;
     border-radius: 3vw;
@@ -85,4 +88,10 @@ ul {
     font-family: "Plus Jakarta Sans", sans-serif;
     font-size: 1.2vw;
     color: #b95757;
+}
+
+.deconnexion:hover {
+    transition:0.3s;
+    background-color: #b95757;
+    color:white;
 }

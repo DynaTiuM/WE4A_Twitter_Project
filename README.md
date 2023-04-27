@@ -1,4 +1,4 @@
-# README du site web Twitturtle
+#README du site web Twitturtle
 
 Ce README explique comment mettre en place le site web et présente les fonctionnalités principales.
 
@@ -21,12 +21,22 @@ Ce README explique comment mettre en place le site web et présente les fonction
 ### Versions d'utilisation
 1. Le site a été testé en versions PHP 8.2.4 et 8.1.18
 2. Les versions MySQL utilisées sont 5.2.1 et 5.7.11
+### Fichier config.php
+- Assurez-vous de posséder le fichier config.php, contenant les clés API et mots de passe de connexion à l'hébergeur d'envoi d'emails. (fichier non disponible sous GitHub pour des questions de sécurité)
 ### Initialisation de l'environnement de travail
 - Pour lier le site avec la base de données, modifier les informations de root et mot de passe dans la classe Database.
-
+- Le nom de base de la base de données est : we4a_project
+### Connexion aux comptes déjà existants
+- Compte 1 : username : raphael_prrn	mot de passe : password
+- Compte SPA (organisation) : username : spa_officiel	mot de passe : a
+- Autres comptes : usernames : manon_truchet, remi_tx, maxime_bl	mots de passe : a
+- Si vous souhaitez créer votre propre compte, ne pas oublier d'ajouter une adresse e-mail valide pour la réinitialisation du mot de passe.
 ## Fonctionnalités du site web
 ### Inscription
-- Les utilisateurs peuvent indiquer s'ils sont une organisation ou non. Les organisations peuvent ajouter des animaux à la recherche d'un propriétaire. Les utilisateurs qui consultent ce profil peuvent envoyer des demandes d'adoption à l'organisation. Un profil organisation possède un contour doré à la photo de profil et une pastille spéciale sur son nom de compte pour indiquer qu'il s'agit d'une organisation.
+- Les utilisateurs peuvent indiquer s'ils sont une organisation ou non.
+- Les organisations peuvent ajouter des animaux à la recherche d'un propriétaire.
+- Les utilisateurs qui consultent les profils organisation peuvent envoyer des demandes d'adoption à leurs animaux respectifs.
+- Un profil organisation possède un contour doré à la photo de profil et une pastille spéciale sur son nom de compte pour indiquer qu'il s'agit d'une organisation.
 - Les utilisateurs doivent ajouter une adresse e-mail valide pour pouvoir réinitialiser leur mot de passe en cas de perte.
 
 ### Envoi de messages

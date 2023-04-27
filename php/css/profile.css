@@ -44,6 +44,11 @@
     padding: 1vw 1.7vw;
 }
 
+.button-modify-profile:hover {
+    transition: 0.3s;
+    background-color: #165e4a;
+}
+
 
 #message-button, #like-button, #answer-button {
     width: 32.8%;
@@ -88,5 +93,8 @@
 .add-pet {
     margin-top: 1vw;
     background-color: #d874ee;
-
+}
+.add-pet:hover {
+    transition:0.3s;
+    background-color: #9963cc;
 }

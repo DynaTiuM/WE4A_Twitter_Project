@@ -86,9 +86,6 @@ abstract class Entity {
      */
     public function followUnfollow($toFollow, $type) {
         require_once ("../Classes/Notification.php");
-        // On détermine le type de suivi grâce à la variable $type
-        // Si le type n'est pas utilisateur, il est forcément animal
-        if ($type != 'utilisateur') $type = 'animal';
 
         // On prépare la requete SQL pour savoir si l'utilisateur en question suit déjà l'utilisateur qu'il souhaite suivre
         // Ici, utilisateur_username est l'utilisateur qui veut suivre un animal ou utilisateur
@@ -102,14 +99,15 @@ abstract class Entity {
         // S'il y a un résultat, cela signifie qu'il est déjà abonné, il faut donc le désabonner (car lorsqu'on clique sur le bouton
         // d'abonnement une deuxieme fois, ça nous désabonne
         if ($result->num_rows > 0) {
-            // On récupère la colonne de l'id avec le raccourci fetch_assoc()['id'] (cela nous permet d'éviter de réaliser une opération
-            // intermédiaire comme $row = $result->fetch_assoc()['id'] puis $followId = $row['id']
-            $followId = $result->fetch_assoc()['id'];
-
-            // Nous créons une notification de suppression de notification
-            $notification = new Notification($this->conn, $this->db);
-            // On supprime ainsi la notification de suivi par rapport à l'id de suivi
-            $notification->deleteFollowNotifications($followId);
+            if($type == 'utilisateur') {
+                // On récupère la colonne de l'id avec le raccourci fetch_assoc()['id'] (cela nous permet d'éviter de réaliser une opération
+                // intermédiaire comme $row = $result->fetch_assoc()['id'] puis $followId = $row['id']
+                $followId = $result->fetch_assoc()['id'];
+                // Nous créons une notification de suppression de notification
+                $notification = new Notification($this->conn, $this->db);
+                // On supprime ainsi la notification de suivi par rapport à l'id de suivi
+                $notification->deleteFollowNotifications($followId);
+            }
 
             // Une fois que la notification est supprimée, il est important de supprimer également le suivi de l'utilisateur
             $stmt = $this->conn->prepare("DELETE FROM suivre WHERE utilisateur_username = ? AND suivi_id_$type = ?");
@@ -123,6 +121,9 @@ abstract class Entity {
         $stmt->bind_param("sss", $this->username, $type, $toFollow);
         $stmt->execute();
 
+        if($type == "animal") {
+            return;
+        }
         // Il est nécessaire par la suite de récupérer l'id nouvellement inseré, cela est possible grâce à l'attribut insert_id
         $followId = $stmt->insert_id;
 

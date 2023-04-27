@@ -112,16 +112,9 @@ body {
     padding-left: 0;
 }
 
-.parent-message {
-    scale: 0.7;
-    transform-origin: left;
-    margin-left: 0.9vw;
-    margin-bottom: -1.1vw;
-}
-
 .container-parent-message {
     position: relative;
-    margin-left: 2.6vw;
+    margin-left: 2.7vw;
 }
 .container-parent-message::before {
     content: '';
@@ -131,7 +124,7 @@ body {
     width: 0.1vw;
     height: 3.6vw;
     border-radius: 1vw;
-    margin-top: -2.1vw;
+    margin-top: -2.2vw;
     background-color: #1F7C62;
 }
 
@@ -210,6 +203,10 @@ h1 {
     color: white;
     background-color: #b95757;
     border-radius: 3vw;
+}
+.Tweeter:hover {
+    transition: 0.3s;
+    background-color: #9d4444;
 }
 
 .ButtonPosition {

@@ -557,6 +557,11 @@ class Notification {
         $author_username = $row['auteur_username'];
         $parent_message_id = $row['parent_message_id'];
 
+        // Si l'auteur du message est le meme que celui qui crée la réponse, inutile de le notifier du message !
+        if($author_username == $username) {
+            return;
+        }
+
         // De la meme manière que les autres méthodes, on crée une nouvelle notification par rapport à l'auteur du message.
         // En effet, on souhaite envoyer la notification à l'auteur du message, car la réponse est liée au message parent, qui est le message de cet auteur
         $query = "INSERT INTO notification (utilisateur_username, date, vue) VALUES (?, NOW(), FALSE);";

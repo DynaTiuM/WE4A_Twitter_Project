@@ -453,14 +453,20 @@ class User extends Entity
             else {
                 // On ajoute tous les attributs privés de la classe utilisateur avec ce que possède la ligne SQL
                 $this->username = $this->db->secureString_ForSQL($_POST["username"]);
-                $this->setUserInformation();
+                $this->email = $this->db->secureString_ForSQL($_POST["email"]);
+                $this->username = $this->db->secureString_ForSQL($_POST["username"]);
+                $this->lastName = $this->db->secureString_ForSQL($_POST["nom"]);
+                $this->firstName = $this->db->secureString_ForSQL($_POST["prenom"]);
+                $this->dateOfBirth = $_POST["date_de_naissance"];
+                $this->organisation = $_POST["organisation"];
+                $this->avatar = file_get_contents('../images/default_avatar.png');
                 $avatarBLOB = mysqli_real_escape_string($this->conn, $this->avatar);
 
                 // Excepté password pour des questions de sécurité pour le mot de passe
                 $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
 
                 // On insert finalement toutes les informations dans la base de données
-                $query = "INSERT INTO `utilisateur` VALUES ('$this->email', '$this->username', '$this->lastname', '$this->firstname', '$this->dateOfBirth', '$password', '$avatarBLOB', '$this->organisation', null )";
+                $query = "INSERT INTO `utilisateur` VALUES ('$this->email', '$this->username', '$this->lastName', '$this->firstName', '$this->dateOfBirth', '$password', '$avatarBLOB', '$this->organisation', null )";
                 $this->conn->query($query);
 
                 if( mysqli_affected_rows($this->conn) == 0 ) {

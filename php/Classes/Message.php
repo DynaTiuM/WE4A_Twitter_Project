@@ -129,7 +129,7 @@ class Message {
                         // Si le message parent existe :
                         if ($parent_message_id) {
                             ?>
-                            <div class="parent-message">
+                            <div>
                                 <?php
                                 // On effectue exactement la meme méthode d'affichage pour le message parent
                                 $parent_message = new Message($this->conn, $this->db);

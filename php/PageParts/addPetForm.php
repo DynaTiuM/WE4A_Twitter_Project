@@ -57,11 +57,11 @@
     </div>
     <div>
         <label>
-            <input type="radio" name="gender" value="masculin" required>
+            <input type="radio" class = "check-radio" name="gender" value="masculin" required>
             Masculin
         </label>
         <label>
-            <input type="radio" name="gender" value="feminin">
+            <input type="radio" class = "check-radio" name="gender" value="feminin">
             Féminin
         </label>
     </div>

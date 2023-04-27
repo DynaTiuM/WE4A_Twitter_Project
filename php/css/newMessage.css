@@ -68,6 +68,7 @@
 }
 
 .classical:hover {
+    transition: 0.3s;
     background-color: rgba(106,182,158,1);
 }
 
@@ -75,6 +76,7 @@
     background-color: rgba(194,126,101,0.75);
 }
 .event:hover {
+    transition: 0.3s;
     background-color: rgba(194,126,101,1);
 }
 
@@ -82,6 +84,7 @@
     background-color: rgba(201,165,110,0.75);
 }
 .rescue:hover {
+    transition: 0.3s;
     background-color: rgba(201,165,110,1);
 }
 
@@ -89,6 +92,7 @@
     background-color: rgba(101,167,208,0.75);
 }
 .advice:hover {
+    transition: 0.3s;
     background-color: rgba(101,167,208,1);
 }
 
