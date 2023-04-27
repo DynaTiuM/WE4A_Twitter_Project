@@ -338,7 +338,7 @@ class User extends Entity
      * @param $confirmationNewPassword
      * @return string
      */
-    public function updateProfile($avatar =null, $firstName, $lastName, $dateOfBirth, $bio, $newPassword, $confirmationNewPassword) {
+    public function updateProfile($avatar, $firstName, $lastName, $dateOfBirth, $bio, $newPassword, $confirmationNewPassword) {
 
         $age = $this->calculateAge($dateOfBirth);
 
