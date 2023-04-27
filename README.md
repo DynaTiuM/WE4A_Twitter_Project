@@ -27,9 +27,9 @@ Ce README explique comment mettre en place le site web et présente les fonction
 - Pour lier le site avec la base de données, modifier les informations de root et mot de passe dans la classe Database.
 - Le nom de base de la base de données est : we4a_project
 ### Connexion aux comptes déjà existants
-- Compte 1 : username : raphael_prrn	mot de passe : password
-- Compte SPA (organisation) : username : spa_officiel	mot de passe : a
-- Autres comptes : usernames : manon_truchet, remi_tx, maxime_bl	mots de passe : a
+- Compte 1 : username : raphael_prrn, mot de passe : password
+- Compte SPA (organisation) : username : spa_officiel, mot de passe : a
+- Autres comptes : usernames : manon_truchet, remi_tx, maxime_bl, mots de passe : a
 - Si vous souhaitez créer votre propre compte, ne pas oublier d'ajouter une adresse e-mail valide pour la réinitialisation du mot de passe.
 ## Fonctionnalités du site web
 ### Inscription
