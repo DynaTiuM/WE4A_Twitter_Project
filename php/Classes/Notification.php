@@ -451,7 +451,7 @@ class Notification {
                 INNER JOIN like_message ON notification_like.message_id = like_message.message_id
                 INNER JOIN utilisateur AS utilisateur_likeur ON like_message.utilisateur_username = utilisateur_likeur.username
                 INNER JOIN message ON like_message.message_id = message.id
-                INNER JOIN utilisateur AS utilisateur_liké ON message.auteur_username = utilisateur_liké.username
+                INNER JOIN utilisateur AS utilisateur_like ON message.auteur_username = utilisateur_like.username
                 INNER JOIN notification ON notification_like.notification_id = notification.id
                 WHERE notification_like.notification_id  = ?
                 GROUP BY like_message.id;";
